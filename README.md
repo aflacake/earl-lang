@@ -4,6 +4,8 @@
 # Pearl - Bahasa Pemrograman Ekspresif
 Pearl adalah bahasa pemrograman eksperimen prototipe interaksi teks yang mirip dengan bahasa manusia atau lebih dikenal _pseudocode_, modular yang mudah dipahami, dan fleksibel untuk skripsi. Bahasa yang modulnya mudah diperluas serta mirip _command handler_. Cocok untuk otomasi alur kerja, cocok juga untuk programmer baru belajar.
 
+Proses pengembangan ini juga beberapa dibuat generative oleh AI seperti pembuatan, debug, dan pembenahan kode.
+
 Tujuan Pearl:
 - Menyederhanakan logika program
 - Bagus untuk pemula
@@ -16,7 +18,7 @@ tampikan :nama:
 ```
 
 # Instalasi
-Sedang dalam proses pengerjaan
+Tidak memerlukan instalasi spesifik, saran: arahkan ke server lokal Anda dan jalankan kode file utama `index.js`.
 
 # Berkontribusi
 Fork kode ini dan bangun aturan apa yang diusul atau menambahkan "bagian kecil" seperti pembenahan kata atau typo dalam teks tidaklah masalah, aturan berkontribusi tidak memberatkan.
