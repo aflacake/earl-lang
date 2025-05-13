@@ -10,6 +10,7 @@ import { jika } from './modules/jika.js';
 import { ulangi } from './modules/ulangi.js';
 import { membangun } from './modules/membangun.js';
 import { kelas } from './modules/kelas.js';
+import { atur } from './modules/atur.js';
 
 
 
@@ -22,6 +23,7 @@ const modules = {
     ulangi,
     membangun,
     kelas,
+    atur,
     tokenize
 };
 
