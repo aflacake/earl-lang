@@ -9,6 +9,8 @@ import { hitung } from './modules/hitung.js';
 import { jika } from './modules/jika.js';
 import { ulangi } from './modules/ulangi.js';
 import { membangun } from './modules/membangun.js';
+import { kelas } from './modules/kelas.js';
+
 
 
 const modules = {
@@ -19,6 +21,7 @@ const modules = {
     jika,
     ulangi,
     membangun,
+    kelas,
     tokenize
 };
 
