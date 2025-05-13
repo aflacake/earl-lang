@@ -29,19 +29,29 @@ export function runPearl(code) {
     while (context.index < line.length) {
         const line = lines[context.index].trim();
         const tokens = tokenize(line);
+
+        if (!tokens || tokens.length === 0) {
+            context.index++;
+            continue;
+        }
+
         const cmd = tokens[0];
 
         if (modules[cmd]) {
-            modules[cmd](tokens, modules, context);
+            try {
+                modules[cmd](tokens, modules, context);
+            } catch (err) {
+                console.error(`Kesalahan saat menjalankan perintah '${cmd}' di baris ${context.index + 1}:`, err);
+            }
         } else {
-            console.error("Modul tidak dikenali: " + cmd);
+            console.error(`Modul tidak dikenali: '${cmd}' di baris ${context.index + 1}`);
         }
 
         context.index++;
     }
 }
 
-import { runPearl } from './index.js';
+
 
 document.addEventListener("DOMContentLoaded", () => {
     const tombol = document.getElementById("jalankanBtn");
