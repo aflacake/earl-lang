@@ -73,5 +73,18 @@ document.addEventListener("DOMContentLoaded", () => {
     tombol.addEventListener("click", async () => {
       const code = textarea.value;
       await runPearl(code);
-    })
+    });
+
+    document.getElementById("jalankanServer").onclick = async () => {
+        const code = document.getElementById("codeInput").value;
+
+        const res = await fetch('server/run_pearl.php', {
+            method: 'POST';
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ code })
+        });
+
+        const data = await res.json();
+        const.getElementById("output").textContent = data.result || data.error;
+    };
 });
