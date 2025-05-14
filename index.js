@@ -11,6 +11,7 @@ import { ulangi } from './modules/ulangi.js';
 import { membangun } from './modules/membangun.js';
 import { kelas } from './modules/kelas.js';
 import { atur } from './modules/atur.js';
+import { waktu } from './modules/waktu.js';
 
 
 
@@ -24,6 +25,7 @@ const modules = {
     membangun,
     kelas,
     atur,
+    waktu,
     tokenize
 };
 
@@ -44,7 +46,7 @@ export function runPearl(code) {
 
         if (modules[cmd]) {
             try {
-                modules[cmd](tokens, modules, context);
+                await modules[cmd](tokens, modules, context);
             } catch (err) {
                 console.error(`Kesalahan saat menjalankan perintah '${cmd}' di baris ${context.index + 1}:`, err);
             }
@@ -62,8 +64,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const tombol = document.getElementById("jalankanBtn");
     const textarea = document.getElementById("codeInput");
 
-    tombol.addEventListener("click", () => {
+    tombol.addEventListener("click", async () => {
       const code = textarea.value;
-      runPearl(code);
+      await runPearl(code);
     })
 });
