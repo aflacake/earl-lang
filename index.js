@@ -12,6 +12,9 @@ import { membangun } from './modules/membangun.js';
 import { kelas } from './modules/kelas.js';
 import { atur } from './modules/atur.js';
 import { waktu } from './modules/waktu.js';
+import { buka } from './modules/buka.js';
+import { tulis } from './modules/tulis.js';
+import { tutup } from './modules/tutup.js';
 
 
 
@@ -26,6 +29,9 @@ const modules = {
     kelas,
     atur,
     waktu,
+    buka,
+    tulis,
+    tutup,
     tokenize
 };
 
