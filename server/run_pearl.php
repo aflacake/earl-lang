@@ -1,13 +1,13 @@
-<? php
+<?php
 // server/run_pearl.php
 
 header('Content-Type: application/json');
-header('Acces-Control-Allow-Origin: *');
+header('Access-Control-Allow-Origin: *');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $data = json_decode(file_get_contents('php://input', true);
+    $data = json_decode(file_get_contents('php://input', true));
 
-    if (isset($data($data['code'])) {
+    if (isset($data['code'])) {
         $code = $data['code'];
 
         include('interpreter.php');
