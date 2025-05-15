@@ -1,14 +1,14 @@
 // modules/tampilkan.js
 
-import { memory } from '../memory.js';
+const { memory } = require('../memory.js');
 
-export async function tampilkan(tokens, modules, context) {
+function tampilkan(tokens, modules, context) {
     const target = tokens[1];
 
     if (target.startsWith(":")) {
         const varName = target.slice(1, -1);
         console.log(memory[varName] || "tidak dikenali");
-    } else if (target.include(".")) {
+    } else if (target.includes(".")) {
         const [className, attrName] = target.split(".");
         const kelas = memory[className];
 
@@ -23,3 +23,5 @@ export async function tampilkan(tokens, modules, context) {
         console.log(target.replace(/"/g, ""));
     }
 }
+
+module.exports = { tampilkan };
