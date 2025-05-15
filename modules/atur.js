@@ -1,8 +1,8 @@
 // modules/atur.js
 
-import { memory } from '../memory.js';
+const { memory } = require('../memory.js');
 
-export function atur(tokens) {
+function atur(tokens) {
     const [_, path, operator, ...valueParts] = tokens;
 
     if (operator !== '=') {
@@ -53,3 +53,5 @@ export function atur(tokens) {
     instance.instance[namaAtribut] = value;
     console.log(`${namaInstance}.${namaAtribut} diatur ke`, value);
 }
+
+module.exports = { atur };
