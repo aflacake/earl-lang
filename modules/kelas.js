@@ -1,8 +1,8 @@
 // modules/kelas.js
 
-import { memory } from '../memory.js';
+const { memory } = require('../memory.js');
 
-export async function kelas(tokens, modules, context); {
+async function kelas(tokens, modules, context) {
     const namaKelas = tokens[1].replace(/:/g, '');
     const atribut = tokens.slice(2);
 
@@ -36,3 +36,5 @@ export async function kelas(tokens, modules, context); {
     console.log(`Kelas ${namaKelas} didefinisikan dengan atribut:`, atribut);
     console.log(`Instance:`, memory[namaKelas].instance);
 }
+
+module.exports = { kelas };
