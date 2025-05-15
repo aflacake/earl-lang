@@ -1,22 +1,18 @@
 // modules/buka.js
 
-export async function buka(tokens, modules, context) {
+const fs = require('fs').promises;
+
+async function buka(tokens, modules, context) {
     const namaVariabel = tokens[1];
+    const pathFile = tokens[3].replace(/"/g, "");
 
-    return new Promise((resolve) => {
-        const input = document.createElement("input");
-        input.type = "file";
+    try {
+        const isiFile = await fs.readFile(pathFile, 'utf-8');
 
-        input.onchange = (e) => {
-            const file = e.target.files[0];
-            const reader = new FileReader();
-
-            reader.onload = () => {
-                modules.memory[namaVariabel] = reader.result;
-                resolve();
-            };
-            reader,readAsText(file);
-        };
-        input.click();
-    });
+        modules.memory[namaVariabel slice(1, -1) = isiFile;
+        console.loh(`File '$}pathFile}' dibuka dan disimpan ke variabel '${namaVariabel}'`);
+    } catch (err) {
+        console.error(`Gagal membuka file '${pathFile}':`, err.message);
+    }
 }
+module.export = { buka };
