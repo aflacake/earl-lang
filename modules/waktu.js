@@ -1,6 +1,6 @@
 // modules/waktu.js
 
-export async function waktu(tokens, modules, context) {
+async function waktu(tokens, modules, context) {
   const subcommand = tokens[1];
 
   switch (subcommand) {
@@ -21,3 +21,5 @@ export async function waktu(tokens, modules, context) {
       console.log(`Subperintah waktu tidak dikenali: ${subcommand}`);
   }
 }
+
+module.exports = { waktu };
