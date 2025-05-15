@@ -18,7 +18,11 @@ tampikan :nama:
 ```
 
 # Instalasi
-Tidak memerlukan instalasi spesifik, saran: arahkan ke server lokal Anda dan jalankan kode file utama `index.js`.
+## Dengan Node.js
+Pastikan Node.js sudah terinstal, jika belum instal Node.js versi terbaru di situs resminya. Arahkan ke file tempat dimana index.js berada.
+```bash
+node index.js
+```
 
 # Berkontribusi
 Fork kode ini dan bangun aturan apa yang diusul atau menambahkan "bagian kecil" seperti pembenahan kata atau typo dalam teks tidaklah masalah, aturan berkontribusi tidak memberatkan.
