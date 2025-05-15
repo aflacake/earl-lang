@@ -24,4 +24,4 @@ function hitung(tokens) {
         console.error("Gagal menghitung: ", err.message);
     }
 }
-module.export = { hitung };
+module.exports = { hitung };
