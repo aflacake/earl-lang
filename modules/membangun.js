@@ -1,8 +1,8 @@
 // modules/membangun.js
 
-import { memory } from '../memory.js';
+const { memory } = require('../memory.js');
 
-export function membangun(tokens) {
+function membangun(tokens) {
     const varName = tokens[1].slice(1, -1);
 
     if (tokens[2] === 'dari') {
@@ -30,3 +30,5 @@ export function membangun(tokens) {
         }
     }
 }
+
+module.exports = { membangun };
