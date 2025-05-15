@@ -1,7 +1,7 @@
 // modules/jika.js
-import { memory } from '../memory.js';
+const { memory } = require('../memory.js');
 
-export function jika(tokens) {
+export function jika(tokens, modules) {
     const [ , varToken, operator, compareTo, keyword, cmd, ...args] = tokens;
 
     if (keyword !== 'maka') {
@@ -12,7 +12,7 @@ export function jika(tokens) {
     const varName = varToken.replace(/:/g, '');
     const value1 = memory[varName];
 
-    if (value1 === undefiened) {
+    if (value1 === undefined) {
         console.error(`Variabel tidak ditemukan: ${varToken}`);
         return;
     }
@@ -41,3 +41,5 @@ export function jika(tokens) {
         }
     }
 }
+
+module.exports = { jika };
