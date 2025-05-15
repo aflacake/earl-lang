@@ -1,3 +1,5 @@
 // memory.js
 
-export const memory = {};
+const memory = {};
+
+module.exports = { memory };
