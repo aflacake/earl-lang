@@ -1,8 +1,8 @@
 // modules/hitung.js
 
-import { memory } from '../memory.js';
+const { memory } = require('../memory.js');
 
-export function hitung(tokens) {
+function hitung(tokens) {
     const varName = tokens[2].slice(1, -1);
     const expressionTokens = tokens.slice(4);
 
@@ -24,3 +24,4 @@ export function hitung(tokens) {
         console.error("Gagal menghitung: ", err.message);
     }
 }
+module.export = { hitung };
