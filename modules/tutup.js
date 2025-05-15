@@ -1,6 +1,8 @@
 // modules/tutup.js
 
-export function tutup(tokens, modules, context) {
+function tutup(tokens, modules, context) {
     context.fileContent = null;
-    console.log("File telah ditutup.")
+    console.log("File telah ditutup.");
 }
+
+module.exports = { tutup };
