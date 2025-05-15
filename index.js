@@ -64,27 +64,14 @@ export function runPearl(code) {
     }
 }
 
+const readline = require('readline');
 
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
 
-document.addEventListener("DOMContentLoaded", () => {
-    const tombol = document.getElementById("jalankanBtn");
-    const textarea = document.getElementById("codeInput");
-
-    tombol.addEventListener("click", async () => {
-      const code = textarea.value;
-      await runPearl(code);
-    });
-
-    document.getElementById("jalankanServer").onclick = async () => {
-        const code = document.getElementById("codeInput").value;
-
-        const res = await fetch('server/run_pearl.php', {
-            method: 'POST';
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ code })
-        });
-
-        const data = await res.json();
-        const.getElementById("output").textContent = data.result || data.error;
-    };
+rl.question('Masukkan kode Pearl yang ingin dijalankan:\n', async (code) => {
+    await runPearl(code);
+    rl.close();
 });
