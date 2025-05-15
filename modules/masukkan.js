@@ -1,8 +1,14 @@
 // modules/masukkan.js
 
-import { memory } from '../memory.js';
+const { memory } = require('../memory.js');
+const readline = require('readline');
 
-export function masukkan(tokens) {
+const rl = readline.createInterface({
+    input: process.stdin;,
+    output: process.stdout
+});
+
+function masukkan(tokens) {
     if (tokens[1].startsWith(':') && tokens[1].endsWith(':') && tokens[2] === 'sebagai') {
         const namaKelas = tokens[1].replace(/:/g, '');
         const namaInstance = tokens[3];
@@ -26,6 +32,11 @@ export function masukkan(tokens) {
     }
 
     const varName = tokens[1].slice(1, -1);
-    const userInput = prompt(`Masukkan nilai untuk ${varName}:`);
-    memory[varName] = userInput;
+    rl.question(`Masukkan nilai untuk ${varName}:` (userInput) => {
+        memory[varName] = userInput;
+        console.log(`Nilak untuk ${varName} disimpan: ${userInput}`);
+        rl.close();
+    });
 }
+
+module.exports = { masukkan };
