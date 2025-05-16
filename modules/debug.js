@@ -1,3 +1,5 @@
+// modules/debug.js
+
 const { memory } = require('../memory.js');
 
 async function debug(tokens, modules, context) {
