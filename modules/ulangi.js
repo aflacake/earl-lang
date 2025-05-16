@@ -6,36 +6,60 @@ function ulangi(tokens, modules, context) {
     const lines = [];
 
     if (tokens[1] === 'setiap' && tokens[2] === 'dari') {
-        const varName = tokens[3].slice(1, -1);
-        const list = memory[varName];
+        const sumber = tokens[3];
+        const list;
+
+        if (tokens[1] === 'setiap' && tokens[2] === 'dari') {
+            const sumber = tokens[3];
+            let list;
+        }
+
+        if (sumber.includes('.')) {
+            const [instanceName, attr] = sumber.split('.');
+            const instance = memory[instanceName];
+
+            if (!instance || !instance.__tipe || !memory[instance.__tipe] || memory[instance.__tipe].__tipe !== 'kelas') {
+                console.error(`'${instanceName}' bukan instance yang valid.`);
+                return;
+            }
+            if (!(attr in instance)) {
+                console.error(`Atribut '${attr}' tidak ditemukan di '${instanceName}'.`);
+                return;
+            }
+            list = instance[attr];
+        }
+        else if (sumber.startsWith(':') && sumber.endWith(':')) {
+            const varName = sumber.slice(1, -1);
+            list = memory[varName];
+        }
 
         if (!Array.isArray(list)) {
-            console.log(`Variabel ${varName} bukan array`);
+            console.error(`Sumber ${sumber} bukan array.`);
             return;
         }
 
-    context.index++;
-    while (context.index < context.lines.length) {
-        const line = context.lines[context.index].trim();
-        if (line === 'selesai') break;
-        lines.push(line);
         context.index++;
-    }
+        while (context.index < context.lines.length) {
+            const line = context.lines[context.index].trim();
+            if (line === 'selesai') break;
+            lines.push(line);
+            context.index++;
+        }
 
-    for (const item of list) {
-        memory[varName] = item;
+        for (const item of list) {
+            memory['item'] = item;
 
-        for (const baris of lines) {
-            const innerTokens = module.tokenize(baris);
-            const cmd = innerTokens[0];
+            for (const baris of lines) {
+                const innerTokens = module.tokenize(baris);
+                const cmd = innerTokens[0];
 
-            if (modules[cmd]) {
-                modules[cmd](innerTokens, modules, context);
-            } else {
-                console.error("Modul tidak dikenali di dalam blok ulangi:" + cmd);
+                if (modules[cmd]) {
+                    modules[cmd](innerTokens, modules, context);
+                } else {
+                    console.error("Modul tidak dikenali di dalam blok ulangi:", cmd);
+                }
             }
         }
-    }
 
     } else {
         let countToken = tokens[1];
@@ -62,13 +86,14 @@ function ulangi(tokens, modules, context) {
         }
 
         for (let i = 0; i < count; i++) {
-             for (const line of lines) {
-                 const innerTokens = modules.tokenize(line);
+             memory['index'] = i;
+             for (const baris of lines) {
+                 const innerTokens = modules.tokenize(baris);
                  const cmd = innerTokens[0];
                   if (modules[cmd]) {
                     modules[cmd](innerTokens, modules, context);
                 } else {
-                    console.error("Modul tidak dikenali di dalam blok ulangi: " + cmd)
+                    console.error("Modul tidak dikenali di dalam blok ulangi: ", cmd);
                 }
             }
         }
