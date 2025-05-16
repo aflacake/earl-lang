@@ -4,22 +4,42 @@ const { memory } = require('../memory.js');
 
 async function kelas(tokens, modules, context) {
     const namaKelas = tokens[1].replace(/:/g, '');
-    const atribut = tokens.slice(2);
+    let parentKelas = null;
+
+    const mewarisiIndex = tokens.indexOf('mewarisi');
+    if (mewarisiIndex !== -1 && tokens[mewarisiIndex + 1]) {
+         parentKelas = tokens[mewarisiIndex + 1].replace(/:/g, '');
+    }
+
+    let atribut = [];
+    let instace = {};
+    const pengaturan = {};
+
+    if (parentKelas && memory[parentKelas]) {
+        const parent = memory[parentKelas];
+        if (parent._tipe === 'kelas') {
+            atribut = [...parent.atribut];
+            instance = { ... parent.instance };
+        } else {
+            console.warn(`'$parentKelas' bukan kelas valid.`);
+        }
+    }
 
     memory[namaKelas] = {
         __tipe: 'kelas',
-        atribut: atribut,
-        instance: {}
-        pengaturan: {}
+        mewarisi: parentKelas || null,
+        atribut,
+        instance,
+        pengaturan
     };
 
     let currentIndex = context.index + 1;
     while (currentIndex < context.lines.length) {
-        const nextLine = context.lines[currentIndex].trim();
+        const nextLine = context.lines[currentIndex];
 
         if (!nextLine || !/^\s/.test(nextLine)) break;
 
-        const nextTokens = modules.tokenize(nextLine);
+        const nextTokens = modules.tokenize(nextLine.trim());
 
         if (nextTokens[0] === 'punggung') {
             const variables = nextTokens.slice(1).map(v => v.replace(/[:,]/g, ''));
@@ -34,31 +54,33 @@ async function kelas(tokens, modules, context) {
 
         if (nextTokens[0] === 'Penguatan') {
             const subperintah = nextTokens[1].replace(/[()]/g, '');
-            memory[namaKelas].pengaturan[subperintah] = {};
+            pengaturan[subperintah] = {};
 
             let subIndex = currentIndex + 1;
             while (subIndex < context.line.length) {
-                const subLine = context.lines[subIndex].trim();
+                const subLine = context.lines[subIndex];
 
-                if (!subLine || !/^\s/.test(subLine)) break;
+                if (!subLine || !/^\s{4}/.test(subLine)) break;
 
-                const subTokens = modules.tokenize(subLine);
+                const subTokens = modules.tokenize(subLine.trim());
 
-                if (subTokens[0] === 'tumpuk' || subTokens[0] === 'menimbun' || subTokens[0] === 'melontarkan') {
-                    memory[namaKelas].pengaturan[subperintah][subTokens[0]] = subTokens.slice(1);
+                if (['tumpuk', 'menimbum,' 'melontarkan'].includes(subTokens[0]) {
+                    pengaturan[subperintah][subTokens[0]] = subTokens.slice(1);
                 }
                 else if (subTokens[0] === 'MenangkapBasah' && subTokens[1] === '#debug') {
-                    memory[namaKelas].pengaturan[subperintah].debug = true;
+                    pengaturan[subperintah].debug = true;
                 }
                 subIndex++;
             }
+            currentIndex = subIndex - 1;
         }
         currentIndex ++;
     }
     context.index = currentIndex - 1;
-    console.log(`Kelas ${namaKelas} didefinisikan dengan atribut:`, atribut);
-    console.log(`Pengaturan kelas:`, memory[namaKelas].pengaturan);
-    console.log(`Instance:`, memory[namaKelas].instance);
+    console.log(`Kelas '${namaKelas}' didefiniskan${parentKleas ? ` (mewarisi '${parentKelas}')` : ''}.`);
+    console.log(`Atribut:`, atribut);
+    console.log(`Instance:`, instance);
+    console.log(`Pengaturan`, pengaturan);
 }
 
 module.exports = { kelas };
