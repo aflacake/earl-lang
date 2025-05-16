@@ -1,4 +1,4 @@
-// modules/ulangi-selesai.js
+// modules/ulangi.js
 
 const { memory } = require('../memory.js');
 
