@@ -10,13 +10,14 @@ async function kelas(tokens, modules, context) {
         __tipe: 'kelas',
         atribut: atribut,
         instance: {}
+        pengaturan: {}
     };
 
     let currentIndex = context.index + 1;
     while (currentIndex < context.lines.length) {
         const nextLine = context.lines[currentIndex].trim();
 
-        if (!nextLine || !/^\s/.test(context.lines[currentIndex])) break;
+        if (!nextLine || !/^\s/.test(nextLine)) break;
 
         const nextTokens = modules.tokenize(nextLine);
 
@@ -30,10 +31,33 @@ async function kelas(tokens, modules, context) {
                 }
             });
         }
+
+        if (nextTokens[0] === 'Penguatan') {
+            const subperintah = nextTokens[1].replace(/[()]/g, '');
+            memory[namaKelas].pengaturan[subperintah] = {};
+
+            let subIndex = currentIndex + 1;
+            while (subIndex < context.line.length) {
+                const subLine = context.lines[subIndex].trim();
+
+                if (!subLine || !/^\s/.test(subLine)) break;
+
+                const subTokens = modules.tokenize(subLine);
+
+                if (subTokens[0] === 'tumpuk' || subTokens[0] === 'menimbun' || subTokens[0] === 'melontarkan') {
+                    memory[namaKelas].pengaturan[subperintah][subTokens[0]] = subTokens.slice(1);
+                }
+                else if (subTokens[0] === 'MenangkapBasah' && subTokens[1] === '#debug') {
+                    memory[namaKelas].pengaturan[subperintah].debug = true;
+                }
+                subIndex++;
+            }
+        }
         currentIndex ++;
     }
     context.index = currentIndex - 1;
     console.log(`Kelas ${namaKelas} didefinisikan dengan atribut:`, atribut);
+    console.log(`Pengaturan kelas:`, memory[namaKelas].pengaturan);
     console.log(`Instance:`, memory[namaKelas].instance);
 }
 
