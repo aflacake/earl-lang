@@ -15,7 +15,7 @@ import { waktu } from './modules/waktu.js';
 import { buka } from './modules/buka.js';
 import { tulis } from './modules/tulis.js';
 import { tutup } from './modules/tutup.js';
-
+import { debug } from './modules/debug.js';
 
 
 const modules = {
@@ -32,14 +32,15 @@ const modules = {
     buka,
     tulis,
     tutup,
+    debug,
     tokenize
 };
 
-export function runPearl(code) {
+export async function runPearl(code) {
     const lines = code.trim().split('\n');
     const context = { index: 0, lines }
 
-    while (context.index < line.length) {
+    while (context.index < lines.length) {
         const line = lines[context.index].trim();
         const tokens = tokenize(line);
 
