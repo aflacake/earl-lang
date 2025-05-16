@@ -26,6 +26,12 @@ async function debug(tokens, modules, context) {
       baris_saat_ini: context.lines[context.index]
     });
 
+  } else if (memory[arg] && memory[arg].__tipe === 'kelas') {
+    console.log(`=== DEBUG KELAS: ${arg} ===`);
+    console.log({
+        atribut: memory[arg].atribut,
+        instance: memory[arg].instance
+    });
   } else {
     console.warn(`Argumen debug tidak dikenali: '${arg}'`);
   }
