@@ -33,11 +33,11 @@ function masukkan(tokens) {
                 ...instance,
             };
             console.log(`Instance ${namaInstance} dari kelas ${namaKelas} dibuat.`);
-            return;
+            return resolve();
         }
 
         const varName = tokens[1].replace(/:/g, '');
-        const rl = realine.createInterface({
+        const rl = readline.createInterface({
             input: process.stdin,
             output: process.stdout,
         });
