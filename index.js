@@ -1,22 +1,23 @@
 // index.js
 
-import { tokenize } from './tokenize.js';
+const { tokenize } = require('./tokenize.js');
 
-import { ambil } from './modules/ambil.js';
-import { tampilkan } from './modules/tampilkan.js';
-import { masukkan } from './modules/masukkan.js';
-import { hitung } from './modules/hitung.js';
-import { jika } from './modules/jika.js';
-import { ulangi } from './modules/ulangi.js';
-import { membangun } from './modules/membangun.js';
-import { kelas } from './modules/kelas.js';
-import { atur } from './modules/atur.js';
-import { waktu } from './modules/waktu.js';
-import { buka } from './modules/buka.js';
-import { tulis } from './modules/tulis.js';
-import { tutup } from './modules/tutup.js';
-import { debug } from './modules/debug.js';
+const { ambil } = require('./modules/ambil.js');
+const { tampilkan } = require('./modules/tampilkan.js');
+const { masukkan } = require('./modules/masukkan.js');
+const { hitung } = require('./modules/hitung.js');
+const { jika } = require('./modules/jika.js');
+const { ulangi } = require('./modules/ulangi.js');
+const { membangun } = require('./modules/membangun.js');
+const { kelas } = require('./modules/kelas.js');
+const { atur } = require('./modules/atur.js');
+const { waktu } = require('./modules/waktu.js');
+const { buka } = require('./modules/buka.js');
+const { tulis } = require('./modules/tulis.js');
+const { tutup } = require('./modules/tutup.js');
+const { debug } = require('./modules/debug.js');
 
+const readline = require('readline');
 
 const modules = {
     ambil,
@@ -65,7 +66,6 @@ export async function runPearl(code) {
     }
 }
 
-const readline = require('readline');
 
 const rl = readline.createInterface({
     input: process.stdin,
