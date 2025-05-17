@@ -1,13 +1,14 @@
 // modules/tulis.js
 
 const fs = require('fs');
+const { memory } = require('../memory.js');
 
 async function tulis(tokens, modules, context) {
     const namaVariabel = tokens[1];
     const isi = modules.memory[namaVariabel];
 
     if (typeof isi === 'undefined') {
-        console.error(`Variabel '${namaVariabel}' tidak ditemukan.`;
+        console.error(`Variabel '${namaVariabel}' tidak ditemukan.`);
         return;
     }
 
@@ -19,4 +20,4 @@ async function tulis(tokens, modules, context) {
     }
 }
 
-module.exports = { tulis }
+module.exports = { tulis };
