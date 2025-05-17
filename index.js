@@ -37,7 +37,7 @@ const modules = {
     tokenize
 };
 
-export async function runPearl(code) {
+async function runPearl(code) {
     const lines = code.trim().split('\n');
     const context = { index: 0, lines }
 
@@ -76,3 +76,5 @@ rl.question('Masukkan kode Pearl yang ingin dijalankan:\n', async (code) => {
     await runPearl(code);
     rl.close();
 });
+
+module.exports = { runPearl };
