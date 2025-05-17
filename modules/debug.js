@@ -12,7 +12,7 @@ async function debug(tokens, modules, context) {
     console.log('=== DEBUG CONTEXT ===');
     console.log('Konteks eksekusi:', {
       index: context.index,
-      total_baris: context.lines.length;
+      total_baris: context.lines.length,
       baris_saat_ini: context.lines[context.index]
     });
   } else if (arg === 'semua') {
@@ -22,7 +22,7 @@ async function debug(tokens, modules, context) {
     console.log('=== DEBUG CONTEXT ===');
     console.log('Konteks eksekusi:', {
       index: context.index,
-      total_baris: context.lines.length;
+      total_baris: context.lines.length,
       baris_saat_ini: context.lines[context.index]
     });
 
