@@ -8,7 +8,7 @@ function hitung(tokens) {
         return;
     }
 
-    const targetVar = tokens[2].slice(/:/g, '');
+    const targetVar = tokens[2].replace(/:/g, '');
     const exprTokens = tokens.slice(4);
     let rawExpr = expressionTokens.join('');
 
@@ -43,7 +43,7 @@ function hitung(tokens) {
          }
 
         const val = instance[attr];
-        return val !== undefined > val : '0';
+        return val !== undefined ? val : '0';
     });
 
     try {
