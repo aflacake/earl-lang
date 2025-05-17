@@ -1,18 +1,11 @@
-// modules/ulangi.js
-
 const { memory } = require('../memory.js');
 
-function ulangi(tokens, modules, context) {
+async function ulangi(tokens, modules, context) {
     const lines = [];
 
     if (tokens[1] === 'setiap' && tokens[2] === 'dari') {
         const sumber = tokens[3];
-        const list;
-
-        if (tokens[1] === 'setiap' && tokens[2] === 'dari') {
-            const sumber = tokens[3];
-            let list;
-        }
+        let list;
 
         if (sumber.includes('.')) {
             const [instanceName, attr] = sumber.split('.');
@@ -22,15 +15,18 @@ function ulangi(tokens, modules, context) {
                 console.error(`'${instanceName}' bukan instance yang valid.`);
                 return;
             }
+
             if (!(attr in instance)) {
                 console.error(`Atribut '${attr}' tidak ditemukan di '${instanceName}'.`);
                 return;
             }
+
             list = instance[attr];
-        }
-        else if (sumber.startsWith(':') && sumber.endWith(':')) {
+        } else if (sumber.startsWith(':') && sumber.endsWith(':')) {
             const varName = sumber.slice(1, -1);
             list = memory[varName];
+        } else {
+            list = memory[sumber];
         }
 
         if (!Array.isArray(list)) {
@@ -38,6 +34,7 @@ function ulangi(tokens, modules, context) {
             return;
         }
 
+        // Ambil blok baris di dalam ulangi
         context.index++;
         while (context.index < context.lines.length) {
             const line = context.lines[context.index].trim();
@@ -50,11 +47,11 @@ function ulangi(tokens, modules, context) {
             memory['item'] = item;
 
             for (const baris of lines) {
-                const innerTokens = module.tokenize(baris);
+                const innerTokens = modules.tokenize(baris);
                 const cmd = innerTokens[0];
 
                 if (modules[cmd]) {
-                    modules[cmd](innerTokens, modules, context);
+                    await modules[cmd](innerTokens, modules, context);
                 } else {
                     console.error("Modul tidak dikenali di dalam blok ulangi:", cmd);
                 }
@@ -65,7 +62,7 @@ function ulangi(tokens, modules, context) {
         let countToken = tokens[1];
         let count = 0;
 
-         if (countToken.startsWith(':') && countToken.endsWith(':')) {
+        if (countToken.startsWith(':') && countToken.endsWith(':')) {
             const varName = countToken.slice(1, -1);
             count = parseInt(memory[varName]);
         } else {
@@ -73,25 +70,27 @@ function ulangi(tokens, modules, context) {
         }
 
         if (isNaN(count)) {
-             console.error("Jumlah perulangan tidak valid: " + countToken);
-             return;
-         }
+            console.error("Jumlah perulangan tidak valid: " + countToken);
+            return;
+        }
 
-         context.index++;
-         while (context.index < context.lines.length) {
+        // Ambil blok baris di dalam ulangi
+        context.index++;
+        while (context.index < context.lines.length) {
             const line = context.lines[context.index].trim();
-             if (line === 'selesai') break;
+            if (line === 'selesai') break;
             lines.push(line);
             context.index++;
         }
 
         for (let i = 0; i < count; i++) {
-             memory['index'] = i;
-             for (const baris of lines) {
-                 const innerTokens = modules.tokenize(baris);
-                 const cmd = innerTokens[0];
-                  if (modules[cmd]) {
-                    modules[cmd](innerTokens, modules, context);
+            memory['index'] = i;
+            for (const baris of lines) {
+                const innerTokens = modules.tokenize(baris);
+                const cmd = innerTokens[0];
+
+                if (modules[cmd]) {
+                    await modules[cmd](innerTokens, modules, context);
                 } else {
                     console.error("Modul tidak dikenali di dalam blok ulangi: ", cmd);
                 }
