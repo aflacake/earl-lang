@@ -37,7 +37,7 @@ function ambil(tokens) {
         const varName = tokens[1].slice(1, -1);
         value = memory[varName];
     }
-    else
+    else {
         value = memory[sumber];
     }
 
