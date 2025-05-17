@@ -1,7 +1,4 @@
-// index.js
-
 const { tokenize } = require('./tokenize.js');
-
 const { ambil } = require('./modules/ambil.js');
 const { tampilkan } = require('./modules/tampilkan.js');
 const { masukkan } = require('./modules/masukkan.js');
@@ -16,7 +13,6 @@ const { buka } = require('./modules/buka.js');
 const { tulis } = require('./modules/tulis.js');
 const { tutup } = require('./modules/tutup.js');
 const { debug } = require('./modules/debug.js');
-
 const readline = require('readline');
 
 const modules = {
@@ -39,7 +35,7 @@ const modules = {
 
 async function runPearl(code) {
     const lines = code.trim().split('\n');
-    const context = { index: 0, lines }
+    const context = { index: 0, lines };
 
     while (context.index < lines.length) {
         const line = lines[context.index].trim();
@@ -66,7 +62,6 @@ async function runPearl(code) {
     }
 }
 
-
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
@@ -76,5 +71,6 @@ rl.question('Masukkan kode Pearl yang ingin dijalankan:\n', async (code) => {
     await runPearl(code);
     rl.close();
 });
+
 
 module.exports = { runPearl };
