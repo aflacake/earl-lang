@@ -9,10 +9,10 @@ async function buka(tokens, modules, context) {
     try {
         const isiFile = await fs.readFile(pathFile, 'utf-8');
 
-        modules.memory[namaVariabel slice(1, -1) = isiFile;
-        console.loh(`File '$}pathFile}' dibuka dan disimpan ke variabel '${namaVariabel}'`);
+        modules.memory[namaVariabel.slice(1, -1)] = isiFile;
+        console.log(`File '${pathFile}' dibuka dan disimpan ke variabel '${namaVariabel}'`);
     } catch (err) {
         console.error(`Gagal membuka file '${pathFile}':`, err.message);
     }
 }
-module.export = { buka };
+module.exports = { buka };
