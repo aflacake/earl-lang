@@ -18,6 +18,7 @@ const { tutup } = require('./modules/tutup.js');
 const { debug } = require('./modules/debug.js');
 const { lakukan } = require('./modules/lakukan.js');
 
+const fs = require('fs');
 const readline = require('readline');
 
 const modules = {
@@ -68,15 +69,27 @@ async function runPearl(code) {
     }
 }
 
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
+const args = process.argv.slice(2);
 
-rl.question('Masukkan kode Pearl yang ingin dijalankan:\n', async (code) => {
-    await runPearl(code);
-    rl.close();
-});
+if (args.length > 0) {
+    const filename = args[0];
+    if (fs.existsSync(filename)) {
+        const kode = fs.readFileSync(filename, 'utf8');
+        runPearl(kode);
+    } else {
+        console.error(`File '${filename}' tidak ditemukan.`);
+    }
+} else {
+    const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    });
+
+    rl.question('Masukkan kode Pearl yang ingin dijalankan:\n', async (code) => {
+        await runPearl(code);
+        rl.close();
+    });
+}
 
 
 module.exports = { runPearl };
