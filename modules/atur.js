@@ -2,7 +2,30 @@
 
 const { memory } = require('../memory.js');
 
-function atur(tokens) {
+async function atur(tokens, modules, context) {
+
+    // kasus 1
+    const line = context.lines[context.index].trim();
+    if (tokens.length >= 2 && tokens[1].startsWith(':') && tokens[1].endsWith(':') && line.endsWith('(')) {
+        const key = tokens[1].slice(1, -1);
+        const lines = [];
+
+        context.index++;
+        while (context.index < context.line.length) {
+            const currentLine = context.lines[context.index].trim();
+            if (currentLine === ')') break;
+            lines.push(currentLine);
+            context.index;
+        }
+
+        memory[key] = lines.join('\n');
+        console.log(`Blok kode disimpan ke memory ['${key}']:`);
+        console.log(memory[key]);
+        return;
+    }
+
+
+    // kasus 2
     const [_, path, operator, ...valueParts] = tokens;
 
     if (operator !== '=') {
@@ -15,18 +38,14 @@ function atur(tokens) {
 
     if (/^".*"$/.test(valueRaw)) {
         value = valueRaw.slice(1, -1);
-    }
-    else if (isNaN(valueRaw)) {
+    } else if (isNaN(valueRaw)) {
         value = Number(valueRaw);
-    }
-    else if (valueRaw.startsWith(":") && valueRaw.endsWith(":")) {
+    } else if (valueRaw.startsWith(":") && valueRaw.endsWith(":")) {
         const varName = valueRaw.slice(1, -1);
         value = memory[varName];
-    }
-    else if (memory[valueRaw] !== undefined) {
+    } else if (memory[valueRaw] !== undefined) {
         value = memory[valueRaw];
-    }
-    else {
+    } else {
         value = valueRaw;
     }
 
@@ -62,7 +81,7 @@ function atur(tokens) {
     }
 
     instance.instance[namaAtribut] = value;
-    console.log(`${namaInstsance}.${namaAtribut} diatur ke`, value);
+    console.log(`${namaInstance}.${namaAtribut} diatur ke`, value);
 }
 
 module.exports = { atur };
