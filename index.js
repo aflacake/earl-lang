@@ -1,4 +1,7 @@
+// index.js
+
 const { tokenize } = require('./tokenize.js');
+
 const { ambil } = require('./modules/ambil.js');
 const { tampilkan } = require('./modules/tampilkan.js');
 const { masukkan } = require('./modules/masukkan.js');
@@ -13,6 +16,8 @@ const { buka } = require('./modules/buka.js');
 const { tulis } = require('./modules/tulis.js');
 const { tutup } = require('./modules/tutup.js');
 const { debug } = require('./modules/debug.js');
+const { lakukan } = require('./modules/lakukan.js');
+
 const readline = require('readline');
 
 const modules = {
@@ -30,6 +35,7 @@ const modules = {
     tulis,
     tutup,
     debug,
+    lakukan,
     tokenize
 };
 
