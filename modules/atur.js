@@ -3,6 +3,26 @@
 const { memory } = require('../memory.js');
 
 async function atur(tokens, modules, context) {
+    if (
+        tokens[1] === 'hapus' &&
+        tokens[2] &&
+        tokens[2].startsWith(':') &&
+        tokens[2].endsWith(':')
+    ) {
+        const key = tokens[2].slice(1, -1);
+        if (key in memory) {
+            const confirmDelete = tokens[3] === 'konfirmasi';
+            if (confirmDelete) {
+                delete memory[key];
+                console.log(`Variabel '${key}' dihapus.`);
+            } else {
+                console.log(`Perintah 'hapus' membutuhkan konfirmasi. Gunakan: 'atur hapus :nama: konfirmasi'`);
+            }
+        } else {
+            console.log(`Variabel '${key}' tidak ditemukan.`);
+        }
+        return;
+    }
 
     // kasus 1
     const line = context.lines[context.index].trim();
@@ -19,7 +39,7 @@ async function atur(tokens, modules, context) {
         }
 
         memory[key] = lines.join('\n');
-        console.log(`Blok kode disimpan ke memory ['${key}']:`);
+        console.log(`Blok kode disimpan ke memory ['${key}']:\n${memory[key]}`);
         console.log(memory[key]);
         return;
     }
