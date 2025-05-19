@@ -1,5 +1,21 @@
 {
   "name": "Pearl",
-  "version": "1.0.0",
-  "description": "Pearl Skripsi Bahasa Pemrograman"
+  "version": "1.0.1",
+  "description": "Pearl Bahasa Pemrograman",
+  "main": "index.js",
+  "bin": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "pkg": {
+    "targets": [
+      "node18-linux-x64",
+      "node18-win-x64",
+      "node18-macos-x64"
+    ],
+    "outputPath": "dist"
+  },
+  "author": "Nazwa Shabrina Zain",
+  "licence": "",
+  "dependencies": {}
 }
