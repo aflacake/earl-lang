@@ -1,7 +1,12 @@
-const fungsi = async (tokens, modules, context) => {
+function fungsi (tokens, modules, context) {
   const namaFungsi = tokens[1].replace(/\(\)/g, '');
   const body = [];
 
+  context.index++;
+  if (context.lines[context.index].trim() !== '(') {
+    throw new Error("Fungsi harus diikuti blok kode tanda kurung ()");
+  }
+  
   context.index++;
   while(context.index < context.lines.length) {
     const line = context.lines[context.index].trim();
@@ -20,5 +25,7 @@ const fungsi = async (tokens, modules, context) => {
         await modules[cmd](tokens, modules, context);
       }
     }
-  }
+  };
 }
+
+module.exports = { fungsi };
