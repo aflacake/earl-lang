@@ -17,6 +17,7 @@ const { tulis } = require('./modules/tulis.js');
 const { tutup } = require('./modules/tutup.js');
 const { debug } = require('./modules/debug.js');
 const { lakukan } = require('./modules/lakukan.js');
+const { fungsi } = require('./modules/fungsi.js');
 
 const fs = require('fs');
 const readline = require('readline');
@@ -37,6 +38,7 @@ const modules = {
     tutup,
     debug,
     lakukan,
+    fungsi,
     tokenize
 };
 
