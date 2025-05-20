@@ -1,3 +1,5 @@
+// modules/fungsi.js
+
 function fungsi (tokens, modules, context) {
   const namaFungsi = tokens[1].replace(/\(\)/g, '');
   const body = [];
