@@ -4,13 +4,13 @@ const { memory } = require('../memory.js');
 
 function hitung(tokens) {
     if (tokens[0] !== 'hitung' || tokens[1]!== 'ke') {
-        console.error("ormat salah. Gunakan: hitung ke :var: dari (ekspresi)");
+        console.error("Format salah. Gunakan: hitung ke :var: dari (ekspresi)");
         return;
     }
 
     const targetVar = tokens[2].replace(/:/g, '');
     const exprTokens = tokens.slice(4);
-    let rawExpr = expressionTokens.join('');
+    let rawExpr = exprTokens.join('');
 
     if (rawExpr.startsWith("(") && rawExpr.endsWith(")")) {
         rawExpr = rawExpr.slice(1, -1);
