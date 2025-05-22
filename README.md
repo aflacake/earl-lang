@@ -2,7 +2,7 @@
 <img src="https://raw.githubusercontent.com/aflacake/pearl/main/img/Pearl.png" width="150px" height="150px" alt="Pearl" />
 
 # Pearl - Bahasa Pemrograman Ekspresif
-Pearl adalah bahasa pemrograman eksperimen prototipe interaksi teks yang mirip dengan bahasa manusia atau lebih dikenal _pseudocode_, modular yang mudah dipahami, dan fleksibel untuk skripsi. Bahasa yang modulnya mudah diperluas serta mirip _command handler_. Cocok untuk otomasi alur kerja, cocok juga untuk programmer baru belajar.
+Pearl adalah bahasa pemrograman eksperimen prototipe interaksi teks yang mirip dengan bahasa manusia atau lebih dikenal _pseudocode_, menggunakan bahasa Indonesia, modular yang mudah dipahami, dan fleksibel untuk skripsi. Bahasa yang modulnya mudah diperluas serta mirip _command handler_. Cocok untuk otomasi alur kerja, cocok juga untuk programmer baru belajar.
 
 Proses pengembangan ini juga beberapa dibuat generative oleh AI seperti pembuatan, debug, dan pembenahan kode.
 
