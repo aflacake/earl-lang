@@ -19,9 +19,7 @@ function fungsi (tokens, modules, context) {
         depth++;
     } else if (line === ')') {
         depth--;
-        if (depth === 0) {
-            break;
-        }
+        if (depth === 0) break;
     }
 
     body.push(line);
@@ -31,28 +29,24 @@ function fungsi (tokens, modules, context) {
   modules[namaFungsi] = async (tokens, modules, parentContext) => {
     const args = tokens.slice(1);
     const localContent = {
-        index: 0;
+        index: 0,
         lines: body,
-        vars: {};
+        vars: {},
         return: null,
         stopExecution: false,
         ...parentContext,
     };
 
-    params.forEach((param, i) => {
-        localContext.vars[param] = args[i] || '';
-    });
-
     while (localContent.index < localContext.lines.length) {
-      const line = localContent.lines[localContent.index].trim();
-      const tokens = modules.tokenize(line);
-      if (!tokens || tokens.length === 0) {
+      const line = localContext.lines[localContext.index].trim();
+      const innerTokens = modules.tokenize(line);
+      if (!innerTokens || tokens.length === 0) {
           localContent.index++;
           continue;
       }
 
       const evaluatedTokens = tokens.map(t => {
-        return localContext.vars[t] !== undefined ? localContext.vars[t] : t;
+        localContext.vars[t] !== undefined ? localContext.vars[t] : t;
       });
 
       const cmd =  evaluatedTokens[0];
@@ -60,7 +54,7 @@ function fungsi (tokens, modules, context) {
       if (modules[cmd]) {
         await modules[cmd]( evaluatedTokens, modules, localContext);
       } else {
-        console.error('Perintah '${cmd}' tidak dikenali dalam fungsi '${namaFungsi}'`)
+        console.error(`Perintah '${cmd}' tidak dikenali dalam fungsi '${namaFungsi}'`)
       }
       if (localContext.stopExecution) break;
       localContext.index++;
