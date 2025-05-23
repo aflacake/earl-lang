@@ -1,5 +1,20 @@
 const { memory } = require('../memory.js');
 
+function ambilBlok(context) {
+    const lines = [];
+    context.index++;
+    while (context.index < context.lines.length) {
+        const line = context.lines[context.index].trim();
+        if (line === 'selesai') {
+            context.index++;
+            break;
+        }
+        lines.push(line);
+        context.index++;
+    }
+    return lines;
+}
+
 async function ulangi(tokens, modules, context) {
     const lines = [];
 
@@ -24,8 +39,16 @@ async function ulangi(tokens, modules, context) {
             list = instance[attr];
         } else if (sumber.startsWith(':') && sumber.endsWith(':')) {
             const varName = sumber.slice(1, -1);
+            if (!(varName in memory)) {
+                console.error(`Variabel '${varName}' tidak ditemukan.`);
+                return;
+            }
             list = memory[varName];
         } else {
+            if (!(sumber in memory)) {
+                console.error(`Variabel '${sumber}' tidak ditemukan.`)
+                return;
+            }
             list = memory[sumber];
         }
 
@@ -34,26 +57,21 @@ async function ulangi(tokens, modules, context) {
             return;
         }
 
-        // Ambil blok baris di dalam ulangi
-        context.index++;
-        while (context.index < context.lines.length) {
-            const line = context.lines[context.index].trim();
-            if (line === 'selesai') break;
-            lines.push(line);
-            context.index++;
-        }
+        const lines = ambilBlok(context);
 
         for (const item of list) {
             memory['item'] = item;
 
             for (const baris of lines) {
                 const innerTokens = modules.tokenize(baris);
-                const cmd = innerTokens[0];
+                if (innerTokens && innerTokens.length > 0) {
+                    const cmd = innerTokens[0];
 
-                if (modules[cmd]) {
-                    await modules[cmd](innerTokens, modules, context);
-                } else {
-                    console.error("Modul tidak dikenali di dalam blok ulangi:", cmd);
+                    if (modules[cmd]) {
+                        await modules[cmd](innerTokens, modules, context);
+                    } else {
+                        console.error("Modul tidak dikenali di dalam blok ulangi:", cmd);
+                    }
                 }
             }
         }
@@ -64,6 +82,10 @@ async function ulangi(tokens, modules, context) {
 
         if (countToken.startsWith(':') && countToken.endsWith(':')) {
             const varName = countToken.slice(1, -1);
+            if (!(varName in memory)) {
+                console.error(`Variabel '${varName}' tidak ditemukan.`);
+                return;
+            }
             count = parseInt(memory[varName]);
         } else {
             count = parseInt(countToken);
@@ -74,25 +96,20 @@ async function ulangi(tokens, modules, context) {
             return;
         }
 
-        // Ambil blok baris di dalam ulangi
-        context.index++;
-        while (context.index < context.lines.length) {
-            const line = context.lines[context.index].trim();
-            if (line === 'selesai') break;
-            lines.push(line);
-            context.index++;
-        }
+        const lines = ambilBlok(context);
 
         for (let i = 0; i < count; i++) {
             memory['index'] = i;
             for (const baris of lines) {
                 const innerTokens = modules.tokenize(baris);
-                const cmd = innerTokens[0];
+                if (innerTokens && innerTokens.length > 0) {
+                    const cmd = innerTokens[0];
 
-                if (modules[cmd]) {
-                    await modules[cmd](innerTokens, modules, context);
-                } else {
-                    console.error("Modul tidak dikenali di dalam blok ulangi: ", cmd);
+                    if (modules[cmd]) {
+                        await modules[cmd](innerTokens, modules, context);
+                    } else {
+                        console.error("Modul tidak dikenali di dalam blok ulangi: ", cmd);
+                    }
                 }
             }
         }
