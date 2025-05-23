@@ -24,7 +24,12 @@ function resolveValue(token) {
     return token.replace(/"/g, '');
 }
 
-async function jika(tokens, modules) {
+async function jika(tokens, modules, context) {
+    if (tokens.length < 6) {
+        console.error("Sintaks tidak lengkap. Gunakan format: jika <kiri> <operator> <kanan> maka <perintah> [argumen]");
+        return;
+    }
+
     const [ , leftToken, operator, rightToken, keyword, cmd, ...args] = tokens;
 
     if (keyword !== 'maka') {
@@ -38,8 +43,8 @@ async function jika(tokens, modules) {
     let hasil = false;
 
     switch (operator) {
-        case '==': hasil = value1 == value2; break;
-        case '!=': hasil = value1 != value2; break;
+        case '==': hasil = value1 === value2; break;
+        case '!=': hasil = value1 !== value2; break;
         case '>': hasil = value1 > value2; break;
         case '<': hasil = value1 < value2; break;
         case '>=': hasil = value1 >= value2; break;
@@ -51,7 +56,7 @@ async function jika(tokens, modules) {
     if (hasil) {
         if (modules[cmd]) {
             try {
-                await modules[cmd]([cmd, ...args], modules);
+                await modules[cmd]([cmd, ...args], modules, context);
             } catch (err) {
                 console.error(`Gagal menjalankan '${cmd}':`, err);
             }
