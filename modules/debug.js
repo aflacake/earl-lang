@@ -15,6 +15,7 @@ async function debug(tokens, modules, context) {
       total_baris: context.lines.length,
       baris_saat_ini: context.lines[context.index]
     });
+
   } else if (arg === 'semua') {
     console.log('=== DEBUG MEMORY ===');
     console.log('Isi memory saat ini', JSON.stringify(memory, null, 2));
@@ -26,7 +27,30 @@ async function debug(tokens, modules, context) {
       baris_saat_ini: context.lines[context.index]
     });
 
-  } else if (memory[arg] && memory[arg].__tipe === 'kelas') {
+  } else if (/^:[^:\[\]]+\[\d+\]:$/.test(arg)) {
+    const match = arg.match(/^:[^:\[\]]+\[\d+\]:$/);
+    const nama = match[1];
+    const index = parseInt(match[2]);
+
+    if (!(nama in memory)) {
+        console.warn(`Variabel '${nama}' tidak ditemukan.`);
+        return;
+    }
+
+    const daftar = memory[nama];
+    if (!Array.isArray(daftar)) {
+      console.warn(`Variabel '${nama}' bukan daftar.`);
+      return;
+    }
+    const nilai = daftar[index];
+    console.log(`=== DEBUG DAFTAR: ${nama}[${index}] ===`);
+    console.log(nilai !== undefined ? nilai : `Tidak ada elemen pada indeks ${index}`);
+
+  } else if (Array.isArray(memory[arg])) {
+    console.log(`=== DEBUG DAFTAR: ${arg} ===`);
+    console.log(memory[arg]);
+
+  } else if (memory[arg]?.__tipe === 'kelas') {
     console.log(`=== DEBUG KELAS: ${arg} ===`);
     console.log({
         atribut: memory[arg].atribut,
