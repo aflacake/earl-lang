@@ -53,20 +53,13 @@ async function atur(tokens, modules, context) {
          return;
     }
 
-    let valueRaw = valueParts.join('').trim();
     let value;
 
-    if (/^".*"$/.test(valueRaw)) {
-        value = valueRaw.slice(1, -1);
-    } else if (isNaN(valueRaw)) {
-        value = Number(valueRaw);
-    } else if (valueRaw.startsWith(":") && valueRaw.endsWith(":")) {
-        const varName = valueRaw.slice(1, -1);
-        value = memory[varName];
-    } else if (memory[valueRaw] !== undefined) {
-        value = memory[valueRaw];
+    if (valueParts[0] === '[' && valueParts[valueParts.length - 1] === ']') {
+        value = parseArrayValue(valueParts);
     } else {
-        value = valueRaw;
+        const valueRaw = valueParts.join('').trim();
+        value = parseArrayElement(valueRaw);
     }
 
     if (path.startsWith(":") && path.endsWith(":")) {
@@ -97,11 +90,60 @@ async function atur(tokens, modules, context) {
     }
 
     if (!classDef.attribut.includes(namaAtribut)) {
-        console.error(`Atribut '${namaAtribut}' tidak didefinisikan dalam kelas '${instance.__tipe}'.`)
+        console.error(`Atribut '${namaAtribut}' tidak didefinisikan dalam kelas '${instance.__tipe}'.`);
+        return;
     }
 
     instance.instance[namaAtribut] = value;
     console.log(`${namaInstance}.${namaAtribut} diatur ke`, value);
+
+
+    // ==== PARSING ARRAY DAN ELEMEN =====
+    function parseArrayValue(tokens) {
+        let hasil = [];
+        let saatIni = [];
+        let kedalaman = 0;
+
+        for (let i = 1; i < tokens.length - 1; i++) {
+            const token = tokens[i];
+
+            if (tokens === '[') {
+                kedalaman++;
+                saatIni.push(token);
+            } else if (token ==== ']') {
+                if (kedalaman === 0) {
+                    break;
+                }
+                kedalaman--;
+                saatIni.push(token);
+            } else if (token === ',' && depth === 0) {
+                hasil.push(parseArrayElement(current.join(' ').trim()));
+                saatIni = [];
+            } else {
+                saatIni.push(token);
+            }
+        }
+        if (saatIni.length > 0) {
+            hasil.push(parseArrayElement(current.join(' ').trim()));
+        }
+        return hasil;
+    }
+
+    function parseArrayElement(val) {
+        val = val.trim();
+
+        if (va;.startsWith('[') && val.endsWith(']')) {
+            const sarangTokens = modules.tokenize(val);
+            return parseArrayValue(sarangTokens);
+        }
+        if (/^".*"$/.test(val)) return val.slice(1, -1);
+        if (!isNaN(val)) return Number(val);
+        if (val.startsWith(':') && val.endsWith(':')) {
+            const ref = val.slice(1, -1);
+            return memory[ref] !== undefined ? memory[ref] : null;
+        }
+        return val;
+    }
 }
 
 module.exports = { atur };
