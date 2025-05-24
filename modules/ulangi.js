@@ -1,3 +1,5 @@
+// modules/ulangi.js
+
 const { memory } = require('../memory.js');
 
 function ambilBlok(context) {
@@ -16,8 +18,6 @@ function ambilBlok(context) {
 }
 
 async function ulangi(tokens, modules, context) {
-    const lines = [];
-
     if (tokens[1] === 'setiap' && tokens[2] === 'dari') {
         const sumber = tokens[3];
         let list;
