@@ -19,8 +19,7 @@ const { debug } = require('./modules/debug.js');
 const { lakukan } = require('./modules/lakukan.js');
 const { fungsi } = require('./modules/fungsi.js');
 const { kembalikan } = require('./modules/kembalikan.js');
-const { impor } = require('./modules/impor.js');
-const { ekspor } = require('./modules/ekspor.js');
+const { daftar } = require('./modules/daftar.js');
 
 const fs = require('fs');
 const readline = require('readline');
@@ -43,8 +42,7 @@ const modules = {
     lakukan,
     fungsi,
     kembalikan,
-    impor,
-    ekspor,
+    daftar,
     tokenize
 };
 
