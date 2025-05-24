@@ -31,7 +31,7 @@ async function atur(tokens, modules, context) {
         const lines = [];
 
         context.index++;
-        while (context.index < context.line.length) {
+        while (context.index < context.lines.length) {
             const currentLine = context.lines[context.index].trim();
             if (currentLine === ')') break;
             lines.push(currentLine);
@@ -62,6 +62,20 @@ async function atur(tokens, modules, context) {
         value = parseArrayElement(valueRaw);
     }
 
+    if (path.match(/^:[^:\[\]]+\[\d+\]:$/)) {
+        const lengkap = path.slice(1, -1);
+        const nama = lengkap.slice(0, lengkap.indexOf('['));
+        const index = parseInt(lengkap.match(/\[(d+)\]/)[1]);
+
+        if (!Array.isArray(memory[nama])) {
+            console.error(`'${nama}' bukan daftar.`);
+            return;
+        }
+        memory[nama][index] = value;
+        console.log(`${nama}[${index}] diatur ke`, value);
+        return;
+    }
+
     if (path.startsWith(":") && path.endsWith(":")) {
         const varName = path.slice(1, -1);
         memory[varName] = value;
@@ -72,7 +86,7 @@ async function atur(tokens, modules, context) {
     const [namaInstance, namaAtribut] = path.split('.');
 
     if (!namaAtribut) {
-        console.error(`Format target '${path}' tidak valid. Gunakan :var: atau instance.atribut`);
+        console.error(`Format target '${path}' tidak valid. Gunakan :var: atau obj.attr`);
         return;
     }
 
@@ -107,17 +121,16 @@ async function atur(tokens, modules, context) {
         for (let i = 1; i < tokens.length - 1; i++) {
             const token = tokens[i];
 
-            if (tokens === '[') {
+            if (token === '[') {
                 kedalaman++;
                 saatIni.push(token);
-            } else if (token ==== ']') {
+            } else if (token === ']') {
                 if (kedalaman === 0) {
-                    break;
+                    kedalaman--;
+                    saatIni.push(token);
                 }
-                kedalaman--;
-                saatIni.push(token);
-            } else if (token === ',' && depth === 0) {
-                hasil.push(parseArrayElement(current.join(' ').trim()));
+            } else if (token === ',' && kedalaman === 0) {
+                hasil.push(parseArrayElement(saatIni.join(' ').trim()));
                 saatIni = [];
             } else {
                 saatIni.push(token);
@@ -132,7 +145,7 @@ async function atur(tokens, modules, context) {
     function parseArrayElement(val) {
         val = val.trim();
 
-        if (va;.startsWith('[') && val.endsWith(']')) {
+        if (val.startsWith('[') && val.endsWith(']')) {
             const sarangTokens = modules.tokenize(val);
             return parseArrayValue(sarangTokens);
         }
