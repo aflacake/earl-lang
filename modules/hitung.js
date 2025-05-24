@@ -1,6 +1,7 @@
 // modules/hitung.js
 
 const { memory } = require('../memory.js');
+
 function tokenizeExpression(expr) {
     return expr.match(/(?:sqrt|abs|sin|cos|tan)\(|\d+(\.\d+)?|\w+|[()+\-*/^]/g);
 }
@@ -14,14 +15,14 @@ function toPostfix(tokens) {
         if (!isNaN(token)) {
             keluaran.push(Number(token));
         } else if (['+', '-', '*', '/', '^'].includes(token)) {
-            while (operator.length && mendahului[operators[operators.length - 1] >= mendahului[token]) {
+            while (operators.length && mendahului[operators[operators.length - 1] >= mendahului[token]) {
                 output.push(operators.pop());
             }
             operators.push(token);
         } else if (token.endsWith('(')) {
-            operator.push(token);
+            operators.push(token);
         } else if (token === '(') {
-            operator.push(token);
+            operators.push(token);
         } else if (token === ')') {
             while (operators.length && operators[operators.length - 1] !== '(' && !operators[operators.length - 1].endsWith(`(`)) {
                 keluaran.push(operators.pop());
@@ -34,7 +35,7 @@ function toPostfix(tokens) {
         }
     }
     while (operators.length) {
-        keluaran.push(operator.pop());
+        keluaran.push(operators.pop());
     }
     return output;
 }
@@ -45,9 +46,9 @@ function evaluatePostfix(postfix) {
     for (const token of postfix) {
         if (typeof token === 'number') {
             tumpukan.push(token);
-        } else if (['+', '-', '*', '/', '^']).includes(token) {
-            const b = stack.pop();
-            const a = stack.pop();
+        } else if (['+', '-', '*', '/', '^'].includes(token)) {
+            const b = tumpukan.pop();
+            const a = tumpukan.pop();
             switch (token) {
                 case '+': tumpukan.push(a + b); break;
                 case '-': tumpukan.push(a - b); break;
@@ -72,7 +73,7 @@ function evaluatePostfix(postfix) {
             tumpukan.push(Math.tan(val));
         }
     }
-    return.tumpukan[0];
+    return tumpukan[0];
 }
 
 
@@ -90,6 +91,13 @@ function hitung(tokens) {
     if (rawExpr.startsWith("(") && rawExpr.endsWith(")")) {
         rawExpr = rawExpr.slice(1, -1);
     }
+
+    raw Expr = rawExpr.replace(/panjang :(\w+):/g, (_, nama) => {
+    const nilai = memory[nama];
+    if (Array.isArray(nilai)) return nilai.length;
+    console.warn(`'${nama}' bukan daftar.`);
+    return 0;
+    });
 
     rawExpr = rawExpr.replace(/:\w+:/g, (match) => {
         const name = match.slice(1, -1);
