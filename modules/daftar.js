@@ -35,13 +35,14 @@ async function daftar(tokens) {
         return;
     }
 
-    if (cmd === 'hapus') {
+    if (cmd === 'hapuspop') {
        const varName = tokens[2].slice(1, -1);
        if (!Array.isArray(memory[varName])) {
             console.error(`'${varName}' bukan daftar.`);
             return;
         }
         memory[varName].pop();
+        console.log(`Elemen terakhir dari '${varName}' dihapus.`);
         return;
     }
 
@@ -58,6 +59,71 @@ async function daftar(tokens) {
         console.log(`Daftar '${namaHasil}' diatur ke hasil gabungan.`);
         return;
     }
+
+    if (cmd === 'ambil') {
+        const varName = tokens[2].slice(1, -1);
+        const index = Number(tokens[3]);
+
+       if (!Array.isArray(memory[varName])) {
+            console.error(`'${varName}' bukan daftar.`);
+            return;
+        }
+
+        if (isNaN(index) || index < 0 || index >= memory[varName].length) {
+            console.error(`Index '${index}' tidak valid untuk daftar '${varName}'.`);
+            return;
+        }
+        const value = memory[varName][index];
+        console.log(value);
+        return;
+    }
+
+    if (cmd === 'sisip') {
+        const varName = tokens[2].slice(1, -1);
+        const index = Number(tokens[3]);
+        let val = tokens.slice(4).join(' ').trim();
+
+        if (!Array.isArray(memory[varName])) {
+            console.error(`'${varName}' bukan daftar.`);
+            return;
+        }
+
+        if (isNaN(index) || index < 0 || index > memory[varName].length) {
+            console.error(`Index '${index}' tidak valid untuk daftar '${varName}'.`);
+            return;
+        }
+
+        if (/^".*"$/.test(val)) {
+            val = val.slice(1, -1);
+        } else if (!isNaN(val)) {
+            val = Number(val);
+        } else if (val.startsWith(':') && val.endsWith(':')) {
+            const ref = val.slice(1, -1);
+            val = memory[ref];
+        }
+        memory[varName].splice(index, 0, val);
+        console.log(`Nilai disisipkan ke index ${index} dalam daftar '${varName}'.`);
+        return;
+    }
+
+    if (cmd === 'hapus' && tokens.length === 4) {
+        const varName = tokens[2].slice(1, -1);
+        const index = Number(tokens[3]);
+
+        if (!Array.isArray(memory[varName])) {
+            console.error(`'${varName}' bukan daftar.`);
+            return;
+        }
+
+        if (isNaN(index) || index < 0 || index >= memory[varName].length) {
+            console.error(`Index '${index}' tidak valid untuk daftar '${varName}'.`);
+            return;
+        }
+        const removed = memory[varName].splice(index, 1);
+        console.log(`Elemen '${removed[0]}' di index ${index} telah dihapus dari '${varName}'.`);
+        return;
+    }
+
     console.error(`Perintah daftar '${cmd}' tidak dikenali.`);
 }
 
