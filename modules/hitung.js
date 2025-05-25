@@ -15,9 +15,13 @@ function toPostfix(tokens) {
         if (!isNaN(token)) {
             keluaran.push(Number(token));
         } else if (['+', '-', '*', '/', '^'].includes(token)) {
-            while (operators.length && mendahului[operators[operators.length - 1] >= mendahului[token]) {
-                output.push(operators.pop());
+            while (
+                operators.length &&
+                mendahului[operators[operators.length - 1]] >= mendahului[token]
+            ) {
+                keluaran.push(operators.pop());
             }
+
             operators.push(token);
         } else if (token.endsWith('(')) {
             operators.push(token);
@@ -37,7 +41,7 @@ function toPostfix(tokens) {
     while (operators.length) {
         keluaran.push(operators.pop());
     }
-    return output;
+    return keluaran;
 }
 
 function evaluatePostfix(postfix) {
@@ -49,30 +53,61 @@ function evaluatePostfix(postfix) {
         } else if (['+', '-', '*', '/', '^'].includes(token)) {
             const b = tumpukan.pop();
             const a = tumpukan.pop();
+
+            if (a === undefined || b === undefined) {
+                console.error(`Ekspresi tidak lengkap. Operator '${token}' membutuhkan dua operand.`);
+                return NaN;
+            }
+
             switch (token) {
                 case '+': tumpukan.push(a + b); break;
                 case '-': tumpukan.push(a - b); break;
                 case '*': tumpukan.push(a * b); break;
-                case '/': tumpukan.push(a / b); break;
+                case '/': tumpukan.push(b === 0 ? NaN : a / b); break;
                 case '^': tumpukan.push(Math.pow(a, b)); break;
             }
         } else if (token.startsWith('sqrt')) {
             const val = tumpukan.pop();
+            if (val === undefined) {
+                console.error("Fungsi 'sqrt' membutuhkan satu operand");
+                return NaN;
+            }
             tumpukan.push(Math.sqrt(val));
         } else if (token.startsWith('abs')) {
             const val = tumpukan.pop();
+            if (val === undefined) {
+                console.error("Fungsi 'abs' membutuhkan satu operand");
+                return NaN;
+            }
             tumpukan.push(Math.abs(val));
         } else if (token.startsWith('sin')) {
             const val = tumpukan.pop();
+            if (val === undefined) {
+                console.error("Fungsi 'sin' membutuhkan satu operand");
+                return NaN;
+            }
             tumpukan.push(Math.sin(val));
         } else if (token.startsWith('cos')) {
             const val = tumpukan.pop();
+            if (val === undefined) {
+                console.error("Fungsi 'cos' membutuhkan satu operand");
+                return NaN;
+            }
             tumpukan.push(Math.cos(val));
         } else if (token.startsWith('tan')) {
             const val = tumpukan.pop();
+            if (val === undefined) {
+                console.error("Fungsi 'tan' membutuhkan satu operand");
+                return NaN;
+            }
             tumpukan.push(Math.tan(val));
         }
     }
+    if (tumpukan.length !== 1) {
+        console.error("Ekspresi tidak valid. Hasil akhir tidak tunggal.");
+        return NaN;
+    }
+
     return tumpukan[0];
 }
 
@@ -92,7 +127,7 @@ function hitung(tokens) {
         rawExpr = rawExpr.slice(1, -1);
     }
 
-    raw Expr = rawExpr.replace(/panjang :(\w+):/g, (_, nama) => {
+    rawExpr = rawExpr.replace(/panjang :(\w+):/g, (_, nama) => {
     const nilai = memory[nama];
     if (Array.isArray(nilai)) return nilai.length;
     console.warn(`'${nama}' bukan daftar.`);
@@ -101,10 +136,15 @@ function hitung(tokens) {
 
     rawExpr = rawExpr.replace(/:\w+:/g, (match) => {
         const name = match.slice(1, -1);
-        return memory[name] !== undefined ? memory[name] : '0';
+        return typeof memory[name] === 'number' ? memory[name] : 0;
     });
 
     const tokensExpr = tokenizeExpression(rawExpr);
+    if (!tokensExpr) {
+        console.error("Ekspresi tidak valid.");
+        return;
+    }
+
     const postfix = toPostfix(tokensExpr);
     const hasil = evaluatePostfix(postfix);
 
