@@ -34,7 +34,7 @@ function ambil(tokens) {
         value = instance[namaAtribut];
     }
     else if (sumber.startsWith(':') && sumber.endsWith(':')) {
-        const varName = tokens[1].slice(1, -1);
+        const varName = sumber.slice(1, -1);
         value = memory[varName];
     }
     else {
