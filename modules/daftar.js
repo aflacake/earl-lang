@@ -124,6 +124,12 @@ async function daftar(tokens) {
         return;
     }
 
+    if (cmd === 'buat') {
+        const varName = tokens[2].slice(1, -1);
+        memory[varName] = [];
+        return;
+    }
+
     console.error(`Perintah daftar '${cmd}' tidak dikenali.`);
 }
 
