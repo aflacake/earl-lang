@@ -26,6 +26,7 @@ node index.js
 
 ## Unduh versi
 Download versi memungkinkan Anda menggunakan tautan eksternal. Versi ini seutuhnya stabil dari berbagai uji coba rata-rata, versi tidak stabil saat ini belum memungkinkan untuk dirilis, sehingga masih dalam bentuk instalasi berlangsung, untuk versi download sesuaikan perangkat yang Anda gunakan. Silahkan coba versi stabil:
+- [Versi 1.0.3](https://www.dropbox.com/scl/fo/tx28twsekamv4r7ijjmd3/AJNeWSaor3yBgXDp803y1Fs?rlkey=h65o1ri2tznreh6bfqpj3a22q&st=xnoohb7x&dl=0)
 - [Versi 1.0.0](https://www.dropbox.com/scl/fo/92zqglhfbdlteyrzfg5el/AMJTipi0hB7207rwC5lQsC8?rlkey=vkhin2gkti1stsro45o1s4gor&st=oweoe82d&dl=0)
 
 # Berkontribusi
