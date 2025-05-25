@@ -6,4 +6,4 @@ async function kembalikan(tokens, modules, context) {
     context.stopExecution = true;
 }
 
-modules.exports = { kembalikan };
+module.exports = { kembalikan };
