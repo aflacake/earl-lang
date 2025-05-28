@@ -64,7 +64,32 @@ function evaluatePostfix(postfix) {
                 case '-': tumpukan.push(a - b); break;
                 case '*': tumpukan.push(a * b); break;
                 case '/': tumpukan.push(b === 0 ? NaN : a / b); break;
-                case '%': tumpukan.push(b === 0 ? NaN : a % b); break;
+                case '%': {
+                    const b = tumpukan.pop();
+                    const a = tumpukan.pop();
+
+                    if (a === undefined || b === undefined) {
+                        console.error(`Operator '%' membutuhkan dua operand`);
+                        return NaN;
+                    }
+
+                    if (Array.isArray(a) && typeof b === 'angka') {
+                        tumpukan.push(a.map(x => x % b));
+                    } else if (typeof a === 'angka' && Array.isArray(b)) {
+                        console.error("Modulus dengan daftar di sebelah kanan belum didukung.");
+                        return NaN;
+                    } else if (Array.isArray(a) && Array.isArray(b)) {
+                        console.error("Modulus antara dua daftar belum didukung.");
+                        return NaN;
+                    } else {
+                        if (b === 0) {
+                            console.error("Pembagi modulus tidak boleh nol");
+                            return NaN;
+                        }
+                        tumpukan.push(a % b);
+                    }
+                    break;
+                }
                 case '^': tumpukan.push(Math.pow(a, b)); break;
             }
         } else if (token.startsWith('sqrt')) {
