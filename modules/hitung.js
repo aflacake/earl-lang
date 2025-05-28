@@ -3,18 +3,18 @@
 const { memory } = require('../memory.js');
 
 function tokenizeExpression(expr) {
-    return expr.match(/(?:sqrt|abs|sin|cos|tan)\(|\d+(\.\d+)?|\w+|[()+\-*/^]/g);
+    return expr.match(/(?:sqrt|abs|sin|cos|tan)\(|\d+(\.\d+)?|\w+|[()+\-*/^%]/g);
 }
 
 function toPostfix(tokens) {
-    const mendahului = { '+': 1, '-': 1, '*': 2, '/': 2, '^': 3 }
+    const mendahului = { '+': 1, '-': 1, '*': 2, '/': 2, '%': 2, '^': 3 }
     const keluaran = []
     const operators = [];
 
     for (const token of tokens) {
         if (!isNaN(token)) {
             keluaran.push(Number(token));
-        } else if (['+', '-', '*', '/', '^'].includes(token)) {
+        } else if (['+', '-', '*', '/', '%', '^'].includes(token)) {
             while (
                 operators.length &&
                 mendahului[operators[operators.length - 1]] >= mendahului[token]
@@ -50,7 +50,7 @@ function evaluatePostfix(postfix) {
     for (const token of postfix) {
         if (typeof token === 'number') {
             tumpukan.push(token);
-        } else if (['+', '-', '*', '/', '^'].includes(token)) {
+        } else if (['+', '-', '*', '/', '%', '^'].includes(token)) {
             const b = tumpukan.pop();
             const a = tumpukan.pop();
 
@@ -64,6 +64,7 @@ function evaluatePostfix(postfix) {
                 case '-': tumpukan.push(a - b); break;
                 case '*': tumpukan.push(a * b); break;
                 case '/': tumpukan.push(b === 0 ? NaN : a / b); break;
+                case '%': tumpukan.push(b === 0 ? NaN : a % b); break;
                 case '^': tumpukan.push(Math.pow(a, b)); break;
             }
         } else if (token.startsWith('sqrt')) {
