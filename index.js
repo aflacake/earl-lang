@@ -21,6 +21,7 @@ const { fungsi } = require('./modules/fungsi.js');
 const { kembalikan } = require('./modules/kembalikan.js');
 const { daftar } = require('./modules/daftar.js');
 const { melahirkan } = require('./modules/melahirkan.js');
+const { gambar } = require('./modules/gambar.js');
 
 const fs = require('fs');
 const readline = require('readline');
@@ -45,6 +46,7 @@ const modules = {
     kembalikan,
     daftar,
     melahirkan,
+    gambar,
     tokenize
 };
 
