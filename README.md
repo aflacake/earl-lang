@@ -23,6 +23,11 @@ Pastikan Node.js sudah terinstal, jika belum instal Node.js versi terbaru di sit
 ```bash
 node index.js
 ```
+### Bahan
+- Menginstal paket tambahan di Node.js untuk keperluan merender visual atas perintah aturan 'gambar' dengan
+  ``` bash
+  npm install canvas
+  ```
 
 ## Unduh versi
 Download versi memungkinkan Anda menggunakan tautan eksternal. Versi ini seutuhnya stabil dari berbagai uji coba rata-rata, versi tidak stabil saat ini belum memungkinkan untuk dirilis, sehingga masih dalam bentuk instalasi berlangsung, untuk versi download sesuaikan perangkat yang Anda gunakan. Silahkan coba versi stabil:
