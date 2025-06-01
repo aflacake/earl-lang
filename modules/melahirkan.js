@@ -11,28 +11,32 @@ async function melahirkan(tokens, modules, context) {
         const values = [];
 
         for (let i = 2; i < 2 + hitungan && i < tokens.length; i++) {
-            let nilai = tokens[i];
+            let val = tokens[i];
+            let nilai;
 
-            if (nilai.startsWith(':') && nilai.endsWith(':')) {
-                nilai = memory[nilai.slice(1, -1)];
-            } else if (/^".*"$/.test(nilai)) {
-                nilai = nilai.slice(1, -1);
+            if (val.startsWith(':') && val.endsWith(':')) {
+                nilai = memory[val.slice(1, -1)];
+            } else if (/^".*"$/.test(val)) {
+                nilai = val.slice(1, -1);
             } else if (!isNaN(val)) {
                 nilai = Number(val);
+            } else {
+                nilai = val
             }
-            values.push(val);
+            values.push(nilai);
         }
         const namaOtomatis = `daftar_${Date.now()}`;
         memory[namaOtomatis] = values;
-        console.log(`Daftar '${namaOtomatis}' telah dibuat:`, values)
+        console.log(`Daftar '${namaOtomatis}' telah dibuat:`, values);
+        return;
     }
 
 
-    for (let i = 1, i < tokens.length; i++) {
+    for (let i = 1; i < tokens.length; i++) {
         const nama = tokens[i];
         let hasil;
 
-        if (modules.fungsi %% typeof memory[nama] === 'function') {
+        if (typeof memory[nama] === 'function' && modules.fungsi) {
             hasil = await memory[nama]();
         } else if (modules.kelas && typeof memory[nama]  === 'function') {
             hasil = new memory[nama]();
@@ -43,4 +47,4 @@ async function melahirkan(tokens, modules, context) {
         }
     }
 
-modules.exports = { melahirkan };
+module.exports = { melahirkan };
