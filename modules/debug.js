@@ -8,6 +8,7 @@ async function debug(tokens, modules, context) {
   if (!arg || arg === 'memory') {
     console.log('=== DEBUG MEMORY ===');
     console.log('Isi memory saat ini', JSON.stringify(memory, null, 2));
+
   } else if (arg === 'context') {
     console.log('=== DEBUG CONTEXT ===');
     console.log('Konteks eksekusi:', {
@@ -15,6 +16,15 @@ async function debug(tokens, modules, context) {
       total_baris: context.lines.length,
       baris_saat_ini: context.lines[context.index]
     });
+
+  } else if (arg === 'gambar') {
+      if (!memory.gambar) {
+          console.log("Belum ada kanvas yang dibuat.");
+      } else {
+          console.log("=== DEBUG GAMBAR ===");
+          console.log(`Ukuran kanvas: ${memory.gambar.lebar} x ${memory.gambar.tinggi}`);
+          console.log(`Warna aktif: ${memory.gambar.warna}`);
+      }
 
   } else if (arg === 'semua') {
     console.log('=== DEBUG MEMORY ===');
