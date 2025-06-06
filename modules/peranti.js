@@ -19,14 +19,14 @@ async function peranti(tokens, modules, context) {
             const garisGaris = stdout.trim().split('\n').slice(1);
             console.log('Informasi Disk (Windows):');
             garisGaris.forEach(garis => {
-                const bagianBagian = line.trim().split(/\s+/);
+                const bagianBagian = garis.trim().split(/\s+/);
                 if (bagianBagian.length === 3) {
                     const [drive, sisa, ukuran] = bagianBagian;
                     const digunakan = ukuran - sisa;
                     const persenDigunakan = (digunakan / ukuran) * 100;
                     console.log(`Drive ${drive}: Terpakai ${toGB(digunakan)} GB / ${toGB(ukuran)} GB (${persenDigunakan.toFixed(1)}%)`);
                 }
-            }
+            });
         });
     } else if (panggung === 'linux' || platform === 'darwin') {
         exec('df -k /', (error, stdout, stderr) => {
@@ -46,7 +46,7 @@ async function peranti(tokens, modules, context) {
             console.log(`Root /: Terpakai ${toGB(digunakan)} GB / ${toGB(total)} GB (${persenDigunakan.toFixed(1)}%)`);
         });
     } else {
-        console.error(`Sistem operasi '${platform}' tidak dikenali atau tidak didukung.`);
+        console.error(`Sistem operasi '${panggung}' tidak dikenali atau tidak didukung.`);
     }
 }
 module.exports = { peranti };
