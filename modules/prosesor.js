@@ -6,7 +6,7 @@ async function prosesor(tokens, modules, context) {
     const cpus = os.cpus();
     let menganggur = 0, total = 0;
 
-    cpus.forEach(cpu = > {
+    cpus.forEach(cpu => {
         for (const type in cpu.times) {
             total += cpu.times[type];
         }
@@ -15,8 +15,8 @@ async function prosesor(tokens, modules, context) {
 
     const menganggurAvg = menganggur / cpus.length;
     const totalAvg = total /cpus.length;
-    const penggunaan = 100 (menganggurAvg / totalAvg) * 100;
+    const penggunaan = 100 - (menganggurAvg / totalAvg) * 100;
 
-    console.log(`Penggunaan CPU: ${usage.toFixed(2)}%`);
+    console.log(`Penggunaan CPU: ${penggunaan.toFixed(2)}%`);
 }
 module.exports = { prosesor };
