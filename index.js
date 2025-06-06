@@ -22,6 +22,9 @@ const { kembalikan } = require('./modules/kembalikan.js');
 const { daftar } = require('./modules/daftar.js');
 const { melahirkan } = require('./modules/melahirkan.js');
 const { gambar } = require('./modules/gambar.js');
+const { ingatan } = require('./modules/ingatan.js');
+const { prosesor } = require('./modules/prosesor.js');
+const { peranti } = require('./modules/peranti.js');
 
 const fs = require('fs');
 const readline = require('readline');
@@ -47,6 +50,9 @@ const modules = {
     daftar,
     melahirkan,
     gambar,
+    ingatan,
+    prosesor,
+    peranti,
     tokenize
 };
 
@@ -83,6 +89,11 @@ const args = process.argv.slice(2);
 
 if (args.length > 0) {
     const filename = args[0];
+    if (!filename.endsWith('.pearl')) {
+        console.error("Hanya file dengan ekstensi .pearl yang dapat dijalankan.");
+        proscess.exit(1);
+    }
+
     if (fs.existsSync(filename)) {
         const kode = fs.readFileSync(filename, 'utf8');
         runPearl(kode);
