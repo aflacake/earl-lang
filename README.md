@@ -28,6 +28,25 @@ node index.js
   ``` bash
   npm install canvas
   ```
+## Dengan CLI
+### Pengguna Windows
+File CLI bernama: `pearl.cmd`.
+#### Tambahkan ke PATH
+1. Salin semua file atau download semua file ini dengan keterangan versi terbaru (rekomendasi) atau pada saat proses pengembangan juga terbaik (perlu perbaikan).
+   > Misalnya di C:\Users\KAMU\pearl
+2. Tambahkan folder tersebut ke PATH:
+   - Tekan `Win + R`, ketik system.cpl lalu _Enter_
+   - Tab _**Advanced**_ > Environment Variables
+   - Dibagian _User variables_, plih Path lalu _**Edit**_
+   - **New** > masukkan
+     > Misalnya di C:\Users\KAMU\pearl
+   - **OK** dan restart terminal
+
+### Pengguna Linux dan MacOS
+File CLI bernama: `pearl`
+#### Tambahkan ke PATH
+Dengan menjalankan folder langsung atau saat ini:
+> ./pearl contoh.pearl
 
 ## Unduh versi
 Download versi memungkinkan Anda menggunakan tautan eksternal. Versi ini seutuhnya stabil dari berbagai uji coba rata-rata, versi tidak stabil saat ini belum memungkinkan untuk dirilis, sehingga masih dalam bentuk instalasi berlangsung, untuk versi download sesuaikan perangkat yang Anda gunakan. Silahkan coba versi stabil:
