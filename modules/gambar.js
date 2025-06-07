@@ -133,12 +133,16 @@ async function gambar(tokens, modules, context) {
             if (!cekKanvas()) break;
             const namafile = tokens[2].replace(/"/g, '');
             try {
-                const eks = namafile.split('.').pop().toLowerCase();
-                let format = 'image/png';
-                if (eks === 'jpg' || eks === 'jpeg') format = 'image/jpeg';
-                else if (eks === 'webp') format = 'image/webp';
+                const ekstensi = namafile.split('.').pop().toLowerCase();
+                let mimeTipe = 'image/png';
 
-                const penyangga = memory.gambar.kanvas.toBuffer(format);
+                if (ekstensi === 'jpg' || ekstensi === 'jpeg') mimeTipe = 'image/jpeg';
+                else if (ekstensi === 'webp') mimeTipe = 'image/webp';
+
+                console.log(`Menyimpan gambar sebagai ${namafile} dengan format ${mimeTipe}`);
+
+                const penyangga = memory.gambar.kanvas.toBuffer(mimeTipe);
+
                 fs.writeFileSync(namafile, penyangga);
                 console.log(`Gambar tersimpan sebagai ${namafile}`);
             } catch (err) {
