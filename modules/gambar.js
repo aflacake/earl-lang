@@ -20,6 +20,21 @@ function validasiAngka (angkaArray, namaArgumen) {
     return true;
 }
 
+function terapkanModeMenggambar(ctx, shapeType) {
+    const mode = memory.gambar.mode || "isi";
+    if (mode === "isi") {
+        ctx.fill();
+    } else if (mode === "garis") {
+        ctx.stroke();
+    } else if (mode === "isi-garis") {
+        ctx.fill();
+        ctx.stroke();
+    } else {
+        console.warn(`Mode gambar tidak dikenal: '${node}', fallback ke 'isi'`);
+        ctx.fill();
+    }
+}
+
 function buatKanvas(lebar, tinggi) {
     const kanvas = createCanvas(lebar, tinggi);
     const ctx = kanvas.getContext('2d');
@@ -65,11 +80,25 @@ async function gambar(tokens, modules, context) {
             break;
         }
 
+        case 'mode': {
+            const mode = tokens[2];
+            if (!["isi", "garis", "isi-garis"].includes(mode)) {
+                console.error(`Mode gambar tidak dikenali: '${mode}'`);
+                break;
+            }
+            memory.gambar.mode = mode;
+            console.log(`Mode gambar diatur ke: ${mode}`);
+            break;
+        }
+
         case 'kotak': {
             if (!cekKanvas()) break;
             const [x, y, w, h] = tokens.slice(2, 6).map(Number);
             if (!validasiAngka([x, y, w, h], 'kotak')) break;
-            memory.gambar.ctx.fillRect(x, y, w, h);
+            const ctx = memory.gambar.ctx;
+            ctx.beginPath();
+            ctx.rect(x, y, w, h);
+            terapkanModeMenggambar();
             break;
        }
 
@@ -81,7 +110,27 @@ async function gambar(tokens, modules, context) {
             ctx.beginPath();
             ctx.arc(lx, ly, radius, 0, Math.PI * 2);
             console.log("Warna saat lingkaran digambar:", ctx.fillStyle);
-            ctx.fill();
+            terapkanModeMenggambar();
+            break;
+        }
+
+        case 'poligon': {
+            if(!cekKanvas()) break;
+            const koordi = tokens.slice(2).map(Number);
+            if (koordi.length < 6 || koordi.length % 2 !== 0) {
+                console.error("Minimal harus 3 titik (6 angka) dan jumlah koordinat genap.");
+                break;
+            }
+            if (!validasiAngka(koordi, 'poligon')) break;
+
+            const ctx = memory.gambar.ctx;
+            ctx.beginPath();
+            ctx.moveTo(koordi[0], koordi[1]);
+            for (let i = 2; i < koordi.length; i += 2) {
+                ctx.lineTo(koordi[i], koordi[i + 1]);
+            }
+            ctx.closePath();
+            terapkanModeMenggambar();
             break;
         }
 
