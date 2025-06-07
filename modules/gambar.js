@@ -135,8 +135,8 @@ async function gambar(tokens, modules, context) {
             try {
                 const eks = namafile.split('.').pop().toLowerCase();
                 let format = 'image/png';
-                if (eks === 'jpg' || eks === 'jpeg') format 'image/jpeg';
-                else if (eks === 'webp') format 'image/webp';
+                if (eks === 'jpg' || eks === 'jpeg') format = 'image/jpeg';
+                else if (eks === 'webp') format = 'image/webp';
 
                 const penyangga = memory.gambar.kanvas.toBuffer(format);
                 fs.writeFileSync(namafile, penyangga);
