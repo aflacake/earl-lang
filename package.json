@@ -1,9 +1,12 @@
 {
-  "name": "Pearl",
-  "version": "1.0.1",
+  "name": "pearl",
+  "version": "1.0.3",
   "description": "Pearl Bahasa Pemrograman",
   "main": "index.js",
-  "bin": "index.js",
+  "bin": {
+    "pearl": "./bin/pearl"
+  },
+  "type": "commonjs",
   "scripts": {
     "start": "node index.js"
   },
@@ -16,6 +19,6 @@
     "outputPath": "dist"
   },
   "author": "Nazwa Shabrina Zain",
-  "licence": "",
+  "license": "Apache License 2.0",
   "dependencies": {}
 }
