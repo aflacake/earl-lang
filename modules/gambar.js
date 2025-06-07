@@ -4,34 +4,60 @@ const { createCanvas } = require('canvas');
 const fs = require('fs');
 const { memory } = require('../memory.js');
 
+function cekKanvas() {
+    if (!memory.gambar) {
+        console.error("Kanvas belum dibuat. Gunakan 'gambar buat-kanvas <lebar> <tinggi>' terlebih dahulu");
+        return false;
+    }
+    return true;
+}
+
+function validasiAngka (angkaArray, namaArgumen) {
+    if (angkaArray.some(isNaN)) {
+        console.error(`Argumen '${namaArgumen}' harus berupa angka valid.`);
+        return false;
+    }
+    return true;
+}
+
+function buatKanvas(lebar, tinggi) {
+    const kanvas = createCanvas(lebar, tinggi);
+    const ctx = kanvas.getContext('2d');
+
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, lebar, tinggi);
+
+    ctx.font = "20px Arial";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "alphabetic";
+
+    memory.gambar = {
+        kanvas,
+        ctx,
+        lebar,
+        tinggi,
+        warna: "white",
+        huruf: "20px Arial",
+        meluruskan: "left",
+        garisdasar: "alphabetic"
+    };
+    console.log(`Kanvas ${lebar}x${tinggi} berhasil dibuat.`);
+}
+
 async function gambar(tokens, modules, context) {
     const perintah = tokens[1];
 
     switch (perintah) {
         case 'buat-kanvas': {
-            const lebar = parseInt(tokens[2], 10);
-            const tinggi = parseInt(tokens[3], 10);
-
-            const kanvas = createCanvas(lebar, tinggi);
-            const ctx = kanvas.getContext('2d');
-
-            ctx.fillStyle = "white";
-            ctx.fillRect(0, 0, lebar, tinggi);
-
-            memory.gambar = {
-                kanvas,
-                ctx,
-                lebar,
-                tinggi,
-                warna: "white"
-            };
-
+            const [lebar, tinggi] = tokens.slice(2, 4).map(Number);
+            if (!validasiAngka([lebar, tinggi], 'buat-kanvas')) break;
+            buatKanvas(lebar, tinggi);
             break;
         }
 
         case 'warna': {
+            if (!cekKanvas()) break;
             const warna = tokens[2];
-            if (!memory.gambar) return console.error("Kanvas belum dibuat.");
             memory.gambar.ctx.fillStyle = warna;
             memory.gambar.ctx.strokeStyle = warna;
             memory.gambar.ctx.warna = warna;
@@ -39,15 +65,17 @@ async function gambar(tokens, modules, context) {
         }
 
         case 'kotak': {
+            if (!cekKanvas()) break;
             const [x, y, w, h] = tokens.slice(2, 6).map(Number);
-            if (!memory.gambar) return console.error("Kanvas belum dibuat.");
+            if (!validasiAngka([x, y, w, h], 'kotak')) break;
             memory.gambar.ctx.fillRect(x, y, w, h);
             break;
        }
 
         case 'lingkaran': {
+            if (!cekKanvas()) break;
             const [lx, ly, radius] = tokens.slice(2, 5).map(Number);
-            if (!memory.gambar) return console.error("Kanvas belum dibuat.");
+            if (!validasiAngka([lx, ly, radius], 'lingkaran')) break;
             const ctx = memory.gambar.ctx;
             ctx.beginPath();
             ctx.arc(lx, ly, radius, 0, Math.PI * 2);
@@ -56,8 +84,9 @@ async function gambar(tokens, modules, context) {
         }
 
         case 'garis': {
+            if (!cekKanvas()) break;
             const [gx, gy, gx2, gy2] = tokens.slice(2, 6).map(Number);
-            if (!memory.gambar) return console.error("Kanvas belum dibuat.");
+            if (!validasiAngka([gx, gy, gx2, gy2], 'garis')) break;
             const ctx = memory.gambar.ctx;
             ctx.beginPath();
             ctx.moveTo(gx, gy);
@@ -66,15 +95,68 @@ async function gambar(tokens, modules, context) {
             break;
         }
 
-        case 'simpan': {
-            if (!memory.gambar) return console.error("Kanvas belum dibuat.");
-            const namafile = tokens[2].replace(/"/g, '');
-            const penyangga = memory.gambar.kanvas.toBuffer('image/png');
-            fs.writeFileSync(namafile, penyangga);
-            console.log(`Gambar tersimpan sebagai ${namafile}`);
+        case 'teks': {
+            if (!cekKanvas()) break;
+            const teks = tokens[2].replace(/"/g, '');
+            const x = parseInt(tokens[3], 10);
+            const y = parseInt(tokens[4], 10);
+            if (!validasiAngka([x, y], 'teks')) break;
+            memory.gambar.ctx.fillText(teks, x, y);
             break;
         }
 
+        case 'huruf': {
+            if (!cekKanvas()) break;
+            const huruf = tokens.slice(2).join(' ').replace(/"/g, '');
+            memory.gambar.ctx.font = huruf;
+            memory.gambar.huruf = huruf;
+            break;
+        }
+
+        case 'rata': {
+            if (!cekKanvas()) break;
+            const meluruskan = tokens[2];
+            memory.gambar.ctx.textAlign = meluruskan;
+            memory.gambar.meluruskan = meluruskan;
+            break;
+        }
+
+        case 'dasar': {
+            if (!cekKanvas()) break;
+            const garisdasar = tokens[2];
+            memory.gambar.ctx.textBaseline = garisdasar;
+            memory.gambar.garisdasar = garisdasar;
+            break;
+        }
+
+        case 'simpan': {
+            if (!cekKanvas()) break;
+            const namafile = tokens[2].replace(/"/g, '');
+            try {
+                const eks = namafile.split('.').pop().toLowerCase();
+                let format = 'image/png';
+                if (eks === 'jpg' || eks === 'jpeg') format 'image/jpeg';
+                else if (eks === 'webp') format 'image/webp';
+
+                const penyangga = memory.gambar.kanvas.toBuffer(format);
+                fs.writeFileSync(namafile, penyangga);
+                console.log(`Gambar tersimpan sebagai ${namafile}`);
+            } catch (err) {
+                console.error(`Gagal menyimpan gambar: ${err.message}`);
+            }
+            break;
+        }
+
+        case 'hapus-canvas': {
+            if (!cekKanvas()) break;
+            const { ctx, lebar, tinggi } = memory.gambar;
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, lebar, tinggi);
+            ctx.fillStyle = memory.gambar.warna;
+            console.log("Kanvas dibersihkan.");
+            break;
+        }
+ 
         default:
             console.error(`Perintah gambar tidak dikenali: ${perintah}`);
     }
