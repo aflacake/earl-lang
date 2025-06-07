@@ -57,10 +57,11 @@ async function gambar(tokens, modules, context) {
 
         case 'warna': {
             if (!cekKanvas()) break;
-            const warna = tokens[2];
+            const warna = tokens[2].replace(/"/g,'');
+            console.log("Set warna ke:", warna);
             memory.gambar.ctx.fillStyle = warna;
             memory.gambar.ctx.strokeStyle = warna;
-            memory.gambar.ctx.warna = warna;
+            memory.gambar.warna = warna;
             break;
         }
 
@@ -79,6 +80,7 @@ async function gambar(tokens, modules, context) {
             const ctx = memory.gambar.ctx;
             ctx.beginPath();
             ctx.arc(lx, ly, radius, 0, Math.PI * 2);
+            console.log("Warna saat lingkaran digambar:", ctx.fillStyle);
             ctx.fill();
             break;
         }
@@ -133,18 +135,12 @@ async function gambar(tokens, modules, context) {
             if (!cekKanvas()) break;
             const namafile = tokens[2].replace(/"/g, '');
             try {
-                const ekstensi = namafile.split('.').pop().toLowerCase();
-                let mimeTipe = 'image/png';
-
-                if (ekstensi === 'jpg' || ekstensi === 'jpeg') mimeTipe = 'image/jpeg';
-                else if (ekstensi === 'webp') mimeTipe = 'image/webp';
-
-                console.log(`Menyimpan gambar sebagai ${namafile} dengan format ${mimeTipe}`);
-
-                const penyangga = memory.gambar.kanvas.toBuffer(mimeTipe);
-
-                fs.writeFileSync(namafile, penyangga);
-                console.log(`Gambar tersimpan sebagai ${namafile}`);
+                const out = fs.createWriteStream(namafile);
+                const stream = memory.gambar.kanvas.createPNGStream();
+                stream.pipe(out);
+                out.on('finish', () =>  {
+                    console.log(`Gambar tersimpan sebagai ${namafile}`);
+                });
             } catch (err) {
                 console.error(`Gagal menyimpan gambar: ${err.message}`);
             }
