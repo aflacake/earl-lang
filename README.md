@@ -19,10 +19,12 @@ tampikan :nama:
 
 # Instalasi
 ## Dengan Node.js
-Pastikan Node.js sudah terinstal, jika belum instal Node.js versi terbaru di situs resminya. Arahkan ke file tempat dimana index.js berada.
+Pastikan Node.js sudah terinstal, jika belum instal Node.js versi terbaru di situs resminya. Arahkan ke file tempat dimana index.js berada. Lalu ketikan:
 ```bash
 node index.js
 ```
+> Perintah ini bermanfaat untuk mencoba versi sebelum dirilis secara publik, jadi Anda bisa memanfatkan program alpha atau betanya.
+
 ### Bahan
 - Menginstal paket tambahan di Node.js untuk keperluan merender visual atas perintah aturan 'gambar' dengan
   ``` bash
@@ -35,18 +37,25 @@ File CLI bernama: `pearl.cmd`.
 1. Salin semua file atau download semua file ini dengan keterangan versi terbaru (rekomendasi) atau pada saat proses pengembangan juga terbaik (perlu perbaikan).
    > Misalnya di C:\Users\KAMU\pearl
 2. Tambahkan folder tersebut ke PATH:
-   - Tekan `Win + R`, ketik system.cpl lalu _Enter_
-   - Tab _**Advanced**_ > Environment Variables
-   - Dibagian _User variables_, plih Path lalu _**Edit**_
+   - Tekan `Win + R`, ketik _Edit the system environment variables_ lalu _Enter_
+   - Tab _**Advanced**_ > _Environment Variables_
+   - Dibagian _User variables_, pilih Path lalu
    - **New** > masukkan
      > Misalnya di C:\Users\KAMU\pearl
    - **OK** dan restart terminal
+
+Jalankan dengan menggunakan perintah:
+```bash
+pearl contoh.pearl
+```
 
 ### Pengguna Linux dan MacOS
 File CLI bernama: `pearl`
 #### Tambahkan ke PATH
 Dengan menjalankan folder langsung atau saat ini:
-> ./pearl contoh.pearl
+```bash
+./pearl contoh.pearl
+```
 
 ## Unduh versi
 Download versi memungkinkan Anda menggunakan tautan eksternal. Versi ini seutuhnya stabil dari berbagai uji coba rata-rata, versi tidak stabil saat ini belum memungkinkan untuk dirilis, sehingga masih dalam bentuk instalasi berlangsung, untuk versi download sesuaikan perangkat yang Anda gunakan. Silahkan coba versi stabil:
