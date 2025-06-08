@@ -18,6 +18,8 @@ function ambilBlok(context) {
 }
 
 async function ulangi(tokens, modules, context) {
+    const lines = ambilBlock(context);
+
     if (tokens[1] === 'setiap' && tokens[2] === 'dari') {
         const sumber = tokens[3];
         let list;
@@ -57,15 +59,25 @@ async function ulangi(tokens, modules, context) {
             return;
         }
 
-        const lines = ambilBlok(context);
-
         for (const item of list) {
             memory['item'] = item;
+            context.berhenti = false;
+            context.lanjutkan = false;
 
             for (const baris of lines) {
                 const innerTokens = modules.tokenize(baris);
                 if (innerTokens && innerTokens.length > 0) {
                     const cmd = innerTokens[0];
+
+                    if (cmd === 'berhenti') {
+                        context.berhenti = true;
+                        break;
+                    }
+
+                    if (cmd === 'lanjutkan') {
+                        context.lanjutkan = true;
+                        break;
+                    }
 
                     if (modules[cmd]) {
                         await modules[cmd](innerTokens, modules, context);
@@ -74,6 +86,8 @@ async function ulangi(tokens, modules, context) {
                     }
                 }
             }
+            if (context.berhenti) break;
+            if (context.lanjutkan) continue;
         }
 
     } else {
@@ -96,14 +110,25 @@ async function ulangi(tokens, modules, context) {
             return;
         }
 
-        const lines = ambilBlok(context);
-
         for (let i = 0; i < count; i++) {
             memory['index'] = i;
+            context.berhenti = false;
+            conetext.lanjutkan = false;
+
             for (const baris of lines) {
                 const innerTokens = modules.tokenize(baris);
                 if (innerTokens && innerTokens.length > 0) {
                     const cmd = innerTokens[0];
+
+                    if (cmd === 'berhenti') {
+                        context.berhenti = true;
+                        break;
+                    }
+
+                    if (cmd === 'lanjutkan') {
+                        context.lanjutkan = true;
+                        break;
+                    }
 
                     if (modules[cmd]) {
                         await modules[cmd](innerTokens, modules, context);
@@ -112,6 +137,8 @@ async function ulangi(tokens, modules, context) {
                     }
                 }
             }
+            if (context.berhenti) break;
+            if (context.lanjutkan) continue;
         }
     }
 }
