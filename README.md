@@ -33,6 +33,11 @@ node index.js
 ## Dengan CLI
 ### Pengguna Windows
 File CLI bernama: `pearl.cmd`.
+File sudah disiapkan maka langsung arahkan ke folder, lalu jalankan:
+```bash
+npm link
+```
+
 #### Tambahkan ke PATH
 1. Salin semua file atau download semua file ini dengan keterangan versi terbaru (rekomendasi) atau pada saat proses pengembangan juga terbaik (perlu perbaikan).
    > Misalnya di C:\Users\KAMU\pearl
