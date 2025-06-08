@@ -33,7 +33,7 @@ node index.js
 ## Dengan CLI
 ### Pengguna Windows
 File CLI bernama: `pearl.cmd`.
-File sudah disiapkan maka langsung arahkan ke folder, lalu jalankan:
+File `package.json` dan `pearl.cmd` sudah disiapkan maka langsung arahkan ke folder, lalu jalankan:
 ```bash
 npm link
 ```
@@ -60,6 +60,15 @@ File CLI bernama: `pearl`
 Dengan menjalankan folder langsung atau saat ini:
 ```bash
 ./pearl contoh.pearl
+```
+atau
+Berikan hak akses eksekusi:
+```bash
+chmod +x bin/pearl
+```
+link ke global:
+``` bash
+npm link
 ```
 
 ## Unduh versi
