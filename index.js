@@ -25,6 +25,8 @@ const { gambar } = require('./modules/gambar.js');
 const { ingatan } = require('./modules/ingatan.js');
 const { prosesor } = require('./modules/prosesor.js');
 const { peranti } = require('./modules/peranti.js');
+const { jikaLainnya } = require('./modules/jikaLainnya.js');
+const { ulangiKontrol } = require('./modules/ulangiKontrol.js');
 
 const fs = require('fs');
 const readline = require('readline');
@@ -34,8 +36,9 @@ const modules = {
     tampilkan,
     masukkan,
     hitung,
-    jika,
+    jika: jikaLainnya,
     ulangi,
+    ulangiKontrol,
     membangun,
     kelas,
     atur,
