@@ -9,4 +9,4 @@ function ambilDaftarJikaPerlu(token) {
     }
     return null;
 }
-module exports = { ambilDaftarJikaPerlu };
+module.exports = { ambilDaftarJikaPerlu };
