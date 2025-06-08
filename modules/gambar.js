@@ -3,6 +3,7 @@
 const { createCanvas } = require('canvas');
 const fs = require('fs');
 const { memory } = require('../memory.js');
+const { ambilDaftarJikaPerlu } = require('../utili');
 
 function cekKanvas() {
     if (!memory.gambar) {
@@ -93,7 +94,18 @@ async function gambar(tokens, modules, context) {
 
         case 'kotak': {
             if (!cekKanvas()) break;
-            const [x, y, w, h] = tokens.slice(2, 6).map(Number);
+
+            let param = tokens.slice(2, 6).map(Number);
+            const daftar = ambilDaftarJikaPerlu(tokens[2]);
+            if (daftar) {
+                if (daftar.length !== 4) {
+                    console.error("Daftar untuk 'kotak' harus memiliki 4 angka: x, y, w, h");
+                    break;
+                }
+                param = daftar.map(Number);
+            }
+
+            const [x, y, w, h] = param;
             if (!validasiAngka([x, y, w, h], 'kotak')) break;
             const ctx = memory.gambar.ctx;
             ctx.beginPath();
@@ -104,7 +116,18 @@ async function gambar(tokens, modules, context) {
 
         case 'lingkaran': {
             if (!cekKanvas()) break;
-            const [lx, ly, radius] = tokens.slice(2, 5).map(Number);
+
+            let param = tokens.slice(2, 5).map(Number);
+            const daftar = ambilDaftarJikaPerlu(tokens[2]);
+            if (daftar) {
+                if (daftar.length !== 3) {
+                    console.error("Daftar untuk 'lingkaran' harus memiliki 3 angka: lx, ly, radius");
+                    break;
+                }
+                param = daftar.map(Number);
+            }
+
+            const [lx, ly, radius] = param;
             if (!validasiAngka([lx, ly, radius], 'lingkaran')) break;
             const ctx = memory.gambar.ctx;
             ctx.beginPath();
@@ -116,10 +139,15 @@ async function gambar(tokens, modules, context) {
 
         case 'poligon': {
             if(!cekKanvas()) break;
-            const koordi = tokens.slice(2).map(Number);
+            let koordi = tokens.slice(2).map(Number);
+            const daftarDariMemori = ambilDaftarJikaPerlu(tokens[2]);
+            if (daftarDariMemori) {
+                koordi = daftarDariMemori.map(Number);
+            }
+
             if (koordi.length < 6 || koordi.length % 2 !== 0) {
                 console.error("Minimal harus 3 titik (6 angka) dan jumlah koordinat genap.");
-                break;
+                return;
             }
             if (!validasiAngka(koordi, 'poligon')) break;
 
@@ -136,7 +164,18 @@ async function gambar(tokens, modules, context) {
 
         case 'garis': {
             if (!cekKanvas()) break;
-            const [gx, gy, gx2, gy2] = tokens.slice(2, 6).map(Number);
+
+            let param = tokens.slice(2, 6).map(Number);
+            const daftar = ambilDaftarJikaPerlu(tokens[2]);
+            if (daftar) {
+                if (daftar.length !== 4) {
+                    console.error("Daftar untuk 'garis' harus memiliki 4 angka: gx, gy, gx2, gy2");
+                    break;
+                }
+                param = daftar.map(Number);
+            }
+
+            const [gx, gy, gx2, gy2] = param;
             if (!validasiAngka([gx, gy, gx2, gy2], 'garis')) break;
             const ctx = memory.gambar.ctx;
             ctx.beginPath();
