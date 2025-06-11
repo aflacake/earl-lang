@@ -80,7 +80,7 @@ async function runPearl(code) {
             try {
                 await modules[cmd](tokens, modules, context);
             } catch (err) {
-                console.error(`Kesalahan saat menjalankan perintah '${cmd}' di baris ${context.index + 1}:`, err);
+                console.error(`Kesalahan saat menjalankan perintah '${cmd}' di baris ${context.index + 1}:`, err.message);
             }
         } else {
             console.error(`Modul tidak dikenali: '${cmd}' di baris ${context.index + 1}`);
@@ -96,7 +96,7 @@ if (args.length > 0) {
     const filename = args[0];
     if (!filename.endsWith('.pearl')) {
         console.error("Hanya file dengan ekstensi .pearl yang dapat dijalankan.");
-        proscess.exit(1);
+        process.exit(1);
     }
 
     if (fs.existsSync(filename)) {
@@ -108,12 +108,32 @@ if (args.length > 0) {
 } else {
     const rl = readline.createInterface({
         input: process.stdin,
-        output: process.stdout
+        output: process.stdout,
+        prompt: 'pearl>'
     });
 
-    rl.question('Masukkan kode Pearl yang ingin dijalankan:\n', async (code) => {
-        await runPearl(code);
-        rl.close();
+    console.log("Pearl REPL Mode - ketik 'keluar' untuk keluar");
+
+    rl.prompt();
+
+    rl.on('line', async (line) => {
+        if (line.trim() === 'keluar') {
+            rl.close();
+            return;
+        }
+
+        try {
+            await runPearl(line);
+        } catch (err) {
+            console.error('Kesalahan', err.message);
+        }
+
+        rl.prompt();
+    });
+
+    rl.on('close', () => {
+        console.log('Keluar!');
+        process.exit(0);
     });
 }
 
