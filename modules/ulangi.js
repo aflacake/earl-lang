@@ -18,7 +18,7 @@ function ambilBlok(context) {
 }
 
 async function ulangi(tokens, modules, context) {
-    const lines = ambilBlock(context);
+    const lines = ambilBlok(context);
 
     if (tokens[1] === 'setiap' && tokens[2] === 'dari') {
         const sumber = tokens[3];
@@ -28,7 +28,12 @@ async function ulangi(tokens, modules, context) {
             const [instanceName, attr] = sumber.split('.');
             const instance = memory[instanceName];
 
-            if (!instance || !instance.__tipe || !memory[instance.__tipe] || memory[instance.__tipe].__tipe !== 'kelas') {
+            if (
+                !instance ||
+                !instance.__tipe ||
+                !memory[instance.__tipe] ||
+                memory[instance.__tipe].__tipe !== 'kelas'
+            ) {
                 console.error(`'${instanceName}' bukan instance yang valid.`);
                 return;
             }
@@ -113,7 +118,7 @@ async function ulangi(tokens, modules, context) {
         for (let i = 0; i < count; i++) {
             memory['index'] = i;
             context.berhenti = false;
-            conetext.lanjutkan = false;
+            context.lanjutkan = false;
 
             for (const baris of lines) {
                 const innerTokens = modules.tokenize(baris);
@@ -133,7 +138,7 @@ async function ulangi(tokens, modules, context) {
                     if (modules[cmd]) {
                         await modules[cmd](innerTokens, modules, context);
                     } else {
-                        console.error("Modul tidak dikenali di dalam blok ulangi: ", cmd);
+                        console.error("Modul tidak dikenali di dalam blok ulangi:", cmd);
                     }
                 }
             }
