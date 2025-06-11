@@ -26,15 +26,39 @@ function tampilkan(tokens, modules, context) {
         return;
     }
 
-    if (target.startsWith(":")) {
+    const diktaAkses = target.match(/^:([^:\[\]]+):([^:\[\]]+)$/);
+    if (diktaAkses) {
+        const varName = diktaAkses[1];
+        const key = diktaAkses[2];
+
+        const dikta = memory[varName];
+        if (dikta && typeof dikta === 'object' && !Array.isArray(dikta)) {
+            if (key in dikta) {
+                console.log(dikta[key]);
+            } else {
+                console.log(`Kunci '${key}' tidak ditemukan di dikta '${varName'}.`);
+            }
+        } else {
+            console.log(`Variabel '${varName}' bukan dikta.`);
+        }
+        return;
+    }
+
+    if (target.startsWith(":") && target.endsWith(':')) {
         const varName = target.slice(1, -1);
-        console.log(memory[varName] ?? "tidak dikenali");
-    } else if (target.includes(".")) {
+        const val = memory[varName];
+        if (typeof val === 'object' && val !== null && !Array.isArray()val) {
+            console.log(JSON.stringify(val, null, 2));
+        } else {
+            console.log(val ?? "tidak dikenali");
+        }
+    } 
+    else if (target.includes(".")) {
         const [className, attrName] = target.split(".");
         const kelas = memory[className];
 
         if (kelas && kelas.__tipe === "kelas") {
-            const value = kelas.instance[attrName];
+            const value = kelas.instance ? kelas.instance[attrName] : undefined;
             console.log(value ?? `atribut '${attrName}' tidak ditemukan di kelas '${className}'`);
         } else {
             console.log(`Kelas '${className}' tidak ditemukan`);
