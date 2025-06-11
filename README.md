@@ -17,6 +17,10 @@ ambil :nama: = "Pearl"
 tampikan :nama:
 ```
 
+# Dokumentasi
+Menyajikan berbagai tutorial terkini seputar topik Pearl. 
+Akan segera hadir dalam bentuk format blog, video, dan dokumentasi interaktif. Saat ini masih dalam tahap konstruksi - tetap disini!
+
 # Instalasi
 ## Dengan Node.js
 Pastikan Node.js sudah terinstal, jika belum instal Node.js versi terbaru di situs resminya. Arahkan ke file tempat dimana index.js berada. Lalu ketikan:
