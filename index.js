@@ -20,6 +20,7 @@ const { lakukan } = require('./modules/lakukan.js');
 const { fungsi } = require('./modules/fungsi.js');
 const { kembalikan } = require('./modules/kembalikan.js');
 const { daftar } = require('./modules/daftar.js');
+const { dikta } = require('./modules/dikta.js');
 const { melahirkan } = require('./modules/melahirkan.js');
 const { gambar } = require('./modules/gambar.js');
 const { ingatan } = require('./modules/ingatan.js');
@@ -51,6 +52,7 @@ const modules = {
     fungsi,
     kembalikan,
     daftar,
+    dikta,
     melahirkan,
     gambar,
     ingatan,
