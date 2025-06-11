@@ -35,7 +35,27 @@ function ambil(tokens) {
     }
     else if (sumber.startsWith(':') && sumber.endsWith(':')) {
         const varName = sumber.slice(1, -1);
-        value = memory[varName];
+        const varValue = memory[varName];
+
+        if (varValue === undefined) {
+            console.error(`Variabel ${varName' tidak ditemukan.`);
+            return;
+        }
+        if (typeof varValue === 'object'&& !Array.isArray(varValue)) {
+            if(tokens.length > 4) {
+                const key = tokens[4];
+                if (key in varValue) {
+                    value = varValue[key];
+                } else {
+                    console.error(`Kunci '${key}' tidak ditemukan di dikta '${varName}'.`);
+                    return;
+                }
+            } else {
+                value = varValue;
+            }
+        } else {
+            value = varValue
+        }
     }
     else {
         value = memory[sumber];
