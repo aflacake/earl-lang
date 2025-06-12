@@ -2,27 +2,57 @@
 
 const { memory } = require('../memory.js');
 
+function aksesBersarang(arr, indexes) {
+    let current = arr;
+    for (const idx of indexes) {
+        if (!Array.isArray(current)) {
+            return undefined;
+        }
+        if (idx < 0 || idx >= current.length || isNaN(idx)) {
+            return undefined;
+        }
+        current = current[idx];
+    }
+    return current;
+}
+
 function tampilkan(tokens, modules, context) {
     const target = tokens[1];
 
-    const daftarAkses = target.match(/^:([^:\[\]]+)\[(.+)\]:$/);
-    if (daftarAkses) {
-        const varName = daftarAkses[1];
-        const indexExpr = daftarAkses[2];
-
+    const daftarBersarangMatch = target.match(/^:([^:\[\]]+)((\[\d+\])+):$/);
+    if (daftarBersarangMatch) {
+        const varName = daftarBersarangMatch[1];
+        const indexesStr = daftarBersarangMatch[2];
+        const indexes = [...indexesStr.matchAll(/\[(\d+)\]/g)].map(m => Number(m[1]));
         const arr = memory[varName];
-        let index = parseInt(indexExpr);
 
-        if (isNaN(index)) {
-            const indexVar = indexExpr.replace(/:/g, '');
-            index = memory[indexVar];
+        if (Array.isArray(arr)) {
+            console.log(`'${varName}' bukan daftar.`);
+            return;
         }
-
-        if (Array.isArray(arr) && index >= 0 && index < arr.length) {
-            console.log(arr[index]);
+        const nilai = aksesBersarang(arr, indexes);
+        if (nilai === undefined) {
+            console.log(`Indeks tidak valid untuk daftar bersarang '${varName}'.`);
         } else {
-            console.log(`Tidak dapat menampilkan :${varName}:[${indexExpr}]: (daftar tidak valid atau index di luar batas)`);
+            console.log(nilai);
         }
+        return;
+    }
+
+    const daftarSatuMatch = target.match(/^:([^:\[\]]+)\[(\d+)\]:$/);
+    if (daftarSatuMatch) {
+        const varName = daftarSatuMatch[1];
+        const index = Number(daftarSatuMatch[2]);
+        const arr = memory[varName];
+        if (!Array.isArray(arr)) {
+            console.log(`'${varName}' bukan daftar.`);
+            return;
+        }
+        if (index < 0 || index >= arr.length) {
+            console.log(`Indeks ${index} di luar batas untuk daftar '${varName}'.`);
+            return;
+        }
+        console.log(arr[index]);
         return;
     }
 
@@ -47,7 +77,7 @@ function tampilkan(tokens, modules, context) {
     if (target.startsWith(":") && target.endsWith(':')) {
         const varName = target.slice(1, -1);
         const val = memory[varName];
-        if (typeof val === 'object' && val !== null && !Array.isArray()val) {
+        if (typeof val === 'object' && val !== null) {
             console.log(JSON.stringify(val, null, 2));
         } else {
             console.log(val ?? "tidak dikenali");
@@ -63,10 +93,10 @@ function tampilkan(tokens, modules, context) {
         } else {
             console.log(`Kelas '${className}' tidak ditemukan`);
         }
-
-    } else {
-        console.log(target.replace(/"/g, ""));
+        return;
     }
+        
+    console.log(target.replace(/"/g, ""));
 }
 
 module.exports = { tampilkan };
