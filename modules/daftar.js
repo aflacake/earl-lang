@@ -5,6 +5,12 @@ const { memory } = require('../memory.js');
 async function daftar(tokens) {
     const cmd = tokens[1];
 
+    if (cmd === 'buat') {
+        const varName = tokens[2].slice(1, -1);
+        memory[varName] = [];
+        return;
+    }
+
     if (cmd === 'panjang') {
         const varName = tokens[2].slice(1, -1);
         if (!Array.isArray(memory[varName])) {
@@ -62,19 +68,22 @@ async function daftar(tokens) {
 
     if (cmd === 'ambil') {
         const varName = tokens[2].slice(1, -1);
-        const index = Number(tokens[3]);
+        const indexes = Number(tokens[3]).map(Number);
 
-       if (!Array.isArray(memory[varName])) {
-            console.error(`'${varName}' bukan daftar.`);
-            return;
-        }
+        let current = memory[varName];
 
-        if (isNaN(index) || index < 0 || index >= memory[varName].length) {
-            console.error(`Index '${index}' tidak valid untuk daftar '${varName}'.`);
-            return;
+        for (const idx of indexes) {
+            if (!Array.isArray(current) {
+                console.error(`Daftar bersarang tidak valid di '${varName} pada index ${idx}.`);
+                return;
+            }
+            if (isNaN(idx) || idx < 0 || idx >= current.length) {
+                console.error(`Index '${idx}' tidak valid untuk daftar '${varName}'.`);
+                return;
+            }
+            current = current[idx];
         }
-        const value = memory[varName][index];
-        console.log(value);
+        console.log(current);
         return;
     }
 
@@ -121,12 +130,6 @@ async function daftar(tokens) {
         }
         const removed = memory[varName].splice(index, 1);
         console.log(`Elemen '${removed[0]}' di index ${index} telah dihapus dari '${varName}'.`);
-        return;
-    }
-
-    if (cmd === 'buat') {
-        const varName = tokens[2].slice(1, -1);
-        memory[varName] = [];
         return;
     }
 
