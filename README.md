@@ -13,7 +13,7 @@ Tujuan Pearl:
 
 Contoh bahasa Peal sederhana:
 ```pearl
-ambil :nama: = "Pearl"
+masukkan :nama: sebagai pearl
 tampikan :nama:
 ```
 
