@@ -6,7 +6,7 @@ function fungsi (tokens, modules, context) {
 
   context.index++;
   if (context.lines[context.index].trim() !== '(') {
-    throw new Error("Fungsi harus diikuti blok kode tanda kurung ()");
+    throw new Error("Fungsi harus diikuti blok kode dengan tanda kurung buka '('");
   }
   
   let depth = 1;
@@ -15,7 +15,8 @@ function fungsi (tokens, modules, context) {
 
   while(context.index < context.lines.length) {
     const line = context.lines[context.index].trim();
-    if (line === ')') {
+
+    if (line === '(') {
         depth++;
     } else if (line === ')') {
         depth--;
@@ -26,38 +27,41 @@ function fungsi (tokens, modules, context) {
     context.index++;
   }
 
+  context.index++;
+
   modules[namaFungsi] = async (tokens, modules, parentContext) => {
     const args = tokens.slice(1);
     const localContent = {
         index: 0,
-        lines: body,
+        lines: [...body],
         vars: {},
         return: null,
         stopExecution: false,
-        ...parentContext,
+        ...parentContext
     };
 
     while (localContent.index < localContext.lines.length) {
       const line = localContext.lines[localContext.index].trim();
       const innerTokens = modules.tokenize(line);
-      if (!innerTokens || tokens.length === 0) {
+
+      if (!innerTokens || innerTokens.length === 0) {
           localContent.index++;
           continue;
       }
 
-      const evaluatedTokens = tokens.map(t => {
-        localContext.vars[t] !== undefined ? localContext.vars[t] : t;
-      });
-
-      const cmd =  evaluatedTokens[0];
+      const cmd =  innerTokens[0];
 
       if (modules[cmd]) {
-        await modules[cmd]( evaluatedTokens, modules, localContext);
-      } else {
-        console.error(`Perintah '${cmd}' tidak dikenali dalam fungsi '${namaFungsi}'`)
-      }
-      if (localContext.stopExecution) break;
-      localContext.index++;
+        try {
+            await modules[cmd](innerTokens, modules, localContext);
+          } catch (err) {
+            console.error(`Kesalahan dalam fungsi '${namaFungsi}':`, err.message);
+          }
+        } else {
+            console.error(`Perintah '${cmd}' tidak dikenali dalam fungsi '${namaFungsi}'`);
+        }
+        if (localContext.stopExecution) break;
+        localContext.index++;
     }
     return localContext.return;
   };
