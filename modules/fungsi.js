@@ -1,17 +1,27 @@
 // modules/fungsi.js
 
 function fungsi (tokens, modules, context) {
-  const namaFungsi = tokens[1].replace(/\(\)/g, '');
-  const body = [];
+  const header = tokens[1];
+  const match = header.match(/^([a-zA-Z_][a-zA-Z0-9_]*)\(([^)]*)\)$/);
+
+  if (!match) {
+     throw new Error("Format fungsi tidak valid. Gunakan: fungsi nama(param1, param2)");
+  }
+
+  const namaFungsi = match[1];
+  const paramString = match[2].trim();
+  const params = paramString ? paramString.split(',').map(p => p.trim()) : [];
 
   context.index++;
+
   if (context.lines[context.index].trim() !== '(') {
     throw new Error("Fungsi harus diikuti blok kode dengan tanda kurung buka '('");
   }
   
   let depth = 1;
-  context.index++;
+  const body = [];
 
+  context.index++;
 
   while(context.index < context.lines.length) {
     const line = context.lines[context.index].trim();
@@ -31,10 +41,16 @@ function fungsi (tokens, modules, context) {
 
   modules[namaFungsi] = async (tokens, modules, parentContext) => {
     const args = tokens.slice(1);
+    const localVars = {};
+
+    params.forEach((param, index) => {
+        localVars[param] = args[index] ?? null;
+    });
+
     const localContent = {
         index: 0,
         lines: [...body],
-        vars: {},
+        vars: localVars,
         return: null,
         stopExecution: false,
         ...parentContext
