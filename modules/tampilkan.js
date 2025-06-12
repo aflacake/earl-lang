@@ -5,12 +5,8 @@ const { memory } = require('../memory.js');
 function aksesBersarang(arr, indexes) {
     let current = arr;
     for (const idx of indexes) {
-        if (!Array.isArray(current)) {
-            return undefined;
-        }
-        if (idx < 0 || idx >= current.length || isNaN(idx)) {
-            return undefined;
-        }
+        if (!Array.isArray(current)) return undefined;
+        if (idx < 0 || idx >= current.length || isNaN(idx)) return undefined;
         current = current[idx];
     }
     return current;
@@ -18,6 +14,12 @@ function aksesBersarang(arr, indexes) {
 
 function tampilkan(tokens, modules, context) {
     const target = tokens[1];
+
+    if (target === 'memory') {
+        console.log('Isi memory saat ini:')
+        console.dir(memory, { depth: null, colors: true });
+        return;
+    }
 
     const daftarBersarangMatch = target.match(/^:([^:\[\]]+)((\[\d+\])+):$/);
     if (daftarBersarangMatch) {
@@ -60,8 +62,8 @@ function tampilkan(tokens, modules, context) {
     if (diktaAkses) {
         const varName = diktaAkses[1];
         const key = diktaAkses[2];
-
         const dikta = memory[varName];
+
         if (dikta && typeof dikta === 'object' && !Array.isArray(dikta)) {
             if (key in dikta) {
                 console.log(dikta[key]);
