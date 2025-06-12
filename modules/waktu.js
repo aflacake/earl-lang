@@ -4,9 +4,29 @@ async function waktu(tokens, modules, context) {
   const subcommand = tokens[1];
 
   switch (subcommand) {
-    case "sekarang":
-      console.log("Waktu sekarang", new Date().toLocaleString());
-      break;
+    case "sekarang": {
+        const zona = tokens[2] || "local";
+        const zonaMap = {
+            WIB: "Asia/Jakarta";
+            WITA: "Asia/Makassar";
+            WIT: "Asia/Jayapura";
+            UTC: "UTC",
+            LOCAL: Intl.DateTimeFormat().resolvedOptions().timeZone
+        };
+        const timeZone = zonaMap[zona.toUpperCase()];
+        if (!timeZone) {
+            console.error(`Zona waktu '${zona}' tidak dikenali.`);
+            break;
+        }
+        const sekarang = new Date();
+        const formatter = new Intl.DateTimeFormat("id-ID", {
+            timeZone,
+            dateStyle: "full",
+            timeStyle: "long"
+        });
+        console.log(`Waktu (${zona.toUpperCase()}):`, formatter.format(sekarang));
+        break;
+    }
 
     case "tunda": {
       let durasi = tokens[2];
