@@ -1,20 +1,20 @@
-// modules/string.js
+// modules/teks.js
 
 const { memory } = require('../memory');
 
-async function string(tokens) {
-    const sub = tokens[1];
+async function teks(tokens) {
+    const aksi = tokens[1];
     const namaVariabel = tokens[2]?.slice(1, -1);
-    const nilaiAwal = memory[namaVariabel];
+    const isi = memory[namaVariabel];
 
-    if (typeof nilaiAwal !== 'string') {
+    if (typeof isi !== 'string') {
         console.error(`Variabel ${namaVariabel} tidak berisi teks.`);
         return;
     }
 
-    switch (sub) {
+    switch (aksi) {
         case 'panjang':
-            console,log(nilaiAwal.length);
+            console.log(isi.length);
             break;
 
         case 'gabung': {
@@ -29,33 +29,33 @@ async function string(tokens) {
                 }
             }).join('');
             memory[namaVariabel]  += tambahan;
-            console.log(`Gabungan disimpan ke '${namaVariabel}'.`);
+            console.log(`Teks ditambahkan ke '${namaVariabel}'.`);
             break;
         }
 
-        case 'ubahbesar':
-            memory[namaVariabel] = nilaiAwal.toUpperCase();
+        case 'besarkan':
+            memory[namaVariabel] = isi.toUpperCase();
             break;
 
-        case 'ubahkecil':
-            memory[namaVariabel] = nilaiAwal.toLowerCase();
+        case 'kecilkan':
+            memory[namaVariabel] = isi.toLowerCase();
             break;
 
         case 'ganti': {
             const dari = tokens[3]?.replace(/"/g, '');
-            const jadi = tokens[4]?/replace(/"/g, '') ?? '';
+            const menjadi = tokens[4]?/replace(/"/g, '') ?? '';
             if (!dari) {
                 console.error("Format: string ganti :nama: \"yang dicari\" \"pengganti\"");
                 return;
             }
-            const hasil = nilaiAwal.split(dari).join(jadi);
+            const hasil = isi.split(dari).join(menjadi);
             memory[namaVariabel] = hasil;
-            console.log(`Semua '${dari}' diganti dengan '${jadi}'`);
+            console.log(`Semua '${dari}' diganti dengan '${menjadi}'`);
             break;
         }
         default:
-            console.error(`Perintah string '${sub}' tidak dikenali.`);
+            console.error(`Perintah string '${aksi}' tidak dikenali.`);
     }
 }
 
-module.exports = { string };
+module.exports = { teks };
