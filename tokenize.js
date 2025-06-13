@@ -1,11 +1,27 @@
 // tokenize.js
 
+let sedangDalamKomentarMultibaris = false;
+
 function tokenize(line) {
-    if(line.trim().startsWith('--') && line.trim().endsWith('--')) {
+    const dipangkas = line.trim();
+
+    if (dipangkas.startsWith('/--')) {
+        sedangDalamKomentarMultibaris = true;
         return [];
     }
 
-    return line.trim().match(/"[^"]*"|:[^:\s\[\]]+\[\d+\]:|:[^:\s]+:|>=|<=|==|!=|[()[\],]|>|<|\S+/g);
+    if (sedangDalamKomentarMultibaris) {
+        if (dipangkas.endsWith('--/')) {
+            sedangDalamKomentarMultibaris = false;
+        }
+        return [];
+    }
+
+    if(dipangkas.startsWith('--') && dipangkas.endsWith('--')) {
+        return [];
+    }
+
+    return dipangkas.match(/"[^"]*"|:[^:\s\[\]]+\[\d+\]:|:[^:\s]+:|>=|<=|==|!=|[()[\],]|>|<|\S+/g);
 }
 
 module.exports = { tokenize };
