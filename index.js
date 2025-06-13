@@ -28,7 +28,7 @@ const { prosesor } = require('./modules/prosesor.js');
 const { peranti } = require('./modules/peranti.js');
 const { jikaLainnya } = require('./modules/jikaLainnya.js');
 const { ulangiKontrol } = require('./modules/ulangiKontrol.js');
-const { string } = require('./modules/string.js');
+const { teks } = require('./modules/teks.js');
 const { matematika } = require('./modules/matematika.js');
 
 const fs = require('fs');
@@ -60,7 +60,7 @@ const modules = {
     ingatan,
     prosesor,
     peranti,
-    string,
+    teks,
     matematika,
     tokenize
 };
