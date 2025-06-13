@@ -68,13 +68,13 @@ async function daftar(tokens) {
 
     if (cmd === 'ambil') {
         const varName = tokens[2].slice(1, -1);
-        const indexes = Number(tokens[3]).map(Number);
+        const indexes = tokens.slice(3).map(Number);
 
         let current = memory[varName];
 
         for (const idx of indexes) {
-            if (!Array.isArray(current) {
-                console.error(`Daftar bersarang tidak valid di '${varName} pada index ${idx}.`);
+            if (!Array.isArray(current)) {
+                console.error(`Daftar bersarang tidak valid di '${varName}' pada index ${idx}.`);
                 return;
             }
             if (isNaN(idx) || idx < 0 || idx >= current.length) {
@@ -83,6 +83,7 @@ async function daftar(tokens) {
             }
             current = current[idx];
         }
+
         console.log(current);
         return;
     }
