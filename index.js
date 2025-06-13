@@ -29,6 +29,7 @@ const { peranti } = require('./modules/peranti.js');
 const { jikaLainnya } = require('./modules/jikaLainnya.js');
 const { ulangiKontrol } = require('./modules/ulangiKontrol.js');
 const { string } = require('./modules/string.js');
+const { matematika } = require('./modules/matematika.js');
 
 const fs = require('fs');
 const readline = require('readline');
@@ -59,7 +60,8 @@ const modules = {
     ingatan,
     prosesor,
     peranti,
-    string;
+    string,
+    matematika,
     tokenize
 };
 
