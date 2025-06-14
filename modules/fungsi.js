@@ -41,27 +41,26 @@ function fungsi (tokens, modules, context) {
 
   modules[namaFungsi] = async (tokens, modules, parentContext) => {
     const args = tokens.slice(1);
-    const localVars = {};
+    const lokalLingkup = {};
 
     params.forEach((param, index) => {
-        localVars[param] = args[index] ?? null;
+        lokalLingkup[param] = args[index] ?? null;
     });
 
-    const localContent = {
+    const localContext = {
         index: 0,
         lines: [...body],
-        vars: localVars,
+        lingkup: [...parentContext.lingkup, lokalLingkup],
         return: null,
         stopExecution: false,
-        ...parentContext
     };
 
-    while (localContent.index < localContext.lines.length) {
+    while (localContext.index < localContext.lines.length) {
       const line = localContext.lines[localContext.index].trim();
       const innerTokens = modules.tokenize(line);
 
       if (!innerTokens || innerTokens.length === 0) {
-          localContent.index++;
+          localContext.index++;
           continue;
       }
 
