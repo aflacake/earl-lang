@@ -30,6 +30,7 @@ const { jikaLainnya } = require('./modules/jikaLainnya.js');
 const { ulangiKontrol } = require('./modules/ulangiKontrol.js');
 const { teks } = require('./modules/teks.js');
 const { matematika } = require('./modules/matematika.js');
+const { ambildata, kirimdata } = require('./modules/http.js');
 
 const fs = require('fs');
 const readline = require('readline');
@@ -62,6 +63,8 @@ const modules = {
     peranti,
     teks,
     matematika,
+    ambildata,
+    kirimdata,
     tokenize
 };
 
