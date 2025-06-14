@@ -78,7 +78,27 @@ async function atur(tokens, modules, context) {
 
     if (path.startsWith(":") && path.endsWith(":")) {
         const varName = path.slice(1, -1);
-        memory[varName] = value;
+        
+        let disimpan = false;
+
+        if (context.lingkup && context.lingkup.length > 0) {
+            for (let i = context.lingkup.length - 1; i >= 0; i--) {
+                if (varName in context.lingkup[i]) {
+                    context.lingkup[i][varName] = value;
+                    disimpan = true;
+                    break;
+                }
+            }
+
+            if (!disimpan) {
+                context.lingkup[context.lingkup.length - 1][varName] = value;
+                disimpan = true;
+            }
+        }
+            
+        if (!disimpan) {
+            memory[varName] = value;
+        }
         console.log(`Variabel '${varName}' diatur ke`, value);
         return;
     }
