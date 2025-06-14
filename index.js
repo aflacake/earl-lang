@@ -67,7 +67,7 @@ const modules = {
     ambildata,
     kirimdata,
     masuklingkup,
-    keluarlingkup
+    keluarlingkup,
     tokenize
 };
 
