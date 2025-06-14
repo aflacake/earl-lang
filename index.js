@@ -73,7 +73,7 @@ const modules = {
 
 async function runPearl(code) {
     const lines = code.trim().split('\n');
-    const context = { index: 0, lines, skope: [{}] };
+    const context = { index: 0, lines, lingkup: [{}] };
 
     while (context.index < lines.length) {
         const line = lines[context.index].trim();
