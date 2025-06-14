@@ -1,7 +1,5 @@
 // modules/ulangi.js
 
-const { memory } = require('../memory.js');
-
 function ambilBlok(context) {
     const lines = [];
     context.index++;
@@ -26,13 +24,13 @@ async function ulangi(tokens, modules, context) {
 
         if (sumber.includes('.')) {
             const [instanceName, attr] = sumber.split('.');
-            const instance = memory[instanceName];
+            const instance = context.lingkup[0][instanceName];
 
             if (
                 !instance ||
                 !instance.__tipe ||
-                !memory[instance.__tipe] ||
-                memory[instance.__tipe].__tipe !== 'kelas'
+                !context.lingkup[0][instance.__tipe] ||
+                context.lingkup[0][instance.__tipe].__tipe !== 'kelas'
             ) {
                 console.error(`'${instanceName}' bukan instance yang valid.`);
                 return;
@@ -46,17 +44,17 @@ async function ulangi(tokens, modules, context) {
             list = instance[attr];
         } else if (sumber.startsWith(':') && sumber.endsWith(':')) {
             const varName = sumber.slice(1, -1);
-            if (!(varName in memory)) {
+            if (!(varName in context.lingkup[0])) {
                 console.error(`Variabel '${varName}' tidak ditemukan.`);
                 return;
             }
-            list = memory[varName];
+            list = context.lingkup[0][varName];
         } else {
-            if (!(sumber in memory)) {
+            if (!(sumber in context.lingkup[0])) {
                 console.error(`Variabel '${sumber}' tidak ditemukan.`)
                 return;
             }
-            list = memory[sumber];
+            list = context.lingkup[0][sumber];
         }
 
         if (!Array.isArray(list)) {
@@ -65,7 +63,8 @@ async function ulangi(tokens, modules, context) {
         }
 
         for (const item of list) {
-            memory['item'] = item;
+            context.lingkup.push({item});
+
             context.berhenti = false;
             context.lanjutkan = false;
 
@@ -91,6 +90,8 @@ async function ulangi(tokens, modules, context) {
                     }
                 }
             }
+            context.lingkup.pop();
+
             if (context.berhenti) break;
             if (context.lanjutkan) continue;
         }
@@ -101,11 +102,11 @@ async function ulangi(tokens, modules, context) {
 
         if (countToken.startsWith(':') && countToken.endsWith(':')) {
             const varName = countToken.slice(1, -1);
-            if (!(varName in memory)) {
+            if (!(varName in context.lingkup[0])) {
                 console.error(`Variabel '${varName}' tidak ditemukan.`);
                 return;
             }
-            count = parseInt(memory[varName]);
+            count = parseInt(context.lingkup[0][varName]);
         } else {
             count = parseInt(countToken);
         }
@@ -116,7 +117,8 @@ async function ulangi(tokens, modules, context) {
         }
 
         for (let i = 0; i < count; i++) {
-            memory['index'] = i;
+            context.lingkup.push({ index: i });
+
             context.berhenti = false;
             context.lanjutkan = false;
 
@@ -142,6 +144,8 @@ async function ulangi(tokens, modules, context) {
                     }
                 }
             }
+            context.lingkup.pop();
+
             if (context.berhenti) break;
             if (context.lanjutkan) continue;
         }
