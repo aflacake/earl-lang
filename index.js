@@ -32,6 +32,7 @@ const { teks } = require('./modules/teks.js');
 const { matematika } = require('./modules/matematika.js');
 const { ambildata, kirimdata } = require('./modules/http.js');
 const { masuklingkup, keluarlingkup } = require('./modules/lingkup.js');
+const { impor } = require('./modules/impor.js');
 
 const fs = require('fs');
 const readline = require('readline');
@@ -68,16 +69,21 @@ const modules = {
     kirimdata,
     masuklingkup,
     keluarlingkup,
+    impor,
     tokenize
 };
 
-async function runPearl(code) {
+async function runPearl(code, modules, parentContext) {
     const lines = code.trim().split('\n');
-    const context = { index: 0, lines, lingkup: [{}] };
+    const context = parentContext ?? { index: 0, lines, lingkup: [{}] };
 
-    while (context.index < lines.length) {
-        const line = lines[context.index].trim();
-        const tokens = tokenize(line);
+    if (!parentContext) {
+        context.lines = lines;
+    }
+
+    while (context.index < context.lines.length) {
+        const line = context.lines[context.index].trim();
+        const tokens = modules.tokenize(line);
 
         if (!tokens || tokens.length === 0) {
             context.index++;
