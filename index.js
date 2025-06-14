@@ -31,6 +31,7 @@ const { ulangiKontrol } = require('./modules/ulangiKontrol.js');
 const { teks } = require('./modules/teks.js');
 const { matematika } = require('./modules/matematika.js');
 const { ambildata, kirimdata } = require('./modules/http.js');
+const { masuklingkup, keluarlingkup } = require('./modules/lingkup.js');
 
 const fs = require('fs');
 const readline = require('readline');
@@ -65,12 +66,14 @@ const modules = {
     matematika,
     ambildata,
     kirimdata,
+    masuklingkup,
+    keluarlingkup
     tokenize
 };
 
 async function runPearl(code) {
     const lines = code.trim().split('\n');
-    const context = { index: 0, lines };
+    const context = { index: 0, lines, skope: [{}] };
 
     while (context.index < lines.length) {
         const line = lines[context.index].trim();
