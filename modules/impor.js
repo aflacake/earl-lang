@@ -1,22 +1,25 @@
-const fs = require('fs');
-const path = require('path');
+// modules/impor.js
+
+const fs = require('fs').promises;
 
 async function impor(tokens, modules, context) {
-  if (tokens.length < 2) {
-    throw new Error("Perintah 'impor' membutuhkan nama file dan isi.");
-  }
+    if (tokens.length < 2) {
+        console.error("Perintah 'impor' harus diikuti nama file.");
+        return;
+    }
 
-  const fileName = tokens[1]. replace(/['"]/g, '');
-  const fullPath = path.resolve(fileName);
+    let namafile = tokens[1];
 
-  if (!fs.existsSync(fullPath)) {
-    throw new Error(`File '${fileName}' tidak ditemukan.`);
-  }
+    if (!namafile.endsWith('.pearl')) {
+        namafile += '.pearl';
+    }
 
-  const kode = fs.readFileSync(fullPath, 'utf-8');
-  const lines = kode.trim().split('\n');
-
-  context.lines.splice(context.index + 1, 0, ... lines);
+    try {
+        const kode = await fs.readFile(filename, 'utf8');
+        await modules.runPearl(kode, modules, context);
+    } catch (err) {
+        console.error(`Gagal; mengimpor file '${namafile}':`, err.message);
+    }
 }
 
 module.exports = { impor };
