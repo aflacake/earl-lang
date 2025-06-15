@@ -84,4 +84,13 @@ Download versi memungkinkan Anda menggunakan tautan eksternal. Versi ini seutuhn
 - [Versi 1.0.0](https://www.dropbox.com/scl/fo/92zqglhfbdlteyrzfg5el/AMJTipi0hB7207rwC5lQsC8?rlkey=q9p8jspq3xfztz3q79w0f263p&st=xu169lsy&dl=0)
 
 # Berkontribusi
+Pearl masih dalam pengembangan dan terbuka untuk:
+- Saran fitur
+- Perbaikan bug
+- Kolaborasi desain sintaks
+- _Pull request_ modul baru
+
+Bagaimana cara memulainya?\
 Fork kode ini dan bangun aturan apa yang diusul atau menambahkan "bagian kecil" seperti pembenahan kata atau typo dalam teks tidaklah masalah, aturan berkontribusi tidak memberatkan.
+
+Kalau kamu tertarik dengan bahasa, sistem interpreter, atau mengajar pemorgraman lokal, saya dengan senang hati berdiskusi denganmu.
