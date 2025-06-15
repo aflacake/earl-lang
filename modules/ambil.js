@@ -13,7 +13,7 @@ function ambil(tokens, modules, context) {
 
     function cariDariLingkup(nama) {
         if (context.lingkup && context.lingkup.length > 0) {
-            for (let i = context.lingkup.length - 1; i >= 0, i--) {
+            for (let i = context.lingkup.length - 1; i >= 0; i--) {
                 if (nama in context.lingkup[i]) {
                     return context.lingkup[i][nama];
                 }
@@ -49,7 +49,7 @@ function ambil(tokens, modules, context) {
         const varValue = cariDariLingkup(varName);
 
         if (varValue === undefined) {
-            console.error(`Variabel ${varName' tidak ditemukan.`);
+            console.error(`Variabel '${varName}' tidak ditemukan.`);
             return;
         }
         if (typeof varValue === 'object'&& !Array.isArray(varValue)) {
@@ -72,7 +72,7 @@ function ambil(tokens, modules, context) {
         value = cariDariLingkup(sumber);
     }
 
-    if (context.lingkup &7 context.lingkup.length > 0) {
+    if (context.lingkup && context.lingkup.length > 0) {
         context.lingkup[context.lingkup.length - 1][targetVar] = value;
     } else {
         memory[targetVar] = value;
