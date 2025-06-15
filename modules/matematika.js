@@ -5,7 +5,7 @@ const { memory } = require('../memory');
 async function matematika(tokens) {
     const operasi = tokens[1];
 
-    const ambilNilai = (token) = {
+    const ambilNilai = (token) => {
         if (token.startsWith(':') && token.endsWith(':')) {
             const nama = token.slice(1, -1);
             return memory[nama];
@@ -48,7 +48,7 @@ async function matematika(tokens) {
             break;
         }
 
-        case 'lantai: {
+        case 'lantai': {
             const x = ambilNilai(tokens[2]);
             if (isNaN(x)) {
                 console.error('Nilai tidak valid.');
@@ -68,7 +68,7 @@ async function matematika(tokens) {
             break;
         }
 
-        case 'ácak': {
+        case 'acak': {
             const min = ambilNilai(tokens[2]) || 0;
             const max = ambilNilai(tokens[3]) || 100;
             if(isNaN(min) || isNaN(max)) {
@@ -83,7 +83,7 @@ async function matematika(tokens) {
         case 'mutlak': {
             const x = ambilNilai(tokens[2]);
             if (isNaN(x)) {
-                console.error(""Nilai tidak valid.");
+                console.error("Nilai tidak valid.");
                 return;
             }
             console.log(Math.abs(x));
