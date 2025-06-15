@@ -3,10 +3,15 @@
 const { memory } = require('../memory');
 
 async function waktu(tokens, modules, context) {
+    if (!tokens[1]) {
+        console.error("Perintah waktu membutuhkan subperintah. Contoh: waktu sekarang");
+        return;
+    }
+
   const subcommand = tokens[1];
 
   const simpanJikaPerlu = (nilai) => {
-      const indexKe = tokens,indexOf("ke");
+      const indexKe = tokens.indexOf("ke");
       if (indexKe !== -1 && tokens[indexKe + 1]?.startsWith(":") && tokens[indexKe + 1]?.endsWith(":")) {
           const namaVar = tokens[indexKe + 1].slice(1, -1);
           memory[namaVar] = nilai;
@@ -19,9 +24,9 @@ async function waktu(tokens, modules, context) {
     case "sekarang": {
         const zona = tokens[2] || "local";
         const zonaMap = {
-            WIB: "Asia/Jakarta";
-            WITA: "Asia/Makassar";
-            WIT: "Asia/Jayapura";
+            WIB: "Asia/Jakarta",
+            WITA: "Asia/Makassar",
+            WIT: "Asia/Jayapura",
             UTC: "UTC",
             LOCAL: Intl.DateTimeFormat().resolvedOptions().timeZone
         };
@@ -42,7 +47,7 @@ async function waktu(tokens, modules, context) {
 
     case "tunda": {
       let durasi = tokens[2];
-      const miliseconds = 0;
+      let miliseconds = 0;
       if (/^\d+s$/.test(durasi)) {
             miliseconds = parseInt(durasi) * 1000;
       } else if (/^\d+ms$/.test(durasi)) {
@@ -61,7 +66,7 @@ async function waktu(tokens, modules, context) {
 
     case "format": {
         const format = tokens[2];
-        const now = new Date;
+        const now = new Date();
         let hasil;
         switch (format) {
             case "bawaan":
