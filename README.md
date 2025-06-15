@@ -20,7 +20,7 @@ tampikan :nama:
 # Dokumentasi
 Menyajikan berbagai tutorial terkini seputar topik Pearl. 
 - Video, playlist: [YouTube](https://youtube.com/playlist?list=PLrTR7gicdSNSA3hbOD4XjBYI8akVo9nRf&si=RAVVEgfExJexSIM7), Video bagaimana cara penyetupan Pearl hingga tutorial penulisan kodenya sesuai aturan.
-- Blog: [Nazwa Blogger](https://postnazwablogger.blogspot.com/search/label/Pearl), Topik hangat Pearl disajikan di Blog ini, mari merapat!
+- Blog: [Nazwa Blogger](https://postnazwablogger.blogspot.com/search/label/Pearl), Topik hangat Pearl disajikan di Blog ini, Mari merapat!
 - Repositori: [Pearl Docs](https://github.com/aflacake/pearl-docs), Tutorial aturan penulisan kode dan informasi modul beserta penjelasan terlengkap.
 
 # Instalasi
