@@ -38,7 +38,7 @@ async function debug(tokens, modules, context) {
     });
 
   } else if (/^:[^:\[\]]+\[\d+\]:$/.test(arg)) {
-    const match = arg.match(/^:[^:\[\]]+\[\d+\]:$/);
+    const match = arg.match(/^:([^:\[\]]+)\[(\d+)\]:$/);
     const nama = match[1];
     const index = parseInt(match[2]);
 
