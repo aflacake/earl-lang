@@ -11,7 +11,16 @@ async function ambildata(tokens, modules, context) {
         let data = '';
 
         res.on('data', chunk => data += chunk);
-        res.on('end', () => console.log(data));
+        res.on('end', () => {
+            const indexKe = tokens.indexOf('ke');
+            if (indexKe !== -1 && tokens[indexKe + 1]?.startsWith(':')) {
+                const varName = tokens[indexKe + 1].slice(1, -1);
+                memory[varName] = data;
+                console.log('Data disimpan ke :${varName}:');
+            } else {
+                console.log(data);
+            }
+        });
     }).on('error', (err) => {
         console.error('Gagal ambil data:', err.message);
     });
@@ -21,7 +30,7 @@ async function kirimdata(tokens, modules, context) {
     const url = tokens[1].replace(/"/g, '');
     const dataToken = tokens[2];
     const dataObj = (dataToken && dataToken.startsWith(':') && dataToken.endsWith(':'))
-        ? memory[dataToken.slice(1, -1) || {}
+        ? memory[dataToken.slice(1, -1)] || {}
         : {};
 
     const postData = querystring.stringify(dataObj);
@@ -40,7 +49,17 @@ async function kirimdata(tokens, modules, context) {
     const req = https.request(options, (res) => {
         let data = '';
         res.on('data', chunk => data += chunk);
-        res.on('end', () => console.log(data));
+        res.on('end', () => {
+            const indexKe = tokens.indexOf('ke');
+            if (indexKe !== -1 && tokens[indexKe + 1]?.startsWith(':')) {
+                const varName = tokens[indexKe + 1].slice(1, -1);
+                memory[varName] = data;
+                console.log(`Respon disimpan ke :${varName}:`);
+            } else {
+                console.log(data);
+            }
+            
+        });
     });
     req.on('error', (err) => {
         console.error('Gagal kirim data:', err.message);
