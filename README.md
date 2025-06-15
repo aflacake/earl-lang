@@ -19,7 +19,9 @@ tampikan :nama:
 
 # Dokumentasi
 Menyajikan berbagai tutorial terkini seputar topik Pearl. 
-Akan segera hadir dalam bentuk format blog, video, dan dokumentasi interaktif. Saat ini masih dalam tahap konstruksi - tetap disini!
+- Video, playlist: [YouTube](https://youtube.com/playlist?list=PLrTR7gicdSNSA3hbOD4XjBYI8akVo9nRf&si=RAVVEgfExJexSIM7), Video bagaimana cara penyetupan Pearl hingga tutorial penulisan kodenya sesuai aturan.
+- Blog: [Nazwa Blogger](https://postnazwablogger.blogspot.com/search/label/Pearl), Topik hangat Pearl disajikan di Blog ini, mari merapat!
+- Repositori: [Pearl Docs](https://github.com/aflacake/pearl-docs), Tutorial aturan penulisan kode dan informasi modul beserta penjelasan terlengkap.
 
 # Instalasi
 ## Dengan Node.js
@@ -77,8 +79,9 @@ npm link
 
 ## Unduh versi
 Download versi memungkinkan Anda menggunakan tautan eksternal. Versi ini seutuhnya stabil dari berbagai uji coba rata-rata, versi tidak stabil saat ini belum memungkinkan untuk dirilis, sehingga masih dalam bentuk instalasi berlangsung, untuk versi download sesuaikan perangkat yang Anda gunakan. Silahkan coba versi stabil:
-- [Versi 1.0.3](https://www.dropbox.com/scl/fo/tx28twsekamv4r7ijjmd3/AJNeWSaor3yBgXDp803y1Fs?rlkey=h65o1ri2tznreh6bfqpj3a22q&st=xnoohb7x&dl=0)
-- [Versi 1.0.0](https://www.dropbox.com/scl/fo/92zqglhfbdlteyrzfg5el/AMJTipi0hB7207rwC5lQsC8?rlkey=vkhin2gkti1stsro45o1s4gor&st=oweoe82d&dl=0)
+- [Versi 2.0.0](https://www.dropbox.com/scl/fo/zbb12ru3lomywj1jgbgpd/ANs9qHu8ZD8Li3kJ0o9qSSs?rlkey=94ig1gxrgrs3akop9557gwuqr&st=j49xw59f&dl=0)
+- [Versi 1.0.3](https://www.dropbox.com/scl/fo/tx28twsekamv4r7ijjmd3/AJNeWSaor3yBgXDp803y1Fs?rlkey=7nyjdjt26lk4jjdq57jif3fw9&st=zcxzbqr1&dl=0)
+- [Versi 1.0.0](https://www.dropbox.com/scl/fo/92zqglhfbdlteyrzfg5el/AMJTipi0hB7207rwC5lQsC8?rlkey=q9p8jspq3xfztz3q79w0f263p&st=xu169lsy&dl=0)
 
 # Berkontribusi
 Fork kode ini dan bangun aturan apa yang diusul atau menambahkan "bagian kecil" seperti pembenahan kata atau typo dalam teks tidaklah masalah, aturan berkontribusi tidak memberatkan.
