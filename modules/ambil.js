@@ -1,5 +1,6 @@
 // modules/ambil.js
 const { memory } = require('../memory.js');
+const { ambilDaftarJikaPerlu } = require('../utili.js');
 
 function ambil(tokens, modules, context) {
     if (!tokens || tokens.length < 4 || tokens[2] !== 'dari') {
@@ -7,7 +8,12 @@ function ambil(tokens, modules, context) {
         return;
     }
 
-    const targetVar = tokens[1].replace(/:/g, '');
+    if (!tokens[1].startsWith(':') || !tokens[1].endsWith(':')) {
+        console.error("Variabel tujuan harus dalam format :nama:");
+        return;
+    }
+
+    const targetVar = tokens[1].slice(1, -1);
     const sumber = tokens[3];
     let value;
 
@@ -22,27 +28,52 @@ function ambil(tokens, modules, context) {
         return memory[nama];
     }
 
-    if (sumber.includes('.')) {
-        const [namaInstance, namaAtribut] = sumber.split('.');
+    const daftarNilai = ambilDaftarJikaPerlu(sumber);
+    if (daftarNilai !== null) {
+        value = daftarNilai;
+        if (context.lingkup && context.lingkup.length > 0) {
+            context.lingkup[context.ingkup.length - 1][targetVar] = value;
+        } else {
+            memory[targetVar] = value;
+        }
+        console.log(`Variabel '${targetVar}' diisi dari '${sumber}':`, value);
+    }
+
+    else if (sumber.includes('.')) {
+        const bagian = sumber.split('.');
+        const namaInstance = bagian[0];
         const instance = cariDariLingkup(namaInstance);
 
-        if (!instance || !instance.__tipe) {
-            console.error(`Instance '${namaInstance}' tidak ditemukan.`);
+        if (!instance || typeof instance !== 'object') {
+            console.error(`Instance '${namaInstance}' tidak ditemukan atau bukan objek.`);
             return;
         }
 
-        const className = instance.__tipe;
-        const classDef = memory[className];
-
-        if (!classDef || classDef.__tipe !== 'kelas') {
-            console.error(`'${className}' bukan kelas yang valid.`);
-            return;
+        value = instance;
+        for (let i = 1; i < bagian.length; i++) {
+            const kunci = bagian[i];
+            if (value && kunci in value) {
+                value = value[kunci];
+            } else {
+                console.error(`Atribut '$kunci' tidak ditemukan.`);
+                return;
+            }
         }
 
-        if (!classDef.atribut.includes(namaAtribut)) {
-            console.warn(`Atribut '${namaAtribut}' tidak didefinisikan di kelas '${className}'.`);
+        if (instance.__tipe) {
+            const className = instance.__tipe;
+            const classDef = memory[className];
+            const namaAtribut = bagian[1];
+
+            if (!classDef || classDef.__tipe !== 'kelas') {
+                console.error(`'${className}' bukan kelas yang valid.`);
+                return;
+            }
+
+            if (!classDef.atribut.includes(namaAtribut)) {
+                console.warn(`Atribut '${namaAtribut}' tidak didefinisikan di kelas '${className}'.`);
+            }
         }
-        value = instance.instance[namaAtribut];
     }
     else if (sumber.startsWith(':') && sumber.endsWith(':')) {
         const varName = sumber.slice(1, -1);
@@ -65,7 +96,7 @@ function ambil(tokens, modules, context) {
                 value = varValue;
             }
         } else {
-            value = varValue
+            value = varValue;
         }
     }
     else {
