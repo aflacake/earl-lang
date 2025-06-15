@@ -32,11 +32,12 @@ function ambil(tokens, modules, context) {
     if (daftarNilai !== null) {
         value = daftarNilai;
         if (context.lingkup && context.lingkup.length > 0) {
-            context.lingkup[context.ingkup.length - 1][targetVar] = value;
+            context.lingkup[context.lingkup.length - 1][targetVar] = value;
         } else {
             memory[targetVar] = value;
         }
         console.log(`Variabel '${targetVar}' diisi dari '${sumber}':`, value);
+        return;
     }
 
     else if (sumber.includes('.')) {
@@ -55,7 +56,7 @@ function ambil(tokens, modules, context) {
             if (value && kunci in value) {
                 value = value[kunci];
             } else {
-                console.error(`Atribut '$kunci' tidak ditemukan.`);
+                console.error(`Atribut '${kunci}' tidak ditemukan.`);
                 return;
             }
         }
@@ -109,6 +110,7 @@ function ambil(tokens, modules, context) {
         memory[targetVar] = value;
     }
     console.log(`Variabel '${targetVar}' diisi dari '${sumber}':`, value);
+    return;
 };
 
 module.exports = { ambil };
