@@ -28,7 +28,7 @@ function tampilkan(tokens, modules, context) {
         const indexes = [...indexesStr.matchAll(/\[(\d+)\]/g)].map(m => Number(m[1]));
         const arr = memory[varName];
 
-        if (Array.isArray(arr)) {
+        if (!Array.isArray(arr)) {
             console.log(`'${varName}' bukan daftar.`);
             return;
         }
@@ -68,7 +68,7 @@ function tampilkan(tokens, modules, context) {
             if (key in dikta) {
                 console.log(dikta[key]);
             } else {
-                console.log(`Kunci '${key}' tidak ditemukan di dikta '${varName'}.`);
+                console.log(`Kunci '${key}' tidak ditemukan di dikta '${varName}'.`);
             }
         } else {
             console.log(`Variabel '${varName}' bukan dikta.`);
