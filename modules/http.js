@@ -7,18 +7,31 @@ const { memory } = require('../memory');
 async function ambildata(tokens, modules, context) {
     const url = tokens[1].replace(/"/g, '');
 
+    if (!url || !url.startsWith('https://')) {
+        console.error('URL tidak valid atau harus diawali dengan https://');
+        return;
+    }
+
     https.get(url, (res) => {
         let data = '';
 
         res.on('data', chunk => data += chunk);
         res.on('end', () => {
             const indexKe = tokens.indexOf('ke');
-            if (indexKe !== -1 && tokens[indexKe + 1]?.startsWith(':')) {
-                const varName = tokens[indexKe + 1].slice(1, -1);
-                memory[varName] = data;
-                console.log('Data disimpan ke :${varName}:');
+            const varToken = tokens[indexKe + 1];
+
+            let keluaran = data;
+
+            try {
+                keluaran = JSON.parse(data); 
+            } catch { }
+            if (indexKe !== -1 && varToken?.startsWith(':')) {
+                const varName = varToken.slice(1, -1);
+                memory[varName] = keluaran;
+                console.log(`Data disimpan ke :${varName}: (Status: ${res.statusCode})`);
             } else {
-                console.log(data);
+                console.log(`Status: ${res.statusCode}`);
+                console.log(keluaran);
             }
         });
     }).on('error', (err) => {
@@ -28,6 +41,12 @@ async function ambildata(tokens, modules, context) {
 
 async function kirimdata(tokens, modules, context) {
     const url = tokens[1].replace(/"/g, '');
+
+    if (!url || !url.startsWith('https://')) {
+        console.error('URL tidak valid atau harus diawali dengan https://');
+        return;
+    }
+
     const dataToken = tokens[2];
     const dataObj = (dataToken && dataToken.startsWith(':') && dataToken.endsWith(':'))
         ? memory[dataToken.slice(1, -1)] || {}
@@ -51,14 +70,21 @@ async function kirimdata(tokens, modules, context) {
         res.on('data', chunk => data += chunk);
         res.on('end', () => {
             const indexKe = tokens.indexOf('ke');
-            if (indexKe !== -1 && tokens[indexKe + 1]?.startsWith(':')) {
-                const varName = tokens[indexKe + 1].slice(1, -1);
-                memory[varName] = data;
-                console.log(`Respon disimpan ke :${varName}:`);
+            const varToken = tokens[indexKe + 1];
+
+            let keluaran = data;
+
+            try {
+                keluaran = JSON.parse(data);
+            } catch { }
+            if (indexKe !== -1 && varToken?.startsWith(':')) {
+                const varName = varToken.slice(1, -1);
+                memory[varName] = keluaran;
+                console.log(`Respon disimpan ke ${varName}: (Status: ${res.statusCode})`);
             } else {
-                console.log(data);
+                console.log(`Status: ${res.statusCode}`);
+                console.log(keluaran);
             }
-            
         });
     });
     req.on('error', (err) => {
