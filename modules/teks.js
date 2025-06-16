@@ -55,6 +55,60 @@ async function teks(tokens) {
             console.log(`Semua '${dari}' diganti dengan '${menjadi}':`, hasil);
             break;
         }
+
+        case 'ambil': {
+            const mulai = parseInt(tokens[3]);
+            const panjang = parseInt(tokens[4]);
+
+            if (isNaN(mulai) || isNaN(panjang)) {
+                console.error("Format: teks ambil :nama: indeks panjang");
+                return;
+            }
+            console.log(isi.substr(mulai, panjang));
+            break;
+        }
+
+        case 'hapus': {
+            const mulai = parseInt(tokens[3]);
+            const panjang = parseInt(tokens[4]);
+            if (isNaN(mulai) || isNaN(panjang)) {
+                console.error("Format: teks hapus :nama: indeks panjang");
+                return;
+            }
+            memory[namaVariabel] = isi.slice(0, mulai) + isi.slice(mulai + panjang);
+            console.log(`Bagian dari '${namaVariabel}' dihapus`);
+            break;
+        }
+
+        case 'pangkas':
+            memory[namaVariabel] = isi.trim();
+            console.log(`Hasil pangkas: '${memory[namaVariabel]}'`);
+            break;
+
+        case 'isi': {
+            const teksBaru = tokens.slice(3).join('').replace(/^"|"$/g, '');
+            memory[namaVariabel] = teksBaru;
+            console.log(`Isi variabel '${namaVariabel}' diubah.`);
+            break;
+        }
+
+        case 'pecah': {
+            const pembatas = tokens[3]?.replace(/"/g, '') ?? '';
+            memory[namaVariabel] = isi.split(pembatas);
+            console.log(`Variabel '${namaVariabel}' dipecah menjadi daftar.`);
+            break;
+        }
+
+        case 'cocok': {
+            const teks = tokens[3]?.replace(/"/g, '');
+            if (!teks) {
+                console.error("Format: teks cocok :nama: \"teks\"");
+                return;
+            }
+            console.log(isi.includes(teks));
+            break;
+        }
+
         default:
             console.error(`Perintah string '${aksi}' tidak dikenali.`);
     }
