@@ -2,15 +2,15 @@
 
 const { memory } = require('../memory.js');
 
-async function debug(tokens, modules, context) {
+async function periksa(tokens, modules, context) {
   const arg = tokens[1];
 
-  if (!arg || arg === 'memory') {
-    console.log('=== DEBUG MEMORY ===');
-    console.log('Isi memory saat ini', JSON.stringify(memory, null, 2));
+  if (!arg || arg === 'memori') {
+    console.log('=== PERIKSA MEMORI ===');
+    console.log('Isi memori saat ini', JSON.stringify(memory, null, 2));
 
-  } else if (arg === 'context') {
-    console.log('=== DEBUG CONTEXT ===');
+  } else if (arg === 'konteks') {
+    console.log('=== PERIKSA KONTEKS ===');
     console.log('Konteks eksekusi:', {
       index: context.index,
       total_baris: context.lines.length,
@@ -21,16 +21,16 @@ async function debug(tokens, modules, context) {
       if (!memory.gambar) {
           console.log("Belum ada kanvas yang dibuat.");
       } else {
-          console.log("=== DEBUG GAMBAR ===");
+          console.log("=== PERIKSA GAMBAR ===");
           console.log(`Ukuran kanvas: ${memory.gambar.lebar} x ${memory.gambar.tinggi}`);
           console.log(`Warna aktif: ${memory.gambar.warna}`);
       }
 
   } else if (arg === 'semua') {
-    console.log('=== DEBUG MEMORY ===');
-    console.log('Isi memory saat ini', JSON.stringify(memory, null, 2));
+    console.log('=== PERIKSA MEMORI ===');
+    console.log('Isi memori saat ini', JSON.stringify(memory, null, 2));
 
-    console.log('=== DEBUG CONTEXT ===');
+    console.log('=== PERIKSA KONTEKS ===');
     console.log('Konteks eksekusi:', {
       index: context.index,
       total_baris: context.lines.length,
@@ -53,22 +53,22 @@ async function debug(tokens, modules, context) {
       return;
     }
     const nilai = daftar[index];
-    console.log(`=== DEBUG DAFTAR: ${nama}[${index}] ===`);
+    console.log(`=== PERIKSA DAFTAR: ${nama}[${index}] ===`);
     console.log(nilai !== undefined ? nilai : `Tidak ada elemen pada indeks ${index}`);
 
   } else if (Array.isArray(memory[arg])) {
-    console.log(`=== DEBUG DAFTAR: ${arg} ===`);
+    console.log(`=== PERIKSA DAFTAR: ${arg} ===`);
     console.log(memory[arg]);
 
   } else if (memory[arg]?.__tipe === 'kelas') {
-    console.log(`=== DEBUG KELAS: ${arg} ===`);
+    console.log(`=== PERIKSA KELAS: ${arg} ===`);
     console.log({
         atribut: memory[arg].atribut,
         instance: memory[arg].instance
     });
   } else {
-    console.warn(`Argumen debug tidak dikenali: '${arg}'`);
+    console.warn(`Argumen periksa tidak dikenali: '${arg}'`);
   }
 }
 
-module.exports = { debug };
+module.exports = { periksa };
