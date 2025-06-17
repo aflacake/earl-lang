@@ -15,7 +15,7 @@ const { waktu } = require('./modules/waktu.js');
 const { buka } = require('./modules/buka.js');
 const { tulis } = require('./modules/tulis.js');
 const { tutup } = require('./modules/tutup.js');
-const { debug } = require('./modules/debug.js');
+const { periksa } = require('./modules/periksa.js');
 const { lakukan } = require('./modules/lakukan.js');
 const { fungsi } = require('./modules/fungsi.js');
 const { kembalikan } = require('./modules/kembalikan.js');
@@ -31,7 +31,7 @@ const { ulangiKontrol } = require('./modules/ulangiKontrol.js');
 const { teks } = require('./modules/teks.js');
 const { matematika } = require('./modules/matematika.js');
 const { ambildata, kirimdata } = require('./modules/http.js');
-const { masuklingkup, keluarlingkup } = require('./modules/lingkup.js');
+const { masuklingkup, keluarlingkup, periksalingkup } = require('./modules/lingkup.js');
 const { impor } = require('./modules/impor.js');
 const { buatFolder, hapusFolder, bacaFolder, gantiNamaFolder } = require('./modules/folder.js');
 const { aturheader } = require('./modules/aturheader.js');
@@ -54,7 +54,7 @@ const modules = {
     buka,
     tulis,
     tutup,
-    debug,
+    periksa,
     lakukan,
     fungsi,
     kembalikan,
@@ -71,6 +71,7 @@ const modules = {
     kirimdata,
     masuklingkup,
     keluarlingkup,
+    periksalingkup,
     impor,
     buatFolder,
     hapusFolder,
