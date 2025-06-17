@@ -33,6 +33,8 @@ const { matematika } = require('./modules/matematika.js');
 const { ambildata, kirimdata } = require('./modules/http.js');
 const { masuklingkup, keluarlingkup } = require('./modules/lingkup.js');
 const { impor } = require('./modules/impor.js');
+const { buatFolder, hapusFolder, bacaFolder, gantiNamaFolder } = require('./modules/folder.js');
+const { aturheader } = require('./modules/aturheader.js');
 
 const fs = require('fs');
 const readline = require('readline');
@@ -70,6 +72,11 @@ const modules = {
     masuklingkup,
     keluarlingkup,
     impor,
+    buatFolder,
+    hapusFolder,
+    bacaFolder,
+    gantiNamaFolder,
+    aturheader,
     tokenize
 };
 
