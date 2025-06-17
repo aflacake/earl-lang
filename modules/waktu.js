@@ -89,6 +89,28 @@ async function waktu(tokens, modules, context) {
         break;
       }
 
+    case "formatkustom": {
+        const rawFormat = tokens[2];
+        if (!rawFormat || !rawFormat.startsWith('"') || !rawFormat.endsWith('"')) {
+            console.error('Gunakan tanda kutip ganda di format, contoh: waktu formatkustom "HH-BB-TTTT JJ:mm:dd"');
+            return;
+        }
+
+        sekarang = new Date();
+        const format = rawFormat.slice(1, -1);
+
+        const hasil = format
+            .replace(/TTTT/g, now.getFullYear())
+            .replace(/BB/g, String(sekarang.getMonth() + 1).padStart(2, '0'))
+            .replace(/HH/g, String(sekarang.getDate()).padStart(2, '0'))
+            .replace(/JJ/g, String(sekarang.getHours()).padStart(2, '0'))
+            .replace(/mm/g, String(sekarang.getMinutes()).padStart(2, '0'))
+            .replace(/dd/g, String(sekarang.getSeconds()).padStart(2, '0'));
+
+        simpanJikaPerlu(hasil);
+        break;
+    }
+
     case "stempelwaktu":
         simpanJikaPerlu(Date.now());
         break;
