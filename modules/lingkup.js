@@ -12,4 +12,13 @@ async function keluarlingkup(tokens, modules, context) {
     }
 }
 
-module.exports = { masuklingkup, keluarlingkup };
+async function periksalingkup(tokens, modules, context) {
+    console.log('=== PERIKSA LINGKUP ===');
+    context.lingkup.forEach((scope, index) => {
+        console.log(`Lingkup [${index}]`);
+        console.dir(scope, { depth: null });
+    });
+    console.log('=====================');
+}
+
+module.exports = { masuklingkup, keluarlingkup, periksalingkup };
