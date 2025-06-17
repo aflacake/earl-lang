@@ -48,6 +48,25 @@ async function atur(tokens, modules, context) {
     // kasus 2
     const [_, path, operator, ...valueParts] = tokens;
 
+    let valueTokens = [...valueParts];
+
+    if (
+        (valueTokens[0] === '(' && valueTokens[valueTokens.length - 1] !== ')') ||
+        (valueTokens[0] === '[' && valueTokens[valueTokens.length - 1] !== ']')
+    ) {
+        const pembuka = valueTokens[0];
+        const penutup = pembuka === '(' ? ')': ']';
+
+        context.index++;
+
+        while (context.index < context.lines.length) {
+            const line = content.lines[content.index].trim();
+            valueTokens.push(...modules.tokenize(line));
+            if (line === penutup) break;
+            context.index;
+        }
+    }
+
     if (operator !== '=') {
          console.error(`Operator '{$operator}' tidak dikenali. Gunakan '='.`);
          return;
@@ -55,10 +74,12 @@ async function atur(tokens, modules, context) {
 
     let value;
 
-    if (valueParts[0] === '[' && valueParts[valueParts.length - 1] === ']') {
-        value = parseArrayValue(valueParts);
+    if (valueTokens[0] === '[' && valueTokens[valueTokens.length - 1] === ']') {
+        value = parseArrayValue(valueTokens);
+    } else if (valueToken[0] === '(' && valueTokens[valueTokens.length - 1] === ')') {
+       value = parseObjekValue(valueTokens);
     } else {
-        const valueRaw = valueParts.join('').trim();
+        const valueRaw = valueTokens.join('').trim();
         value = parseArrayElement(valueRaw);
     }
 
@@ -165,10 +186,16 @@ async function atur(tokens, modules, context) {
     function parseArrayElement(val) {
         val = val.trim();
 
+        if (val.startsWith('(') && val.endsWith(')')) {
+            const objTokens = modules.tokenize(val);
+            return parseObjekValue(objTokens);
+        }
+
         if (val.startsWith('[') && val.endsWith(']')) {
             const sarangTokens = modules.tokenize(val);
             return parseArrayValue(sarangTokens);
         }
+
         if (/^".*"$/.test(val)) return val.slice(1, -1);
         if (!isNaN(val)) return Number(val);
         if (val.startsWith(':') && val.endsWith(':')) {
@@ -176,6 +203,54 @@ async function atur(tokens, modules, context) {
             return memory[ref] !== undefined ? memory[ref] : null;
         }
         return val;
+    }
+
+    function parseObjekValue(tokens) {
+        let hasil = {};
+        let i = 1;
+        let kunci = '';
+        let valueTokens = [];
+        let sedangKumpul = false;
+        let kedalaman = 0;
+
+        while (i < tokens.length - 1) {
+            const token = tokens[i];
+
+            if (!sedangKumpul) {
+                const parts = token.split(':');
+                if (parts.length === 2) {
+                    kunci = parts[0].trim();
+                    valueTokens = [parts[1].trim()];
+                    sedangKumpul = true;
+                } else if (parts.length === 1) {
+                    kunci = parts[0].trim();
+                    if (tokens[i + 1] === ':') {
+                        i++;
+                        sedangKumpul = true;
+                        valueTokens = [];
+                    } else {
+                        console.error('Format objek salah, kunci tanpa ":"');
+                        return null;
+                    }
+                }
+            } else {
+                if (token === ',' && kedalaman === 0) {
+                    hasil[key] = parseArrayElement(valueTokens.join(' ').trim());
+                    sedangKumpul = false;
+                    kunci = '';
+                    valueTokens = [];
+                } else {
+                    if (token === '[' || token === '(') kedalaman++;
+                    if (token === ']' || token === ')') kedalaman--;
+                    valueTokens.push(token);
+                }
+            }
+            i++;
+        }
+        if (kunci && valueTokens.length) {
+            hasil[kunci] = parseArrayElement(valueTokens.join(' ').trim());
+        }
+        return hasil;
     }
 }
 
