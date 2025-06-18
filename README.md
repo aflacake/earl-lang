@@ -39,11 +39,14 @@ tulis :salinan:
 -- 5. Catat log sederhana --
 atur :log: [
     "File dibuka: :namafile:",
-    "Isi disalin ke :output.txt"
+    "Isi disalin ke file: output.txt"
 ]
 
 -- 6. Tampilkan log hasil proses --
-tampilkan :log:
+tampilkan -v :log:
+
+-- 7. Simpan log ke file --
+tampilkan :log: > "log.txt"
 ```
 
 # Dokumentasi
