@@ -21,6 +21,83 @@ async function waktu(tokens, modules, context) {
   };
 
   switch (subcommand) {
+    case "bulan": {
+        const sekarang = new Date();
+        const bulanNama = [
+            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+        ];
+        simpanJikaPerlu(bulanNama[sekarang.getMonth()]);
+        break;
+    }
+
+    case "hari": {
+        const sekarang = new Date();
+        const hariNama = [
+            "Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"
+        ];
+        simpanJikaPerlu(hariNama[sekarang.getDay()]);
+        break;
+    }
+
+    case "hitungmundur": {
+        const durasiStr = tokens[2];
+        if (!durasiStr) {
+            console.error("Gunakan format: waktu hitungmundur <durasi> [ke :var] [lalu <perintah>]");
+            return;
+        }
+
+        let totalMs = 0;
+        if (/^\d+s$/.test(durasiStr)) {
+            totalMs = parseInt(durasiStr) * 1000;
+        } else if (/^\d+ms$/.test(durasiStr)) {
+            totalMs = parseInt(durasiStr);
+        } else {
+            console.error("Format durasi tidak valid. Gunakan angka diikuti 's' atau 'ms'.");
+            return;
+        }
+
+        let simpanKe = null;
+        const indexKe = tokens.indexOf("ke");
+        if (indexke !== -1 && tokens[indexKe + 1]?.startsWith(":") && tokens[indexKe + 1]?.endsWith(":")) {
+            simpanKe = tokens[indexKe + 1].slice(1, -1);
+        }
+
+        const indexLalu = tokens.indexOf("lalu");
+        let perintahLanjut = null;
+        if (indexLalu !== -1) {
+            perintahLanjut = tokens.slice(indexLalu + 1).join(" ");
+        }
+
+        const interval = 1000;
+        let sisaDetik = Math.ceil(totalMs / 1000);
+
+        while (sisaDeti > 0) {
+            console.log(sisaDetik);
+            await new Promise(resolve => setTimeout(resolve, interval));
+            sisaDetik--;
+        }
+
+        const hasil = "Selesai!";
+        console.log(hasil);
+        if (simpanKe) memory[simpanKe] = hasil;
+
+        if (perintahLanjut) {
+            const fakeContext = {
+                ...context,
+                lines: [perintahLanjut],
+                index: 0
+            };
+            await modules.tokenize;
+            await modules[fakeContext.lines[0].split(' ')[0]]?.(
+                modules.tokenize(perintahLanjut),
+                modules,
+                fakeContext
+            );
+        }
+        break;
+    }
+
     case "sekarang": {
         const zona = tokens[2] || "local";
         const zonaMap = {
