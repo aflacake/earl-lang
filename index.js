@@ -35,6 +35,7 @@ const { masuklingkup, keluarlingkup, periksalingkup } = require('./modules/lingk
 const { impor } = require('./modules/impor.js');
 const { buatFolder, hapusFolder, bacaFolder, gantiNamaFolder } = require('./modules/folder.js');
 const { aturheader } = require('./modules/aturheader.js');
+const { evaluasi } = require('./modules/evaluasi.js');
 
 const fs = require('fs');
 const readline = require('readline');
@@ -78,6 +79,7 @@ const modules = {
     bacaFolder,
     gantiNamaFolder,
     aturheader,
+    evaluasi,
     tokenize
 };
 
