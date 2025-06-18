@@ -158,6 +158,7 @@ async function atur(tokens, modules, context) {
         let hasil = [];
         let saatIni = [];
         let kedalaman = 0;
+        let terakhirKoma = false;
 
         for (let i = 1; i < tokens.length - 1; i++) {
             const token = tokens[i];
@@ -165,16 +166,26 @@ async function atur(tokens, modules, context) {
             if (token === '[') {
                 kedalaman++;
                 saatIni.push(token);
+                terakhirKoma = false;
             } else if (token === ']') {
-                if (kedalaman === 0) {
+                if (kedalaman > 0) {
                     kedalaman--;
                     saatIni.push(token);
+                } else {
+                    console.error("Kurung tutup tidak seimbang di array.");
+                    return null;
                 }
+                terakhirKoma = false;
             } else if (token === ',' && kedalaman === 0) {
+                if (terakhirKoma) {
+                    console.error("Koma ganda tidak diizinkan dalam array.");
+                    return null;
+                }
                 hasil.push(parseArrayElement(saatIni.join(' ').trim()));
                 saatIni = [];
             } else {
                 saatIni.push(token);
+                terakhirKoma = false;
             }
         }
         if (saatIni.length > 0) {
@@ -185,6 +196,11 @@ async function atur(tokens, modules, context) {
 
     function parseArrayElement(val) {
         val = val.trim();
+
+        if ((val.startsWith('"') && !val.endsWith('"')) || (!val.startsWith('"') && val.endsWith('"'))) {
+            console.error(`String tidak ditutup dengan benar: ${val}`);
+            return null;
+        }
 
         if (val.startsWith('(') && val.endsWith(')')) {
             const objTokens = modules.tokenize(val);
@@ -200,7 +216,11 @@ async function atur(tokens, modules, context) {
         if (!isNaN(val)) return Number(val);
         if (val.startsWith(':') && val.endsWith(':')) {
             const ref = val.slice(1, -1);
-            return memory[ref] !== undefined ? memory[ref] : null;
+            if (!(ref in memory)) {
+                console.error(`Referensi variabel ':${ref}:' tidak ditemukan.`);
+                return null;
+            }
+            return memory[ref];
         }
         return val;
     }
