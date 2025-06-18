@@ -1,15 +1,19 @@
 <p align="right">Bahasa: Indonesia</p>
 <img src="https://raw.githubusercontent.com/aflacake/pearl/main/img/Pearl.png" width="150px" height="150px" alt="Pearl" />
 
-# Pearl - Bahasa Pemrograman Ekspresif
-Pearl adalah bahasa pemrograman eksperimen prototipe interaksi teks yang mirip dengan bahasa manusia atau lebih dikenal _pseudocode_, menggunakan Bahasa Indonesia, modular yang mudah dipahami, dan fleksibel untuk skripsi. Bahasa yang modulnya mudah diperluas serta mirip _command handler_. Cocok untuk otomasi alur kerja, cocok juga untuk programmer baru belajar.
+# Pearl - Bahasa Pemrograman Alur Kerja
+Pearl adalah bahasa pemrograman scripting domain-spesifik (DSL) yang dirancang untuk **otomasi, pengaturan logika, konfigurasi dinamis** dalam sistem modern. Dengan sintaks yang sederhana dan modular, Pearl memungkinkan pengguna untuk membuat alur kerja, memanipulasi data, dan kontrol sistem secara ekspresif namun terstruktur.
 
-Proses pengembangan ini juga beberapa dibuat generative oleh AI seperti pembuatan, debug, dan pembenahan kode.
+Menjadikan jembatan _konfigurasi statis_ (seperti YAML/JSON) dan _scripting dinamis_, dengan menawarkan bahasa ringan, terbaca manusia dan cukup kuat untuk menyusun logika kompleks dalam sistem modern.
 
-Tujuan Pearl:
-- Menyederhanakan logika program
-- Bagus untuk pemula
-- Pendekatan bahasa manusia dengan interaksi teks
+> Proses pengembangan ini juga beberapa dibuat generative oleh AI seperti pembuatan, _debug_, dan pembenahan kode.
+
+Kenapa Pearl?
+- Sintaks ekpresif, mirip _natural language logic_.
+- Mendukung fungsi, kondisi, dan perulangan.
+- Bisa dipakai sebagai CLI, REPL, atau embedded engine.
+- Mudah dipelajari, bisa digunakan oleh non-programmer teknis (ops, devops, analis).
+- Lebih fleksibel dari YAML, lebih ringan dari Python untuk _task-task_ kecil.
 
 Contoh bahasa Peal sederhana:
 ```pearl
@@ -17,9 +21,33 @@ masukkan :nama: sebagai pearl
 tampikan :nama:
 ```
 
+Contoh Pearl Script (_Task Runner_):
+```pearl
+-- 1. Minta input dari user untuk nama file sumber --
+masukkan :namaFile:
+
+-- 2. Coba buka file tersebut --
+buka :isi: dari ":namaFile:"
+
+-- 3. Jika file berhasil dibuka, tampilkan preview --
+jika :isi: != "" maka tampilkan "File berhasil dibaca."
+
+-- 4. Simpan isi ke file baru --
+atur :salinan: = :isi:
+tulis :salinan:
+
+-- 5. Catat log sederhana --
+atur :log: [
+    "File dibuka: :namafile:",
+    "Isi disalin ke :output.txt"
+]
+
+-- 6. Tampilkan log hasil proses --
+tampilkan :log:
+```
+
 # Dokumentasi
 Menyajikan berbagai tutorial terkini seputar topik Pearl. 
-- Video, playlist: [YouTube](https://youtube.com/playlist?list=PLrTR7gicdSNSA3hbOD4XjBYI8akVo9nRf&si=RAVVEgfExJexSIM7), Video bagaimana cara penyetupan Pearl hingga tutorial penulisan kodenya sesuai aturan.
 - Blog: [Nazwa Blogger](https://postnazwablogger.blogspot.com/search/label/Pearl), Topik hangat Pearl disajikan di Blog ini, Mari merapat!
 - Repositori: [Pearl Docs](https://github.com/aflacake/pearl-docs), Tutorial aturan penulisan kode dan informasi modul beserta penjelasan terlengkap.
 
@@ -36,6 +64,7 @@ node index.js
   ``` bash
   npm install canvas
   ```
+
 ## Dengan CLI
 ### Pengguna Windows
 File CLI bernama: `pearl.cmd`.
