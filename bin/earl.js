@@ -1,7 +1,7 @@
 #!/usr/bin/env mode
 const fs = require('fs');
 const path = require('path');
-const { runPearl } = require('../index');
+const { runEarl } = require('../index');
 
 const args = process.argv.slice(2);
 
@@ -18,4 +18,4 @@ if (!fs.exitsSync(filePath)) {
 }
 
 const code = fs.readFileSync(filePath, 'utf8');
-runPearl(code);
+runEarl(code);
