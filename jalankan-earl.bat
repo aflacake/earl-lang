@@ -5,7 +5,7 @@ cd /d "%dp0"
 
 where node >nul 2>nul
 if %errorlevel% neq 0 (
-    echo Node.js tidak ditemukan. Silakan insrtal Node.js terlebih dahulu.
+    echo Node.js tidak ditemukan. Silakan instal Node.js terlebih dahulu.
     pause
     exit /b
 )
