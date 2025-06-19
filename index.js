@@ -33,7 +33,7 @@ const { matematika } = require('./modules/matematika.js');
 const { ambildata, kirimdata } = require('./modules/http.js');
 const { masuklingkup, keluarlingkup, periksalingkup } = require('./modules/lingkup.js');
 const { impor } = require('./modules/impor.js');
-const { buatFolder, hapusFolder, bacaFolder, gantiNamaFolder } = require('./modules/folder.js');
+const { buatFolder, hapusFolder, bacaFolder, gantiNamaFolder, periksaUkuranFolder } = require('./modules/folder.js');
 const { aturheader } = require('./modules/aturheader.js');
 const { evaluasi } = require('./modules/evaluasi.js');
 
@@ -78,6 +78,7 @@ const modules = {
     hapusFolder,
     bacaFolder,
     gantiNamaFolder,
+    periksaUkuranFolder,
     aturheader,
     evaluasi,
     tokenize
