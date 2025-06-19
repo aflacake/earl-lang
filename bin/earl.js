@@ -6,7 +6,7 @@ const { runPearl } = require('../index');
 const args = process.argv.slice(2);
 
 if (args.length === 0) {
-    console.log("Gunakan: pearl file.pearl");
+    console.log("Gunakan: earl file.earl");
     process.exit(1);
 }
 
