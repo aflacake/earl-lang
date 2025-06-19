@@ -84,7 +84,7 @@ const modules = {
     tokenize
 };
 
-async function runPearl(code, modules, parentContext) {
+async function runEarl(code, modules, parentContext) {
     const lines = code.trim().split('\n');
     const context = parentContext ?? { index: 0, lines, lingkup: [{}] };
 
@@ -121,14 +121,14 @@ const args = process.argv.slice(2);
 
 if (args.length > 0) {
     const filename = args[0];
-    if (!filename.endsWith('.pearl')) {
-        console.error("Hanya file dengan ekstensi .pearl yang dapat dijalankan.");
+    if (!filename.endsWith('.earl')) {
+        console.error("Hanya file dengan ekstensi .earl yang dapat dijalankan.");
         process.exit(1);
     }
 
     if (fs.existsSync(filename)) {
         const kode = fs.readFileSync(filename, 'utf8');
-        runPearl(kode);
+        runEarl(kode);
     } else {
         console.error(`File '${filename}' tidak ditemukan.`);
     }
@@ -136,10 +136,10 @@ if (args.length > 0) {
     const rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout,
-        prompt: 'pearl>'
+        prompt: 'earl>'
     });
 
-    console.log("Pearl REPL Mode - ketik 'keluar' untuk keluar");
+    console.log("Earl REPL Mode - ketik 'keluar' untuk keluar");
 
     rl.prompt();
 
@@ -150,7 +150,7 @@ if (args.length > 0) {
         }
 
         try {
-            await runPearl(line);
+            await runEarl(line);
         } catch (err) {
             console.error('Kesalahan', err.message);
         }
@@ -165,4 +165,4 @@ if (args.length > 0) {
 }
 
 
-module.exports = { runPearl };
+module.exports = { runEarl };
