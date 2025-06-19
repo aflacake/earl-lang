@@ -1,10 +1,10 @@
 {
-  "name": "pearl-lang",
+  "name": "earl-lang",
   "version": "2.0.0",
-  "description": "Pearl Bahasa Pemrograman Alur Kerja",
+  "description": "Earl Bahasa Pemrograman Alur Kerja",
   "main": "index.js",
   "bin": {
-    "pearl": "./bin/pearl.js"
+    "earl": "./bin/earl.js"
   },
   "type": "commonjs",
   "scripts": {
@@ -20,6 +20,6 @@
   },
   "author": "Nazwa Shabrina Zain",
   "license": "Apache-2.0",
-  "keywords": ["pearl", "language", "interpreter", "edu", "scripting"],
+  "keywords": ["earl", "language", "interpreter", "edu", "scripting"],
   "dependencies": {}
 }
