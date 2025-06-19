@@ -1,28 +1,28 @@
 <p align="right">Bahasa: Indonesia</p>
-<img src="https://raw.githubusercontent.com/aflacake/pearl/main/img/Pearl.png" width="150px" height="150px" alt="Pearl" />
+<img src="https://raw.githubusercontent.com/aflacake/earl-lang/main/img/Earl.png" width="150px" height="150px" alt="Pearl" />
 
-# Pearl - Bahasa Pemrograman Alur Kerja
-Pearl adalah bahasa pemrograman scripting domain-spesifik (DSL) yang dirancang untuk **otomasi, pengaturan logika, konfigurasi dinamis** dalam sistem modern. Dengan sintaks yang sederhana dan modular, Pearl memungkinkan pengguna untuk membuat alur kerja, memanipulasi data, dan kontrol sistem secara ekspresif namun terstruktur.
+# Earl - Bahasa Pemrograman Alur Kerja
+Earl adalah bahasa pemrograman scripting domain-spesifik (DSL) yang dirancang untuk **otomasi, pengaturan logika, konfigurasi dinamis** dalam sistem modern. Dengan sintaks yang sederhana dan modular, Earl memungkinkan pengguna untuk membuat alur kerja, memanipulasi data, dan kontrol sistem secara ekspresif namun terstruktur.
 
 Menjadikan jembatan _konfigurasi statis_ (seperti YAML/JSON) dan _scripting dinamis_, dengan menawarkan bahasa ringan, terbaca manusia dan cukup kuat untuk menyusun logika kompleks dalam sistem modern.
 
 > Proses pengembangan ini juga beberapa dibuat generative oleh AI seperti pembuatan, _debug_, dan pembenahan kode.
 
-Kenapa Pearl?
+Kenapa Earl?
 - Sintaks ekpresif, mirip _natural language logic_.
 - Mendukung fungsi, kondisi, dan perulangan.
 - Bisa dipakai sebagai CLI, REPL, atau embedded engine.
 - Mudah dipelajari, bisa digunakan oleh non-programmer teknis (ops, devops, analis).
 - Lebih fleksibel dari YAML, lebih ringan dari Python untuk _task-task_ kecil.
 
-Contoh bahasa Peal sederhana:
-```pearl
+Contoh bahasa Earl sederhana:
+```earl
 masukkan :nama: sebagai pearl
 tampikan :nama:
 ```
 
-Contoh Pearl Script (_Task Runner_):
-```pearl
+Contoh Earl Script (_Task Runner_):
+```earl
 -- 1. Minta input dari user untuk nama file sumber --
 masukkan :namaFile:
 
@@ -50,9 +50,9 @@ tampilkan :log: > "log.txt"
 ```
 
 # Dokumentasi
-Menyajikan berbagai tutorial terkini seputar topik Pearl. 
-- Blog: [Nazwa Blogger](https://postnazwablogger.blogspot.com/search/label/Pearl), Topik hangat Pearl disajikan di Blog ini, Mari merapat!
-- Repositori: [Pearl Docs](https://github.com/aflacake/pearl-docs), Tutorial aturan penulisan kode dan informasi modul beserta penjelasan terlengkap.
+Menyajikan berbagai tutorial terkini seputar topik Earl. 
+- Blog: [Nazwa Blogger](https://postnazwablogger.blogspot.com/search/label/Pearl), Topik hangat Earl disajikan di Blog ini, Mari merapat!
+- Repositori: [Earl Docs](https://github.com/aflacake/earl-docs), Tutorial aturan penulisan kode dan informasi modul beserta penjelasan terlengkap.
 
 # Instalasi
 ## Dengan Node.js
@@ -70,34 +70,34 @@ node index.js
 
 ## Dengan CLI
 ### Pengguna Windows
-File CLI bernama: `pearl.cmd`.
-File `package.json` dan `pearl.cmd` sudah disiapkan maka langsung arahkan ke folder, lalu jalankan:
+File CLI bernama: `earl.cmd`.
+File `package.json` dan `earl.cmd` sudah disiapkan maka langsung arahkan ke folder, lalu jalankan:
 ```bash
 npm link
 ```
 
 #### Tambahkan ke PATH
 1. Salin semua file atau download semua file ini dengan keterangan versi terbaru (rekomendasi) atau pada saat proses pengembangan juga terbaik (perlu perbaikan).
-   > Misalnya di C:\Users\KAMU\pearl
+   > Misalnya di C:\Users\KAMU\earl
 2. Tambahkan folder tersebut ke PATH:
    - Tekan `Win + R`, ketik _Edit the system environment variables_ lalu _Enter_
    - Tab _**Advanced**_ > _Environment Variables_
    - Dibagian _User variables_, pilih Path lalu
    - **New** > masukkan
-     > Misalnya di C:\Users\KAMU\pearl
+     > Misalnya di C:\Users\KAMU\earl
    - **OK** dan restart terminal
 
 Jalankan dengan menggunakan perintah:
 ```bash
-pearl contoh.pearl
+pearl contoh.earl
 ```
 
 ### Pengguna Linux dan MacOS
-File CLI bernama: `pearl`
+File CLI bernama: `earl`
 #### Tambahkan ke PATH
 Dengan menjalankan folder langsung atau saat ini:
 ```bash
-./pearl contoh.pearl
+./pearl contoh.earl
 ```
 atau
 Berikan hak akses eksekusi:
@@ -116,7 +116,7 @@ Download versi memungkinkan Anda menggunakan tautan eksternal. Versi ini seutuhn
 - [Versi 1.0.0](https://www.dropbox.com/scl/fo/92zqglhfbdlteyrzfg5el/AMJTipi0hB7207rwC5lQsC8?rlkey=q9p8jspq3xfztz3q79w0f263p&st=xu169lsy&dl=0)
 
 # Berkontribusi
-Pearl masih dalam pengembangan dan terbuka untuk:
+Earl masih dalam pengembangan dan terbuka untuk:
 - Saran fitur
 - Perbaikan bug
 - Kolaborasi desain sintaks
