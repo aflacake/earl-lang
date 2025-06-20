@@ -37,14 +37,25 @@ function masukkan(tokens) {
         }
 
         const varName = tokens[1].replace(/:/g, '');
+        if (!varName) {
+            console.error("Variabel tujuan harus ditulis dalam format :nama:");
+            retrun.resolve();
+        }
+
+        let prompt = 'Masukkan nilai untuk ' + varName + ': ';
+        const sisa = token.slice(2).join(' ').trim();
+        const quoted = sisa.match(/^"(.*)"$/);
+        if (quoted) {
+            prompt = quoted[1] + ' ';
+        }
+
         const rl = readline.createInterface({
             input: process.stdin,
             output: process.stdout,
         });
 
-        rl.question(`Masukkan nilai untuk '${varName}':`, (userInput) => {
+        rl.question(prompt, (userInput) => {
             memory[varName] = userInput;
-            console.log(`Nilai untuk ${varName} disimpan: ${userInput}`);
             rl.close();
             resolve();
         });
