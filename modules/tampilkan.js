@@ -116,8 +116,12 @@ function tampilkan(tokens, modules, context) {
             break;
         }
 
-        const nilai = resolveToken(token);
-        hasil.push(verbose ? JSON.stringify(nilai, null, 2) : formatValue(nilai, verbose));
+        if (token.startsWith('"') && token.endsWith('"')) {
+            hasil.push(token.slice(1, -1));
+        } else {
+            const nilai = resolveToken(token);
+            hasil.push(verbose ? JSON.stringify(nilai, null, 2) : formatValue(nilai, verbose));
+        }
         i++;
     }
 
