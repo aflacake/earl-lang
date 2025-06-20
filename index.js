@@ -36,6 +36,7 @@ const { impor } = require('./modules/impor.js');
 const { buatFolder, hapusFolder, bacaFolder, gantiNamaFolder, periksaUkuranFolder } = require('./modules/folder.js');
 const { aturheader } = require('./modules/aturheader.js');
 const { evaluasi } = require('./modules/evaluasi.js');
+const { cobaTangkap } = require('./modules/cobaTangkap.js');
 
 const fs = require('fs');
 const readline = require('readline');
@@ -81,6 +82,7 @@ const modules = {
     periksaUkuranFolder,
     aturheader,
     evaluasi,
+    cobaTangkap,
     tokenize
 };
 
