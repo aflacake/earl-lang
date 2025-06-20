@@ -11,7 +11,7 @@ async function matematika(tokens) {
         offset = 2;
     }
 
-    const operasi = tokns[offset];
+    const operasi = tokens[offset];
 
     const ambilNilai = (token) => {
         if (token.startsWith(':') && token.endsWith(':')) {
@@ -84,6 +84,82 @@ async function matematika(tokens) {
             simpanAtauTampilkan(Math.abs(x));
             break;
         }
+
+        // Operasi matematika dasar
+        case 'tambah': {
+            const a = ambilNilai(tokens[offset + 1]);
+            const b = ambilNilai(tokens[offset + 2]);
+            if (isNaN(a) || isNaN(b)) return console.error('Gunakan angka yang valid untuk tambah.');
+            simpanAtauTampilkan(a + b);
+            break;
+        }
+
+        case 'kurang': {
+            const a = ambilNilai(tokens[offset + 1]);
+            const b = ambilNilai(tokens[offset + 2]);
+            if (isNaN(a) || isNaN(b)) return console.error('Gunakan angka yang valid untuk kurang.');
+            simpanAtauTampilkan(a - b);
+            break;
+        }
+
+        case 'kali': {
+            const a = ambilNilai(tokens[offset + 1]);
+            const b = ambilNilai(tokens[offset + 2]);
+            if (isNaN(a) || isNaN(b)) return console.error('Gunakan angka yang valid untuk kali.');
+            simpanAtauTampilkan(a * b);
+            break;
+        }
+
+        case 'bagi': {
+            const a = ambilNilai(tokens[offset + 1]);
+            const b = ambilNilai(tokens[offset + 2]);
+            if (isNaN(a) || isNaN(b) || b === 0) return console.error('Pembagian tidak valid.');
+            simpanAtauTampilkan(a / b);
+            break;
+        }
+
+        case 'pangkat': {
+            const base = ambilNilai(tokens[offset + 1]);
+            const exponent = ambilNilai(tokens[offset + 2]);
+            if (isNaN(base) || isNaN(exponent)) return console.error('Gunakan angka yang valid untuk pangkat.');
+            simpanAtauTampilkan(Math.pow(base, expoent));
+            break;
+        }
+
+        // Fitur lanjutan
+        case 'log': {
+            const x = ambilNilai(tokens[offset + 1]);
+            if (isNaN(x) || x <= 0) return console.error("Nilai log harus positif.");
+            simpanAtauTampilkan(Math.log(x);
+            break;
+        }
+
+        case 'sin': {
+            const x = ambilNilai(tokens[offset + 1]);
+            if (isNaN(x)) return console.error("Nilai tidak valid.");
+            simpanAtauTampilkan(Math.sin(x));
+            break;
+        }
+
+        case 'cos': {
+            const x = ambilNilai(tokens[offset + 1]);
+            if (isNaN(x)) return console.error("Nilai tidak valid.");
+            simpanAtauTampilkan(Math.cos(x));
+            break;
+        }
+
+        case 'tan': {
+            const x = ambilNilai(tokens[offset + 1]);
+            if (isNaN(x)) return console.error("Nilai tidak valid.");
+            simpanAtauTampilkan(Math.tan(x));
+            break;
+        }
+
+        case 'pi': {
+            simpanAtauTampilkan(Math.PI);
+            break;
+        }
+
         default:
             console.error(`Perintah matematika '${operasi}' tidak dikenali.`);
     }
