@@ -55,7 +55,24 @@ function masukkan(tokens) {
         });
 
         rl.question(prompt, (userInput) => {
-            memory[varName] = userInput;
+            const isNumber = (input) => !isNaN(input);
+            const maxLength = (input) => input.length <= 10;
+            const isValidPattern = (input) => /^[a-zA-Z\s]*$/.test(input);
+
+            if (isNumber(userInput)) {
+                memory[varName] = Number(userInput);
+                console.log(`${varName} disetujui sebagai angka.`);
+            } else if (maxLength(userInput)) {
+                memory[varName] = userInput;
+                console.log(`${varName} disetujui dengan panjang maksimal.`);
+            } else if (isValidPattern(userInput)) {
+                memory[varName] = userInput;
+                console.log(`${varName} disetujui dengan format yang benar.`)
+            } else {
+                console.error(`Input untuk ${varName} tidak valid. Pastikan input sesuai kriteria.`);
+                return rl.close();
+            }
+
             rl.close();
             resolve();
         });
