@@ -135,4 +135,4 @@ function tampilkan(tokens, modules, context) {
     }
 }
 
-module.exports = { tampilkan };
+module.exports = { tampilkan, resolveToken, evalMathExpression };
