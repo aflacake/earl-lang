@@ -15,7 +15,7 @@ async function impor(tokens, modules, context) {
     }
 
     try {
-        const kode = await fs.readFile(filename, 'utf8');
+        const kode = await fs.readFile(namafile, 'utf8');
         await modules.runPearl(kode, modules, context);
     } catch (err) {
         console.error(`Gagal; mengimpor file '${namafile}':`, err.message);
