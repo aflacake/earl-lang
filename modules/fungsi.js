@@ -39,7 +39,7 @@ function fungsi (tokens, modules, context) {
 
   context.index++;
 
-  modules[namaFungsi] = async (tokens, modules, parentContext) => {
+  modules fungsiBaru = async (tokens, modules, parentContext) => {
     const args = tokens.slice(1);
     const lokalLingkup = {};
 
@@ -66,20 +66,36 @@ function fungsi (tokens, modules, context) {
 
       const cmd =  innerTokens[0];
 
-      if (modules[cmd]) {
-        try {
-            await modules[cmd](innerTokens, modules, localContext);
+      const func = (
+          modules[cmd] ||
+          localContext.lingkup
+              .slice()
+              .reverse()
+              .map(scope => scope[cmd])
+             .find(f => typeof f === 'function')
+      );
+
+      if (func) {
+          try {
+              await func(innerTokens, modules, localContext);
           } catch (err) {
-            console.error(`Kesalahan dalam fungsi '${namaFungsi}':`, err.message);
+              console.error(`Kesalahan dalam fungsi '${namaFungsi}':`, err.message);
           }
-        } else {
-            console.error(`Perintah '${cmd}' tidak dikenali dalam fungsi '${namaFungsi}'`);
-        }
-        if (localContext.stopExecution) break;
-        localContext.index++;
+      } else {
+          console.error(`Perintah '${cmd}' tidak dikenali dalam fungsi '${namaFungsi}'`);
+      }
+      if (localContext.stopExecution) break;
+      localContext.index++;
     }
     return localContext.return;
   };
+
+  const scopeNow = context.lingkup[context.lingkup.length -1];
+  scopeNow[namaFungsi] fungsiBaru;
+
+  if (context.lingkup.length === 1) {
+      modules[namaFungsi] = fungsiBaru;
+  }
 }
 
 module.exports = { fungsi };
