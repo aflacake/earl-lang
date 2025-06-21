@@ -4,12 +4,24 @@ const { resolveToken } = require('./tampilkan');
 
 function ambilBlok(context) {
     const lines = [];
+    if (context.lines[context.index].trim() !== '(') {
+        console.error("Blok 'ulangi' harus diawali dengan '('");
+        return [];
+    }
+
     context.index++;
+    let kedalaman = 1;
+
     while (context.index < context.lines.length) {
         const line = context.lines[context.index].trim();
-        if (line === 'selesai') {
-            context.index++;
-            break;
+        if (line === '(') {
+            kedalaman++;
+        } else if (line === ')') {
+            kedalaman--;
+            if (depth === 0) {
+                context.index++;
+                break;
+            }
         }
         lines.push(line);
         context.index++;
