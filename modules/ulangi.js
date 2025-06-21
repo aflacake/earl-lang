@@ -1,5 +1,7 @@
 // modules/ulangi.js
 
+const { resolveToken } = require('./tampilkan');
+
 function ambilBlok(context) {
     const lines = [];
     context.index++;
@@ -20,134 +22,98 @@ async function ulangi(tokens, modules, context) {
 
     if (tokens[1] === 'setiap' && tokens[2] === 'dari') {
         const sumber = tokens[3];
-        let list;
+        const list = resolveToken(sumber);
 
         if (sumber.includes('.')) {
             const [instanceName, attr] = sumber.split('.');
             const instance = context.lingkup[0][instanceName];
 
-            if (
-                !instance ||
-                !instance.__tipe ||
-                !context.lingkup[0][instance.__tipe] ||
-                context.lingkup[0][instance.__tipe].__tipe !== 'kelas'
-            ) {
-                console.error(`'${instanceName}' bukan instance yang valid.`);
-                return;
+            if (instance && instance.__tipe) {
+                const kelas = context.lingkup[0][instance.__tipe];
+                if (!kelas || kelas.__tipe !== 'kelas') {
+                    console.error(`Tipe '${instance.__tipe}' bukan kelas yang valid.`);
+                    return;
+                }
             }
-
-            if (!(attr in instance)) {
-                console.error(`Atribut '${attr}' tidak ditemukan di '${instanceName}'.`);
-                return;
-            }
-
-            list = instance[attr];
-        } else if (sumber.startsWith(':') && sumber.endsWith(':')) {
-            const varName = sumber.slice(1, -1);
-            if (!(varName in context.lingkup[0])) {
-                console.error(`Variabel '${varName}' tidak ditemukan.`);
-                return;
-            }
-            list = context.lingkup[0][varName];
-        } else {
-            if (!(sumber in context.lingkup[0])) {
-                console.error(`Variabel '${sumber}' tidak ditemukan.`)
-                return;
-            }
-            list = context.lingkup[0][sumber];
         }
+            
 
         if (!Array.isArray(list)) {
-            console.error(`Sumber ${sumber} bukan array.`);
+            console.error(`Sumber '${sumber}' bukan daftar atau array (list).`);
             return;
         }
+       
 
-        for (const item of list) {
-            context.lingkup.push({item});
+        for (const baris of lines) {
+            const innerTokens = modules.tokenize(baris);
+            if (innerTokens || innerTokens.length  === 0) continue;
 
-            context.berhenti = false;
-            context.lanjutkan = false;
+            const cmd = innerTokens[0];
 
-            for (const baris of lines) {
-                const innerTokens = modules.tokenize(baris);
-                if (innerTokens && innerTokens.length > 0) {
-                    const cmd = innerTokens[0];
+            if (cmd === 'berhenti') {
+                context.berhenti = true;
+                break;
+            }
 
-                    if (cmd === 'berhenti') {
-                        context.berhenti = true;
-                        break;
-                    }
+            if (cmd === 'lanjutkan') {
+                context.lanjutkan = true;
+                break;
+            }
 
-                    if (cmd === 'lanjutkan') {
-                        context.lanjutkan = true;
-                        break;
-                    }
+            if (modules[cmd]) {
+                await modules[cmd](innerTokens, modules, context);
+            } else {
+                console.error(`Modul '${cmd}' tidak dikenali di dalam ulangi.`;
+            }
+        }
+        context.lingkup.pop();
 
-                    if (modules[cmd]) {
-                        await modules[cmd](innerTokens, modules, context);
-                    } else {
-                        console.error("Modul tidak dikenali di dalam blok ulangi:", cmd);
-                    }
+        if (context.berhenti) break;
+        if (context.lanjutkan) continue;
+    }
+
+} else {
+    const jumlahToken = tokens[1];
+    const hasil = resolveToken(jumlahToken);
+    const count = parseInt(hasil);
+
+    if (isNaN(count)) {
+        console.error(`Nilai perulangan tidak valid: ${jumlahToken}`);
+        return;
+    }
+
+    for (let i = 0; i < count; i++) {
+        context.lingkup.push({ index: i });
+
+        context.berhenti = false;
+        context.lanjutkan = false;
+
+        for (const baris of lines) {
+            const innerTokens = modules.tokenize(baris);
+            if (innerTokens || innerTokens.length === 0) continue;
+
+            const cmd = innerTokens[0];
+
+            if (cmd === 'berhenti') {
+                context.berhenti = true;
+                break;
                 }
+
+            if (cmd === 'lanjutkan') {
+                context.lanjutkan = true;
+                break;
             }
-            context.lingkup.pop();
 
-            if (context.berhenti) break;
-            if (context.lanjutkan) continue;
-        }
-
-    } else {
-        let countToken = tokens[1];
-        let count = 0;
-
-        if (countToken.startsWith(':') && countToken.endsWith(':')) {
-            const varName = countToken.slice(1, -1);
-            if (!(varName in context.lingkup[0])) {
-                console.error(`Variabel '${varName}' tidak ditemukan.`);
-                return;
+            if (modules[cmd]) {
+                await modules[cmd](innerTokens, modules, context);
+            } else {
+                console.error(`Modul '${cmd}' tidak dikenali di dalam ulangi.`);
             }
-            count = parseInt(context.lingkup[0][varName]);
-        } else {
-            count = parseInt(countToken);
         }
+        context.lingkup.pop();
 
-        if (isNaN(count)) {
-            console.error("Jumlah perulangan tidak valid: " + countToken);
-            return;
-        }
-
-        for (let i = 0; i < count; i++) {
-            context.lingkup.push({ index: i });
-
-            context.berhenti = false;
-            context.lanjutkan = false;
-
-            for (const baris of lines) {
-                const innerTokens = modules.tokenize(baris);
-                if (innerTokens && innerTokens.length > 0) {
-                    const cmd = innerTokens[0];
-
-                    if (cmd === 'berhenti') {
-                        context.berhenti = true;
-                        break;
-                    }
-
-                    if (cmd === 'lanjutkan') {
-                        context.lanjutkan = true;
-                        break;
-                    }
-
-                    if (modules[cmd]) {
-                        await modules[cmd](innerTokens, modules, context);
-                    } else {
-                        console.error("Modul tidak dikenali di dalam blok ulangi:", cmd);
-                    }
-                }
-            }
-            context.lingkup.pop();
-
-            if (context.berhenti) break;
-            if (context.lanjutkan) continue;
+        if (context.berhenti) break;
+        if (context.lanjutkan) continue;
         }
     }
 }
