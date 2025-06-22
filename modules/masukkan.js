@@ -40,7 +40,7 @@ function masukkan(tokens) {
         const varName = tokens[1].replace(/:/g, '');
         if (!varName) {
             console.error("Variabel tujuan harus ditulis dalam format :nama:");
-            retrun.resolve();
+            retrun resolve();
         }
 
         let prompt = 'Masukkan nilai untuk ' + varName + ': ';
