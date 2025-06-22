@@ -1,6 +1,5 @@
 // modules/evaluasi.js
 
-const { memory } = require('../memory');
 const { resolveToken } = require('./tampilkan');
 
 async function evaluasi(tokens, modules, context) {
@@ -9,11 +8,12 @@ async function evaluasi(tokens, modules, context) {
         return;
     }
 
-    const ekspresiToken = token.slice(1);
-
+    const ekspresiToken = tokens.slice(1);
     const nilaiTokens = [];
+
     for (const token of ekspresiToken) {
-        const nilai = await resolveToken(token);
+        const nilai = resolveToken(token, context);
+
         if (typeof nilai === 'string') {
             nilaiTokens.push(`"${nilai}"`);
         } else {
