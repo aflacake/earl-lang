@@ -126,3 +126,6 @@ Bagaimana cara memulainya?\
 Fork kode ini dan bangun aturan apa yang diusul atau menambahkan "bagian kecil" seperti pembenahan kata atau typo dalam teks tidaklah masalah, aturan berkontribusi tidak memberatkan.
 
 Kalau kamu tertarik dengan bahasa, sistem interpreter, atau mengajar pemorgraman lokal, saya dengan senang hati berdiskusi denganmu.
+
+# Lisensi
+[Apache-2.0 license](https://github.com/aflacake/earl-lang?tab=Apache-2.0-1-ov-file)
