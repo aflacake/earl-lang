@@ -10,13 +10,17 @@ async function kembalikan(tokens, modules, context) {
     } else if (exprTokens.length === 1) {
         context.return = resolveToken(exprTokens[0]);
     } else {
-        const expr = exprTokens.join(' ');
-        const hasilEvaluasi = evalMathExpression(expr);
+        const resolvedExpr = exprToken.map(token => {
+            const val = resolveToken(token);
+            return typeof val === 'number' || typeof val === 'boolean' ? val : `"${val}"`;
+        }).join(' ');
+
+        const hasilEvaluasi = evalMathExpression(resolvedExpr);
 
         if (typeof hasilEvaluasi === 'number' && !isNaN(hasilEvaluasi)) {
             context.return = hasilEvaluasi;
         } else {
-            context.return = expr;
+            context.return = resolvedExpr;
         }
     }
     context.stopExecution = true;
