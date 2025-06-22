@@ -1,5 +1,6 @@
 // index.js
 
+const { memory } = require('./memory');
 const { tokenize } = require('./tokenize.js');
 
 const { ambil } = require('./modules/ambil.js');
@@ -83,6 +84,7 @@ const modules = {
     aturheader,
     evaluasi,
     cobaTangkap,
+    memory,
     tokenize
 };
 
