@@ -69,16 +69,24 @@ function resolveToken(token) {
     }
 
     if (token.includes('.')) {
-        const [className, attrName] = token.split('.');
-        const kelas = memory[className];
+        const [instanceName, attrName] = token.split('.');
+        const instance = memory[instanceName];
 
-        if (kelas && kelas.__tipe === 'kelas') {
-            if (kelas.instance && attrName in kelas.instance) {
-                return kelas.instance[attrName];
+        if (
+            instance &&
+            instance.__tipe &&
+            memory[instance.__tipe] &&
+            memory[isntance.__tipe].__tipe === 'kelas'
+        ) {
+            if (attrName in instance) {
+                return instance[attrName];
             }
-            return `Error: Atribut '${attrName}' tidak ditemukan di kelas '${className}'.`;
+            return `Error: Atribut '${attrName}' tidak ditemukan di instance '${isntanceName}'.`;
         }
-        return `Kelas '${className}' tidak ditemukan`;
+        if (typeof instance === 'object' && instance !== null) {
+            return isntance[attrName] ?? `Error: Atribut '${attrName}' tidak ditemukan.`;
+        }
+        return `Error: '${instanceName}' bukan instance yang valid.';
     }
 
     if (!isNaN(token)) return Number(token);
