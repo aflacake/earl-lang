@@ -27,6 +27,8 @@ async function kelas(tokens, modules, context) {
         }
     }
 
+    instance.__tipe = namaKelas;
+
     memory[namaKelas] = {
         __tipe: 'kelas',
         mewarisi: parentKelas || null,
