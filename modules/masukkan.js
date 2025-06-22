@@ -2,6 +2,7 @@
 
 const { memory } = require('../memory.js');
 const readline = require('readline');
+const { resolveToken } = require('./tampilkan');
 
 function masukkan(tokens) {
     return new Promise((resolve) => {
@@ -43,7 +44,7 @@ function masukkan(tokens) {
         }
 
         let prompt = 'Masukkan nilai untuk ' + varName + ': ';
-        const sisa = token.slice(2).join(' ').trim();
+        const sisa = tokens.slice(2).join(' ').trim();
         const quoted = sisa.match(/^"(.*)"$/);
         if (quoted) {
             prompt = quoted[1] + ' ';
@@ -55,20 +56,29 @@ function masukkan(tokens) {
         });
 
         rl.question(prompt, (userInput) => {
-            const isNumber = !isNaN(userInput);
-            const maxLength = userInput.length <= 10;
-            const isValidPattern = /^[a-zA-Z\s]+$/.test(userInput);
-
-            if (isNumber) {
-                memory[varName] = Number(userInput);
-                console.log(`${varName} disimpan sebagai angka.`);
-            } else if (isShortEnough && matchesPattern) {
-                memory[varName] = userInput;
-                console.log(`${varName} disimpan sebagai teks valid.`);
-            } else {
-                console.error(`Input untuk ${varName} tidak valid.`);
+            let nilai = penggunaMasukkan;
+            if (penggunaMasukkan.startsWith(':') && userInput.endsWith(':')) {
+                nilai = resolveToken(userInput);
             }
 
+            if (typeof nilai === 'number') {
+                memory[varName] = nilai;
+                console.log(`${varName} disimpan sebagai angka.`);
+            } else if (typeof nilai === 'string') {
+                const cukupSingkat = nilai.length <= 10;
+                const cocokDenganPola = /^[a-zA-Z\s]+$/.test(nilai);
+
+                if (cukupSingkat && cocokDenganPola) { 
+                    memory[varName] = nilai;
+                    console.log(`${varName} disimpan sebagai teks valid.`);
+                } else {
+                    console.error(`Input untuk ${varName} tidak valid.`)
+                }
+            } else {
+                memory[varName] = nilai;
+                console.log(`${varName} disimpan.`)
+            }
+           
             rl.close();
             resolve();
         });
