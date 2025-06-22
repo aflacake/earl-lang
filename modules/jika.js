@@ -1,27 +1,24 @@
 // modules/jika.js
 const { memory } = require('../memory.js');
+const { resolveToken } = require('./tampilkan');
 
-function resolveValue(token) {
-    if (token.startsWith(':') && token.endsWith(':')) {
-        const varName = token.slice(1, -1);
-        return memory[varName];
+function resolveValueDenganKelas(token) {
+    const hasil = resolveToken(token);
+
+    if (typeof hasil === 'string' && token.includes('.')) {
+       const [instanceName, attr] = token.split('.');
+       const instance = memory[instanceName];
+
+       if (
+           instance &&
+           instance.__tipe &&
+           memory[instance.__tipe] &&
+           memory[instance.__tipe].__tipe === 'kelas'
+       ) {
+           return instance[attr];
+       }
     }
-
-    if (token.includes('.')) {
-        const [instanceName, attr] = token.split('.');
-        const instance = memory[instanceName];
-        if (
-            instance &&
-            instance.__tipe &&
-            memory[instance.__tipe] &&
-            memory[instance.__tipe].__tipe === 'kelas'
-        ) {
-            return instance[attr];
-        }
-    }
-
-    if (!isNaN(token)) return Number(token);
-    return token.replace(/"/g, '');
+    return hasil;
 }
 
 async function jika(tokens, modules, context) {
@@ -37,8 +34,8 @@ async function jika(tokens, modules, context) {
         return;
     }
 
-    const value1 = resolveValue(leftToken);
-    const value2 = resolveValue(rightToken);
+    const value1 = resolveValueDenganKelas(leftToken);
+    const value2 = resolveValueDenganKelas(rightToken);
 
     let hasil = false;
 
