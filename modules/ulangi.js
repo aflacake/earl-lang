@@ -18,7 +18,7 @@ function ambilBlok(context) {
             kedalaman++;
         } else if (line === ')') {
             kedalaman--;
-            if (depth === 0) {
+            if (kedalaman === 0) {
                 context.index++;
                 break;
             }
@@ -58,7 +58,7 @@ async function ulangi(tokens, modules, context) {
 
         for (const baris of lines) {
             const innerTokens = modules.tokenize(baris);
-            if (innerTokens || innerTokens.length  === 0) continue;
+            if (!innerTokens || innerTokens.length  === 0) continue;
 
             const cmd = innerTokens[0];
 
@@ -69,7 +69,7 @@ async function ulangi(tokens, modules, context) {
 
             if (cmd === 'lanjutkan') {
                 context.lanjutkan = true;
-                break;
+                continue;
             }
 
             if (modules[cmd]) {
