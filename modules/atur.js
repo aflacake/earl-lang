@@ -1,6 +1,7 @@
 // modules/atur.js
 
 const { memory } = require('../memory.js');
+const { resolveToken } = require('./tampilkan'); 
 
 async function atur(tokens, modules, context) {
     if (
@@ -80,7 +81,7 @@ async function atur(tokens, modules, context) {
        value = parseObjekValue(valueTokens);
     } else {
         const valueRaw = valueTokens.join('').trim();
-        value = parseArrayElement(valueRaw);
+        value = resolveToken(valueRaw);
     }
 
     if (path.match(/^:[^:\[\]]+\[\d+\]:$/)) {
@@ -181,7 +182,7 @@ async function atur(tokens, modules, context) {
                     console.error("Koma ganda tidak diizinkan dalam array.");
                     return null;
                 }
-                hasil.push(parseArrayElement(saatIni.join(' ').trim()));
+                hasil.push(resolveToken(saatIni.join(' ').trim()));
                 saatIni = [];
             } else {
                 saatIni.push(token);
@@ -189,7 +190,7 @@ async function atur(tokens, modules, context) {
             }
         }
         if (saatIni.length > 0) {
-            hasil.push(parseArrayElement(current.join(' ').trim()));
+            hasil.push(resolveToken(saatIni.join(' ').trim()));
         }
         return hasil;
     }
@@ -255,7 +256,7 @@ async function atur(tokens, modules, context) {
                 }
             } else {
                 if (token === ',' && kedalaman === 0) {
-                    hasil[key] = parseArrayElement(valueTokens.join(' ').trim());
+                    hasil[kunci] = resolveToken(valueTokens.join(' ').trim());
                     sedangKumpul = false;
                     kunci = '';
                     valueTokens = [];
