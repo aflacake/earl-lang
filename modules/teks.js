@@ -1,13 +1,21 @@
 // modules/teks.js
 
 const { memory } = require('../memory');
+const { resolveToken } = require('./tampilkan');
 
-async function teks(tokens) {
+async function teks(tokens, modules, context) {
     const aksi = tokens[1];
-    const namaVariabel = tokens[2]?.slice(1, -1);
-    const isi = memory[namaVariabel];
+    const namaVariabelToken = tokens[2];
 
-    if (typeof isi !== 'string') {
+    if (!namaVariabelToken || !namaVariabelToken.startsWith(':') || !namaVariabelToken.endsWith(':')) {
+        console.error("Nama variabel harus dalam format :nama:");
+        return;
+    }
+
+    const namaVariabel = namaVariabelToken.slice(1, -1);
+    let isi = memory[namaVariabel];
+
+    if (typeof isi !== 'string' && aksi !== 'isi' && aksi !== 'pecah') {
         console.error(`Variabel ${namaVariabel} tidak berisi teks.`);
         return;
     }
@@ -18,17 +26,12 @@ async function teks(tokens) {
             break;
 
         case 'gabung': {
-            const tambahan = tokens.slice(3).map(token => {
-                if (token.startsWith(':') && token.endsWith(':')) {
-                    const ref = token.slice(1, -1);
-                    return memory[ref] ?? '';
-                } else if (/^".*"$/.test(token)) {
-                    return token.slice(1, -1);
-                } else {
-                    return token;
-                }
-            }).join('');
-            memory[namaVariabel]  += tambahan;
+            const tambahan = [];
+            for (const token of token.slice(3)) {
+                const nilai = resolveToken(token, context);
+                tambahan.push(String(nilai ?? ''));
+            }
+            memory[namaVariabel] += tambahan.join('');
             console.log(`Teks ditambahkan ke '${namaVariabel}'.`);
             break;
         }
@@ -44,21 +47,20 @@ async function teks(tokens) {
             break;
 
         case 'ganti': {
-            const dari = tokens[3]?.replace(/"/g, '');
-            const menjadi = tokens[4]?.replace(/"/g, '') ?? '';
+            const dari = resolveToken(tokens[3], context);
+            const menjadi = resolveToken(tokens[4] ?? '""', context;
             if (!dari) {
                 console.error("Format: string ganti :nama: \"yang dicari\" \"pengganti\"");
                 return;
             }
-            const hasil = isi.split(dari).join(menjadi);
-            memory[namaVariabel] = hasil;
-            console.log(`Semua '${dari}' diganti dengan '${menjadi}':`, hasil);
+            memory[namaVariabel] = isi.split(dari).join(String(menjadi));
+            console.log(`Semua '${dari}' diganti dengan '${menjadi}':`);
             break;
         }
 
         case 'ambil': {
-            const mulai = parseInt(tokens[3]);
-            const panjang = parseInt(tokens[4]);
+            const mulai = parseInt(resolveToken(tokens[3], context));
+            const panjang = parseInt(resolveToken(tokens[4], context));
 
             if (isNaN(mulai) || isNaN(panjang)) {
                 console.error("Format: teks ambil :nama: indeks panjang");
@@ -69,8 +71,8 @@ async function teks(tokens) {
         }
 
         case 'hapus': {
-            const mulai = parseInt(tokens[3]);
-            const panjang = parseInt(tokens[4]);
+            const mulai = parseInt(resolveToken(tokens[3], context));
+            const panjang = parseInt(resolveToken(tokens[4], context));
             if (isNaN(mulai) || isNaN(panjang)) {
                 console.error("Format: teks hapus :nama: indeks panjang");
                 return;
@@ -86,26 +88,30 @@ async function teks(tokens) {
             break;
 
         case 'isi': {
-            const teksBaru = tokens.slice(3).join('').replace(/^"|"$/g, '');
-            memory[namaVariabel] = teksBaru;
+            const teksBaru = [];
+            for (const tokens of token.slice(3)) {
+                const nilai = resolveToken(token, context);
+                teksBaru.push(String(nilai ?? ''));
+            }
+            memory[namaVariabel] = teksBaru.join('');
             console.log(`Isi variabel '${namaVariabel}' diubah.`);
             break;
         }
 
         case 'pecah': {
-            const pembatas = tokens[3]?.replace(/"/g, '') ?? '';
+            const pembatas = resolveToken(tokens[3] ?? '""', context);
             memory[namaVariabel] = isi.split(pembatas);
             console.log(`Variabel '${namaVariabel}' dipecah menjadi daftar.`);
             break;
         }
 
         case 'cocok': {
-            const teks = tokens[3]?.replace(/"/g, '');
-            if (!teks) {
-                console.error("Format: teks cocok :nama: \"teks\"");
+            const teksDicari = resolveToken(tokens[3], context);
+            if (typeof teksDicari !== 'string') {
+                console.error("Teks yang dicocokkan harus berupa string");
                 return;
             }
-            console.log(isi.includes(teks));
+            console.log(isi.includes(teksDicari));
             break;
         }
 
