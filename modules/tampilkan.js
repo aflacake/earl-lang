@@ -31,6 +31,11 @@ function resolveToken(token) {
         const varName = daftarBersarangMatch[1];
         const indexes = [...token.matchAll(/\[(\d+)\]/g)].map(m => Number(m[1]));
         const arr = memory[varName];
+
+        if (!Array.isArray(arr)) {
+            return `Error: '${varName}' bukan array yang valid.`;
+        }
+
         return aksesBersarang(arr, indexes);
     }
 
@@ -39,17 +44,23 @@ function resolveToken(token) {
         const varName = daftarSatuMatch[1];
         const index = Number(daftarSatuMatch[2]);
         const arr = memory[varName];
-        return Array.isArray(arr) ? arr[index] : `Error: '${varName}' buka daftar`;
+
+        if (!Array.isArray(arr) || index < 0 || index >= arr.length) {
+            return `Error: '${varName}' bukan array atau indeks tidak valid.`;
+        }
+
+        return arr[index];
     }
 
     const diktaMatch = token.match(/^:([^:\[\]]+):([^:\[\]]+)$/);
     if (diktaMatch) {
         const [_, varName, key] = diktaMatch;
         const obj = memory[varName];
-        if (obj && typeof obj === 'object' && !Array.isArray(obj)) {
-            return key in obj ? obj[key] : `Kunci '${key}' tidak ditemukan`;
+
+        if (obj === null || typeof obj === 'object') {
+            return `Error: '${varName}' bukan objek yang valid`;
         }
-        return `Error: '${varName}' bukan dikta`;
+        return key in obj ? obj[key] : `Kunci '${key}' tidak ditemukan`;
     }
 
     if (token.startsWith(':') && token.endsWith(':')) {
@@ -60,8 +71,12 @@ function resolveToken(token) {
     if (token.includes('.')) {
         const [className, attrName] = token.split('.');
         const kelas = memory[className];
+
         if (kelas && kelas.__tipe === 'kelas') {
-            return kelas.instance?.[attrName] ?? `Atribut '${attrName}' tidak ditemukan`;
+            if (kelas.instance && attrName in kelas.instance) {
+                return kelas.instance[attrName];
+            }
+            return `Error: Atribut '${attrName}' tidak ditemukan di kelas '${className}'.`;
         }
         return `Kelas '${className}' tidak ditemukan`;
     }
@@ -69,10 +84,9 @@ function resolveToken(token) {
     if (!isNaN(token)) return Number(token);
 
     try {
-        const dievaluasi = evalMathExpression(token);
-        return dievaluasi;
+        return evalMathExpression(token);
     } catch {
-        return token.replace(/"/g, '');
+        return token.replace(1, -1);
     }
 }
 
