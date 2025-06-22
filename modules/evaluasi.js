@@ -1,24 +1,27 @@
 // modules/evaluasi.js
 
 const { memory } = require('../memory');
-
-function gantiVariabel(expr, lingkup) {
-    return expr.replace(/\b[a-zA-Z_][a-zA-Z0-9_]*\b/g, (nama) => {
-        if (nama in lingkup) return lingkup[nama];
-        if (nama in memory) return memory[nama];
-        return nama;
-    });
-}
+const { resolveToken } = require('./tampilkan');
 
 async function evaluasi(tokens, modules, context) {
     if (tokens.length < 2) {
         console.log("Perintah 'evaluasi' membutuhkan ekspresi sebagai argumen.");
         return;
     }
-    const ekspresiMentah = tokens.slice(1).join('');
-    const lingkupGabungan = Object.assign({}, ...context.lingkup);
 
-    const ekspresi = gantiVariabel(ekspresiMentah, lingkunganGabungan);
+    const ekspresiToken = token.slice(1);
+
+    const nilaiTokens = [];
+    for (const token of ekspresiToken) {
+        const nilai = await resolveToken(token);
+        if (typeof nilai === 'string') {
+            nilaiTokens.push(`"${nilai}"`);
+        } else {
+            nilaiTokens.push(nilai);
+        }
+    }
+
+    const ekspresi = nilaiTokens.join(' ');
 
     try {
         const hasil = Function(`"use-strict"; return (${ekspresi})`)();
