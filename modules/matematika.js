@@ -1,8 +1,9 @@
 // modules/matematika.js
 
 const { memory } = require('../memory');
+const { resolveToken } = require('./tampilkan');
 
-async function matematika(tokens) {
+async function matematika(tokens, modules, context = {}) {
     let targetVar = null;
     let offset = 1;
 
@@ -14,14 +15,9 @@ async function matematika(tokens) {
     const operasi = tokens[offset];
 
     const ambilNilai = (token) => {
-        if (token.startsWith(':') && token.endsWith(':')) {
-            const nama = token.slice(1, -1);
-            return memory[nama];
-        } else if (!isNaN(token)) {
-            return Number(token);
-        } else {
-            return NaN;
-        }
+        const hasil = resolveToken(token, context);
+        const angka = Number(hasil);
+        return isNaN(angka) ? NaN : angka;
     };
 
     const simpanAtauTampilkan = (hasil) => {
@@ -122,7 +118,7 @@ async function matematika(tokens) {
             const base = ambilNilai(tokens[offset + 1]);
             const exponent = ambilNilai(tokens[offset + 2]);
             if (isNaN(base) || isNaN(exponent)) return console.error('Gunakan angka yang valid untuk pangkat.');
-            simpanAtauTampilkan(Math.pow(base, expoent));
+            simpanAtauTampilkan(Math.pow(base, exponent));
             break;
         }
 
