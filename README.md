@@ -67,6 +67,10 @@ node index.js
   ``` bash
   npm install canvas
   ```
+- Menginstal `chalk` pustaka untuk memberi warna pada teks terminal.
+  ```bash
+  npm install chalk
+  ```
 
 ## Dengan CLI
 ### Pengguna Windows
