@@ -1,6 +1,7 @@
 // modules/hitung.js
 
 const { memory } = require('../memory.js');
+const { resolveToken } = require('./tampilkan.js');
 
 function tokenizeExpression(expr) {
     return expr.match(/(?:sqrt|abs|sin|cos|tan)\(|\d+(\.\d+)?|\w+|[()+\-*/^%]/g);
@@ -149,15 +150,11 @@ function hitung(tokens) {
     const targetVar = tokens[2].replace(/:/g, '');
     let rawExpr = tokens.slice(4).join('');
 
-    if (rawExpr.startsWith("(") && rawExpr.endsWith(")")) {
-        rawExpr = rawExpr.slice(1, -1);
-    }
-
     rawExpr = rawExpr.replace(/panjang :(\w+):/g, (_, nama) => {
-    const nilai = memory[nama];
-    if (Array.isArray(nilai)) return nilai.length;
-    console.warn(`'${nama}' bukan daftar.`);
-    return 0;
+        const nilai = memory[nama];
+        if (Array.isArray(nilai)) return nilai.length;
+        console.warn(`'${nama}' bukan daftar.`);
+        return 0;
     });
 
     rawExpr = rawExpr.replace(/:\w+:/g, (match) => {
@@ -171,7 +168,9 @@ function hitung(tokens) {
         return;
     }
 
-    const postfix = toPostfix(tokensExpr);
+    const resolvedToken = tokensExpr.map(token => resolveToken(token, { memory }));
+
+    const postfix = toPostfix(resolvedToken);
     const hasil = evaluatePostfix(postfix);
 
     memory[targetVar] = hasil;
