@@ -51,7 +51,7 @@ tampilkan :log: > "log.txt"
 
 # Dokumentasi
 Menyajikan berbagai tutorial terkini seputar topik Earl. 
-- Blog: [Nazwa Blogger](https://postnazwablogger.blogspot.com/search/label/Pearl), Topik hangat Earl disajikan di Blog ini, Mari merapat!
+- Blog: [Nazwa Blogger](https://postnazwablogger.blogspot.com/search/label/Earl), Topik hangat Earl disajikan di Blog ini, Mari merapat!
 - Repositori: [Earl Docs](https://github.com/aflacake/earl-docs), Tutorial aturan penulisan kode dan informasi modul beserta penjelasan terlengkap.
 
 # Instalasi
