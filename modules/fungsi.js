@@ -39,8 +39,18 @@ function fungsi (tokens, modules, context) {
 
   context.index++;
 
-  modules fungsiBaru = async (tokens, modules, parentContext) => {
-    const args = tokens.slice(1);
+  const fungsiBaru = async (tokens, modules, parentContext) => {
+    const resolveToken = modules.resolveToken || (t => t);
+
+    const args = await Promise.all(
+        token.slice(1).map(async (tok) => {
+            if (typeof tok === 'string' && tok.startsWith(':') && tok.endsWith(':')) {
+                return await resolveToken(tok);
+            }
+            return tok;
+        })
+    );
+
     const lokalLingkup = {};
 
     params.forEach((param, index) => {
@@ -66,14 +76,13 @@ function fungsi (tokens, modules, context) {
 
       const cmd =  innerTokens[0];
 
-      const func = (
+      const func =
           modules[cmd] ||
           localContext.lingkup
               .slice()
               .reverse()
               .map(scope => scope[cmd])
-             .find(f => typeof f === 'function')
-      );
+             .find(f => typeof f === 'function');
 
       if (func) {
           try {
@@ -91,7 +100,7 @@ function fungsi (tokens, modules, context) {
   };
 
   const scopeNow = context.lingkup[context.lingkup.length -1];
-  scopeNow[namaFungsi] fungsiBaru;
+  scopeNow[namaFungsi] = fungsiBaru;
 
   if (context.lingkup.length === 1) {
       modules[namaFungsi] = fungsiBaru;
