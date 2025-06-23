@@ -25,12 +25,21 @@ function aksesBersarang(arr, indexes) {
     return current;
 }
 
-function resolveToken(token) {
+function resolveToken(token, context = {}) {
+    const { memory = {}, lingkup = [{}] } = context;
+        
+    function cariDiLingkup(nama) {
+        for (let i = lingkup.length - 1; i >= 0; i--) {
+            if (nama in lingkup[i]) return lingkup[i][nama];
+        }
+        return undefined;
+    }
+
     const daftarBersarangMatch = token.match(/^:([^:\[\]]+)((\[\d+\])+):$/);
     if (daftarBersarangMatch) {
         const varName = daftarBersarangMatch[1];
         const indexes = [...token.matchAll(/\[(\d+)\]/g)].map(m => Number(m[1]));
-        const arr = memory[varName];
+        const arr = memory[varName] ?? cariLingkup(varName);
 
         if (!Array.isArray(arr)) {
             return `Error: '${varName}' bukan array yang valid.`;
@@ -43,7 +52,7 @@ function resolveToken(token) {
     if (daftarSatuMatch) {
         const varName = daftarSatuMatch[1];
         const index = Number(daftarSatuMatch[2]);
-        const arr = memory[varName];
+        const arr = memory[varName] ?? cariDiLingkup(varName);
 
         if (!Array.isArray(arr) || index < 0 || index >= arr.length) {
             return `Error: '${varName}' bukan array atau indeks tidak valid.`;
@@ -57,7 +66,7 @@ function resolveToken(token) {
         const [_, varName, key] = diktaMatch;
         const obj = memory[varName];
 
-        if (obj === null || typeof obj === 'object') {
+        if (typeof obj === 'object' || obj === null) {
             return `Error: '${varName}' bukan objek yang valid`;
         }
         return key in obj ? obj[key] : `Kunci '${key}' tidak ditemukan`;
@@ -65,7 +74,7 @@ function resolveToken(token) {
 
     if (token.startsWith(':') && token.endsWith(':')) {
         const varName = token.slice(1, -1);
-        return memory[varName];
+        return memory[varName] ?? cariDiLingkup(varName);
     }
 
     if (token.includes('.')) {
@@ -76,17 +85,21 @@ function resolveToken(token) {
             instance &&
             instance.__tipe &&
             memory[instance.__tipe] &&
-            memory[isntance.__tipe].__tipe === 'kelas'
+            memory[instance.__tipe].__tipe === 'kelas'
         ) {
             if (attrName in instance) {
                 return instance[attrName];
             }
-            return `Error: Atribut '${attrName}' tidak ditemukan di instance '${isntanceName}'.`;
+            return `Error: Atribut '${attrName}' tidak ditemukan di instance '${instanceName}'.`;
         }
         if (typeof instance === 'object' && instance !== null) {
-            return isntance[attrName] ?? `Error: Atribut '${attrName}' tidak ditemukan.`;
+            return instance[attrName] ?? `Error: Atribut '${attrName}' tidak ditemukan.`;
         }
-        return `Error: '${instanceName}' bukan instance yang valid.';
+        return `Error: '${instanceName}' bukan instance yang valid.`;
+    }
+
+    if (/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(token)) {
+        return memory[token] ?? cariDiLingkup(token) ?? token;
     }
 
     if (!isNaN(token)) return Number(token);
@@ -94,7 +107,7 @@ function resolveToken(token) {
     try {
         return evalMathExpression(token);
     } catch {
-        return token.replace(1, -1);
+        return token;
     }
 }
 
