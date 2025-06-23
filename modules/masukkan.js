@@ -40,7 +40,7 @@ function masukkan(tokens) {
         const varName = tokens[1].replace(/:/g, '');
         if (!varName) {
             console.error("Variabel tujuan harus ditulis dalam format :nama:");
-            retrun resolve();
+            return resolve();
         }
 
         let prompt = 'Masukkan nilai untuk ' + varName + ': ';
@@ -55,9 +55,9 @@ function masukkan(tokens) {
             output: process.stdout,
         });
 
-        rl.question(prompt, (userInput) => {
+        rl.question(prompt, (penggunaMasukkan) => {
             let nilai = penggunaMasukkan;
-            if (penggunaMasukkan.startsWith(':') && userInput.endsWith(':')) {
+            if (penggunaMasukkan.startsWith(':') && penggunaMasukkan.endsWith(':')) {
                 nilai = resolveToken(userInput);
             }
 
