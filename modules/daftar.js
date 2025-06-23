@@ -1,9 +1,21 @@
 // modules/daftar.js
 
 const { memory } = require('../memory.js');
+const { resolveToken } = require('./tampilkan');
 
 async function daftar(tokens) {
     const cmd = tokens[1];
+
+    const resolveValue = (val) => {
+        if (/^".*"$/.test(val)) {
+            return val.slice(1, -1)'
+        } else if (!isNaN(val)) {
+            return Number(val);
+        } else if (val.startsWith(':') && val.endsWith(':')) {
+            return resolveToken(val);
+        }
+        return val;
+    };
 
     if (cmd === 'buat') {
         const varName = tokens[2].slice(1, -1);
@@ -28,15 +40,7 @@ async function daftar(tokens) {
             return;
         }
         let val = tokens.slice(3).join(' ').trim();
-
-        if (/^".*"$/.test(val)) {
-            val = val.slice(1, -1);
-        } else if (!isNaN(val)) {
-            val = Number(val);
-        } else if (val.startsWith(':') && val.endsWith(':')) {
-            const ref = val.slice(1, -1);
-            val = memory[ref];
-        }
+        val = resolveValue(val);
         memory[varName].push(val);
         return;
     }
@@ -103,14 +107,7 @@ async function daftar(tokens) {
             return;
         }
 
-        if (/^".*"$/.test(val)) {
-            val = val.slice(1, -1);
-        } else if (!isNaN(val)) {
-            val = Number(val);
-        } else if (val.startsWith(':') && val.endsWith(':')) {
-            const ref = val.slice(1, -1);
-            val = memory[ref];
-        }
+        val = resolveValue(val);
         memory[varName].splice(index, 0, val);
         console.log(`Nilai disisipkan ke index ${index} dalam daftar '${varName}'.`);
         return;
