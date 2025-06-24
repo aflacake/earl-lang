@@ -6,6 +6,11 @@ async function kelas(tokens, modules, context) {
     const namaKelas = tokens[1].replace(/:/g, '');
     let parentKelas = null;
 
+    if (memory[namaKelas]) {
+        console.warn(`Kelas '${namaKelas}' sudah didefinisikan.`);
+        return;
+    }
+
     const mewarisiIndex = tokens.indexOf('mewarisi');
     if (mewarisiIndex !== -1 && tokens[mewarisiIndex + 1]) {
          parentKelas = tokens[mewarisiIndex + 1].replace(/:/g, '');
