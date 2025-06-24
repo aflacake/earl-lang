@@ -38,6 +38,7 @@ const { buatFolder, hapusFolder, bacaFolder, gantiNamaFolder, periksaUkuranFolde
 const { aturheader } = require('./modules/aturheader.js');
 const { evaluasi } = require('./modules/evaluasi.js');
 const { cobaTangkap } = require('./modules/cobaTangkap.js');
+const { panggilMetode } = require('./modules/panggilMetode.js');
 
 const fs = require('fs');
 const readline = require('readline');
@@ -84,6 +85,7 @@ const modules = {
     aturheader,
     evaluasi,
     cobaTangkap,
+    panggilMetode,
     memory,
     tokenize
 };
