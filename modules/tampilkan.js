@@ -35,7 +35,7 @@ function resolveToken(token, context = {}) {
         return undefined;
     }
 
-    const objArrtMatch = token.match(/^:([^:\[\]]+)\.([^:\[\]]+):$/);
+    const objAttrMatch = token.match(/^:([^:\[\]]+)\.([^:\[\]]+):$/);
     if (objAttrMatch) {
         const objName = objAttrMatch[1];
         const attrName = objAttrMatch[2];
@@ -57,7 +57,7 @@ function resolveToken(token, context = {}) {
     if (daftarBersarangMatch) {
         const varName = daftarBersarangMatch[1];
         const indexes = [...token.matchAll(/\[(\d+)\]/g)].map(m => Number(m[1]));
-        const arr = memory[varName] ?? cariLingkup(varName);
+        const arr = memory[varName] ?? cariDiLingkup(varName);
 
         if (!Array.isArray(arr)) {
             return `Error: '${varName}' bukan array yang valid.`;
@@ -84,7 +84,7 @@ function resolveToken(token, context = {}) {
         const [_, varName, key] = diktaMatch;
         const obj = memory[varName];
 
-        if (typeof obj === 'object' || obj === null) {
+        if (typeof obj !== 'object' || obj === null) {
             return `Error: '${varName}' bukan objek yang valid`;
         }
         return key in obj ? obj[key] : `Kunci '${key}' tidak ditemukan`;
