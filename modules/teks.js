@@ -27,7 +27,7 @@ async function teks(tokens, modules, context) {
 
         case 'gabung': {
             const tambahan = [];
-            for (const token of token.slice(3)) {
+            for (const token of tokens.slice(3)) {
                 const nilai = resolveToken(token, context);
                 tambahan.push(String(nilai ?? ''));
             }
@@ -48,7 +48,7 @@ async function teks(tokens, modules, context) {
 
         case 'ganti': {
             const dari = resolveToken(tokens[3], context);
-            const menjadi = resolveToken(tokens[4] ?? '""', context;
+            const menjadi = resolveToken(tokens[4] ?? '""', context);
             if (!dari) {
                 console.error("Format: string ganti :nama: \"yang dicari\" \"pengganti\"");
                 return;
@@ -89,7 +89,7 @@ async function teks(tokens, modules, context) {
 
         case 'isi': {
             const teksBaru = [];
-            for (const tokens of token.slice(3)) {
+            for (const tokens of tokens.slice(3)) {
                 const nilai = resolveToken(token, context);
                 teksBaru.push(String(nilai ?? ''));
             }
