@@ -71,6 +71,10 @@ node index.js
   ```bash
   npm install chalk@4
   ```
+- Menginstal `form-data` untuk memuat _request_ HTTP yang mengandung form data, biasanya untuk `multipart/formdata`, misalnya kirim file lewat `fetch`, `axios`, atau `http.request`.
+  ```bash
+  npm install form-data
+  ```
 
 ## Dengan CLI
 ### Pengguna Windows
