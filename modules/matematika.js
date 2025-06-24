@@ -1,7 +1,7 @@
 // modules/matematika.js
 
-const { memory } = require('../memory');
-const { resolveToken } = require('./tampilkan');
+const { memory } = require('../memory.js');
+const { resolveToken } = require('./tampilkan.js');
 
 async function matematika(tokens, modules, context = {}) {
     let targetVar = null;
@@ -66,9 +66,15 @@ async function matematika(tokens, modules, context = {}) {
         }
 
         case 'acak': {
-            const min = ambilNilai(tokens[offset + 1]) || 0;
-            const max = ambilNilai(tokens[offset + 2]) || 100;
-            if(isNaN(min) || isNaN(max)) return console.error("Nilai acak harus angka.");
+            const minRaw = ambilNilai(tokens[offset + 1]);
+            const maxRaw = ambilNilai(tokens[offset + 2]);
+            const min = isNaN(minRaw) ? 0 : minRaw;
+            const max = isNaN(maxRaw) ? 100 : maxRaw;
+
+            if (isNaN(min) || isNaN(max)) {
+                console.error("Nilai acak harus angka.");
+                return;
+            }
             const hasil = Math.floor(Math.random() * (max - min + 1)) + min;
             simpanAtauTampilkan(hasil);
             break;
@@ -126,7 +132,7 @@ async function matematika(tokens, modules, context = {}) {
         case 'log': {
             const x = ambilNilai(tokens[offset + 1]);
             if (isNaN(x) || x <= 0) return console.error("Nilai log harus positif.");
-            simpanAtauTampilkan(Math.log(x);
+            simpanAtauTampilkan(Math.log(x));
             break;
         }
 
