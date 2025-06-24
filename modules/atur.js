@@ -61,7 +61,7 @@ async function atur(tokens, modules, context) {
         context.index++;
 
         while (context.index < context.lines.length) {
-            const line = content.lines[content.index].trim();
+            const line = context.lines[content.index].trim();
             valueTokens.push(...modules.tokenize(line));
             if (line === penutup) break;
             context.index;
@@ -77,7 +77,7 @@ async function atur(tokens, modules, context) {
 
     if (valueTokens[0] === '[' && valueTokens[valueTokens.length - 1] === ']') {
         value = parseArrayValue(valueTokens);
-    } else if (valueToken[0] === '(' && valueTokens[valueTokens.length - 1] === ')') {
+    } else if (valueTokens[0] === '(' && valueTokens[valueTokens.length - 1] === ')') {
        value = parseObjekValue(valueTokens);
     } else {
         const valueRaw = valueTokens.join('').trim();
@@ -87,7 +87,7 @@ async function atur(tokens, modules, context) {
     if (path.match(/^:[^:\[\]]+\[\d+\]:$/)) {
         const lengkap = path.slice(1, -1);
         const nama = lengkap.slice(0, lengkap.indexOf('['));
-        const index = parseInt(lengkap.match(/\[(d+)\]/)[1]);
+        const index = parseInt(lengkap.match(/\[(\d+)\]/)[1]);
 
         if (!Array.isArray(memory[nama])) {
             console.error(`'${nama}' bukan daftar.`);
@@ -101,7 +101,7 @@ async function atur(tokens, modules, context) {
     if (path.startsWith(":") && path.endsWith(":")) {
         const inner = path.slice(1, -1);
 
-        if (inner.includes(.)) {
+        if (inner.includes('.')) {
             const [instanceName, attrName] = inner.split('.');
 
             const instance = memory[instanceName];
@@ -172,12 +172,12 @@ async function atur(tokens, modules, context) {
         return;
     }
 
-    if (!classDef.attribut.includes(namaAtribut)) {
+    if (!classDef.atribut.includes(namaAtribut)) {
         console.error(`Atribut '${namaAtribut}' tidak didefinisikan dalam kelas '${instance.__tipe}'.`);
         return;
     }
 
-    instance.instance[namaAtribut] = value;
+    instance[namaAtribut] = value;
     console.log(`${namaInstance}.${namaAtribut} diatur ke`, value);
 
 
