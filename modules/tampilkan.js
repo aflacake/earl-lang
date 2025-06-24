@@ -26,13 +26,31 @@ function aksesBersarang(arr, indexes) {
 }
 
 function resolveToken(token, context = {}) {
-    const { memory = {}, lingkup = [{}] } = context;
+    const { memory = {}, lingkup = [{}], ini = null } = context;
         
     function cariDiLingkup(nama) {
         for (let i = lingkup.length - 1; i >= 0; i--) {
             if (nama in lingkup[i]) return lingkup[i][nama];
         }
         return undefined;
+    }
+
+    const objArrtMatch = token.match(/^:([^:\[\]]+)\.([^:\[\]]+):$/);
+    if (objAttrMatch) {
+        const objName = objAttrMatch[1];
+        const attrName = objAttrMatch[2];
+
+        if (objName === 'ini' && ini) {
+            if (attrName in ini) return ini[attrName];
+            return `Error: Atribut '${attrName}' tidak ditemukan di 'ini'.`;
+        }
+
+        const obj = memory[objName] ?? cariDiLingkup(objName);
+        if (typeof obj === 'object' && obj !== null) {
+            if (attrName in obj) return obj[attrName];
+            return `Error: Atribut '${attrName}' tidak ditemukan di objek '${objName}'.`;
+        }
+        return `Error: '${objName}' bukan objek yang valid.`;
     }
 
     const daftarBersarangMatch = token.match(/^:([^:\[\]]+)((\[\d+\])+):$/);
