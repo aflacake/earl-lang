@@ -69,7 +69,7 @@ node index.js
   ```
 - Menginstal `chalk` pustaka untuk memberi warna pada teks terminal.
   ```bash
-  npm install chalk
+  npm install chalk@4
   ```
 
 ## Dengan CLI
