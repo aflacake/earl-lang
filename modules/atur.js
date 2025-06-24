@@ -99,7 +99,34 @@ async function atur(tokens, modules, context) {
     }
 
     if (path.startsWith(":") && path.endsWith(":")) {
-        const varName = path.slice(1, -1);
+        const inner = path.slice(1, -1);
+
+        if (inner.includes(.)) {
+            const [instanceName, attrName] = inner.split('.');
+
+            const instance = memory[instanceName];
+            if (!instance || !instance.__tipe || !memory[instance.__tipe]) {
+                console.error(`Instance '${instanceName}' tidak ditemukan atau bukan instance yang valid.`);
+                return;
+            }
+
+            const classDef = memory[instance.__tipe];
+            if (classDef.__tipe !== 'kelas') {
+                console.error(`'${instance.__tipe}' bukan kelas yang valid.`);
+                return;
+            }
+
+            if (!classDef.atribut.includes(attrName)) {
+                console.error(`Atribut '${attrName}' tidak didefinisikan dalam kelas '${instance.__tipe}'.`);
+                return;
+            }
+
+            instance[attrName] = value;
+            console.log(`${instanceName}.${attrName} diatur ke`, value);
+            return;
+        }
+
+        const varName = inner;
         
         let disimpan = false;
 
