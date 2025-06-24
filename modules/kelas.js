@@ -87,7 +87,22 @@ async function kelas(tokens, modules, context) {
 
         if (nextTokens[0] === 'metode') {
             const metodeName = nextTokens[1].replace(/[:,]/g, '');
-            const metodeBody = nextTokens.slice(2).join(" ");
+            let metodeBody = '';
+
+            if (nextToken.includes('(')) {
+                let motodeLines = [];
+                currentIndex++;
+
+                while (currentIndex < context.lines.length) {
+                    const baris = context.lines[currentIndex].trim();
+                    if (baris === ')') break;
+                    metodeLines.push(baris);
+                    currentIndex++;
+                }
+                metodeBody = mtodeLines.join('\n');
+            } else {
+                metodeBody = nextTokens.slice(2).join(" ");
+            }
             metode[metodeName] = metodeBody;
         }
         currentIndex ++;
