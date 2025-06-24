@@ -40,8 +40,8 @@ function resolveToken(token, context = {}) {
         const objName = objAttrMatch[1];
         const attrName = objAttrMatch[2];
 
-        if (objName === 'ini' && ini) {
-            if (attrName in ini) return ini[attrName];
+        if (objName === 'ini' && context.ini) {
+            if (attrName in context.ini) return context.ini[attrName];
             return `Error: Atribut '${attrName}' tidak ditemukan di 'ini'.`;
         }
 
