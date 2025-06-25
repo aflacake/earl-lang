@@ -66,7 +66,7 @@ async function gantiNamaFolder(tokens, modules, context) {
     const pathBaru = tokens[2];
 
 
-    if (!(await folderAda(pathLama)) {
+    if (!(await folderAda(pathLama))) {
         console.log(`Folder asal '${pathLama}' tidak ditemukan.`);
         return;
     }
