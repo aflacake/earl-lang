@@ -17,7 +17,7 @@ Kenapa Earl?
 
 Contoh bahasa Earl sederhana:
 ```earl
-masukkan :nama: sebagai pearl
+masukkan :nama: sebagai earl
 tampikan :nama:
 ```
 
