@@ -62,7 +62,7 @@ node index.js
 ```
 > Perintah ini bermanfaat untuk mencoba versi sebelum dirilis secara publik, jadi Anda bisa memanfatkan program alpha atau betanya.
 
-### Bahan
+### Bahan dari Pihak Ketiga
 - Menginstal paket tambahan di Node.js untuk keperluan merender visual atas perintah aturan 'gambar' dengan
   ``` bash
   npm install canvas
