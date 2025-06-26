@@ -1,12 +1,13 @@
 // modules/panggilMetode.js
 
-const { runEarl } = require('../index');
+const { memory } = require('../memory');
+const { runEarl } = require('../pemroses');
 
 async function panggilMetode(tokens, modules, context) {
     const namaInstance = tokens[1].replace(/:/g, '');
     const namaMethod = tokens[2];
 
-    const instance = memory[instanceName];
+    const instance = memory[namaInstance];
     if (!instance || !instance.__tipe) {
         console.error(`Instance '${namaInstance}' tidak ditemukan.`);
         return;
