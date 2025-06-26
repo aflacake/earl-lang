@@ -134,7 +134,7 @@ if (args.length > 0) {
 
     if (fs.existsSync(filename)) {
         const kode = fs.readFileSync(filename, 'utf8');
-        runEarl(kode);
+        runEarl(kode, modules);
     } else {
         console.error(`File '${filename}' tidak ditemukan.`);
     }
@@ -156,7 +156,7 @@ if (args.length > 0) {
         }
 
         try {
-            await runEarl(line);
+            await runEarl(line, modules);
         } catch (err) {
             console.error('Kesalahan', err.message);
         }
