@@ -2,6 +2,28 @@
 
 const { memory } = require('../memory.js');
 
+async ambilAtributMetodeRekursif(namaKelas) {
+    if (!memory[namaKelas]) return { atribut: [], instance: {}, metode:{] };
+
+    const kelas = memory[namaKelas];
+    if (kelas.tipe !== 'kelas') return { atribut: [], instance: {}, metode: {} };
+
+    let atribut = [...(kelas.atribut || [])];
+    let instance = { ...(kelas.instance || {}) };
+    let metode = { ...(kelas.metode || {}) };
+
+    if (kelas.mewarisi) {
+        const indukData = ambilAtributMetodeRekursif(kelas.mewarisi);
+
+        atribut = [...new Set([...indukData.atribut, ...atribut])];
+
+        instance = { ...indukData.instance, ...instance };
+
+        metode = { ...indukData.metode, ...metode };
+    }
+    return { atribut, instance, metode };
+}
+
 async function kelas(tokens, modules, context) {
     const namaKelas = tokens[1].replace(/:/g, '');
     let parentKelas = null;
@@ -13,24 +35,17 @@ async function kelas(tokens, modules, context) {
 
     const mewarisiIndex = tokens.indexOf('mewarisi');
     if (mewarisiIndex !== -1 && tokens[mewarisiIndex + 1]) {
-         parentKelas = tokens[mewarisiIndex + 1].replace(/:/g, '');
-    }
+        parentKelas = tokens[mewarisiIndex + 1].replace(/:/g, '');
 
-    let atribut = [];
-    let instance = {};
-    const pengaturan = {};
-    const metode = {};
-
-    if (parentKelas && memory[parentKelas]) {
-        const parent = memory[parentKelas];
-        if (parent._tipe === 'kelas') {
-            atribut = [...parent.atribut];
-            instance = { ... parent.instance };
-            Object.assign(metode, parent.metode);
-        } else {
-            console.warn(`Kelas induk '$parentKelas' bukan kelas valid.`);
+        if (!memory[parentKelas] || memory[parentkelas].__tipe !== 'kelas') {
+            console.warn(`Kelas induk '${parentKelas}' tidak ditemukan atau bukan kelas valid.`);
+            return;
         }
     }
+
+    const { atribut, instance, metode } = parentKelas
+        ? ambilAtributMetodeRekursif(parentkelas)
+        : { atribut: [], instance: {}, metode: {} };
 
     instance.__tipe = namaKelas;
 
@@ -39,8 +54,8 @@ async function kelas(tokens, modules, context) {
         mewarisi: parentKelas || null,
         atribut,
         instance,
-        pengaturan,
-        metode
+        pengaturan: {},
+        metode,
     };
 
     let currentIndex = context.index + 1;
