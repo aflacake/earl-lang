@@ -51,5 +51,5 @@ async function lakukan(tokens, modules, context) {
         
     }
 }
-
+lakukan.isBlock = true;
 module.exports = { lakukan };
