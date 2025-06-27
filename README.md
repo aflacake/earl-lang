@@ -117,6 +117,11 @@ link ke global:
 npm link
 ```
 
+## Dengan npm
+```bash
+npm install github:aflacake/earl-lang
+```
+
 ## Unduh versi
 Download versi memungkinkan Anda menggunakan tautan eksternal. Versi ini seutuhnya stabil dari berbagai uji coba rata-rata, versi tidak stabil saat ini belum memungkinkan untuk dirilis, sehingga masih dalam bentuk instalasi berlangsung, untuk versi download sesuaikan perangkat yang Anda gunakan. Silahkan coba versi stabil:
 - [Versi 2.0.0](https://www.dropbox.com/scl/fo/zbb12ru3lomywj1jgbgpd/ANs9qHu8ZD8Li3kJ0o9qSSs?rlkey=94ig1gxrgrs3akop9557gwuqr&st=j49xw59f&dl=0)
