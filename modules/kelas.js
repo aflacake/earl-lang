@@ -3,7 +3,7 @@
 const { memory } = require('../memory.js');
 
 async function ambilAtributMetodeRekursif(namaKelas) {
-    if (!memory[namaKelas]) return { atribut: [], instance: {}, metode:{] };
+    if (!memory[namaKelas]) return { atribut: [], instance: {}, metode:{} };
 
     const kelas = memory[namaKelas];
     if (kelas.tipe !== 'kelas') return { atribut: [], instance: {}, metode: {} };
