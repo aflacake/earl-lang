@@ -135,4 +135,5 @@ async function ulangi(tokens, modules, context) {
     }
 }
 
+ulangi.isBlock = true;
 module.exports = { ulangi };
