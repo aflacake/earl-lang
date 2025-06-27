@@ -63,4 +63,5 @@ async function jika(tokens, modules, context) {
     }
 }
 
+jika.isBlock = true;
 module.exports = { jika };
