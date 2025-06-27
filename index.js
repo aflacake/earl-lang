@@ -26,14 +26,14 @@ fs.readdirSync(modulesPath).forEach(file => {
 
 function bantuan() {
     console.log('Daftar perintah yang tersedia:');
-    const cmds = Object.keys(modules);
+    const cmds = Object.keys(modules)
         .filter(k => k !== 'memory' && k !== 'tokenize')
         .sort();
     cmds.forEach(cmd => console.log(`- ${$cmd}`));
-    console.log("Ketik 'keluar' untuk keluar dari mode REPL.")
+    console.log("Ketik 'keluar' untuk keluar dari mode REPL.");
 }
 
-async function runEarl(code, modules, parentContext) {
+async function runEarl(code, customModules = modules, parentContext) {
     const lines = code.trim().split('\n');
     const context = parentContext ?? { index: 0, lines, lingkup: [{}] };
 
@@ -41,8 +41,8 @@ async function runEarl(code, modules, parentContext) {
 
     while (context.index < context.lines.length) {
         const line = context.lines[context.index].trim();
-        const tokens = modules.tokenize(line);
 
+        const tokens = customModules.tokenize(line);
         if (!tokens || tokens.length === 0) {
             context.index++;
             continue;
@@ -50,17 +50,33 @@ async function runEarl(code, modules, parentContext) {
 
         const cmd = tokens[0];
 
-        if (modules[cmd]) {
-            try {
-                await modules[cmd](tokens, modules, context);
-            } catch (err) {
-                console.error(`Kesalahan saat menjalankan perintah '${cmd}' di baris ${context.index + 1}:`, err.message);
+        if (customModules[cmd]) {
+            const handler = customModules[cmd];
+
+            if (handler.isBlock) {
+                let blockLines = [];
+                context.index++;
+
+                while (context.index < context.lines.length) {
+                    const nextLine = context.lines[context.index].trim();
+                    if (nextLine === 'selesai') break;
+                    blockLines.push(context.lines[context.index]);
+                    context.index++;
+                }
+                context.index++;
+                await handler(tokens, customModules, { ...context, lines: blockLines, index: 0 });
+            } else {
+                try {
+                    await handler[cmd](tokens, modules, context);
+                } catch (err) {
+                    console.error(`Kesalahan saat menjalankan perintah '${cmd}' di baris ${context.index + 1}:`, err.message);
+                }
+                context.index++;
             }
         } else {
             console.error(`Modul tidak dikenali: '${cmd}' di baris ${context.index + 1}`);
+            context.index++;
         }
-
-        context.index++;
     }
 }
 
