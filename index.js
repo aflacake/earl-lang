@@ -24,6 +24,15 @@ fs.readdirSync(modulesPath).forEach(file => {
     }
 });
 
+function bantuan() {
+    console.log('Daftar perintah yang tersedia:');
+    const cmds = Object.keys(modules);
+        .filter(k => k !== 'memory' && k !== 'tokenize')
+        .sort();
+    cmds.forEach(cmd => console.log(`- ${$cmd}`));
+    console.log("Ketik 'keluar' untuk keluar dari mode REPL.")
+}
+
 async function runEarl(code, modules, parentContext) {
     const lines = code.trim().split('\n');
     const context = parentContext ?? { index: 0, lines, lingkup: [{}] };
@@ -77,18 +86,26 @@ if (args.length > 0) {
         prompt: 'earl>'
     });
 
-    console.log("Earl REPL Mode - ketik 'keluar' untuk keluar");
+    console.log("Earl REPL Mode - ketik 'keluar' untuk keluar dan ketik 'bantuan' untuk melihat daftar perintah");
 
     rl.prompt();
 
     rl.on('line', async (line) => {
+        const input = line.trim();
+
         if (line.trim() === 'keluar') {
             rl.close();
             return;
         }
 
+        if (input === 'bantuan') {
+            bantuan();
+            rl.prompt();
+            return;
+        }
+
         try {
-            await runEarl(line, modules);
+            await runEarl(input, modules);
         } catch (err) {
             console.error('Kesalahan', err.message);
         }
