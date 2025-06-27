@@ -2,7 +2,7 @@
 
 const { memory } = require('../memory.js');
 
-async ambilAtributMetodeRekursif(namaKelas) {
+async function ambilAtributMetodeRekursif(namaKelas) {
     if (!memory[namaKelas]) return { atribut: [], instance: {}, metode:{] };
 
     const kelas = memory[namaKelas];
@@ -13,7 +13,7 @@ async ambilAtributMetodeRekursif(namaKelas) {
     let metode = { ...(kelas.metode || {}) };
 
     if (kelas.mewarisi) {
-        const indukData = ambilAtributMetodeRekursif(kelas.mewarisi);
+        const indukData = await ambilAtributMetodeRekursif(kelas.mewarisi);
 
         atribut = [...new Set([...indukData.atribut, ...atribut])];
 
@@ -37,7 +37,7 @@ async function kelas(tokens, modules, context) {
     if (mewarisiIndex !== -1 && tokens[mewarisiIndex + 1]) {
         parentKelas = tokens[mewarisiIndex + 1].replace(/:/g, '');
 
-        if (!memory[parentKelas] || memory[parentkelas].__tipe !== 'kelas') {
+        if (!memory[parentKelas] || memory[parentKelas].__tipe !== 'kelas') {
             console.warn(`Kelas induk '${parentKelas}' tidak ditemukan atau bukan kelas valid.`);
             return;
         }
@@ -49,12 +49,14 @@ async function kelas(tokens, modules, context) {
 
     instance.__tipe = namaKelas;
 
+    const pengaturan = {};
+
     memory[namaKelas] = {
         __tipe: 'kelas',
         mewarisi: parentKelas || null,
         atribut,
         instance,
-        pengaturan: {},
+        pengaturan,
         metode,
     };
 
@@ -105,7 +107,7 @@ async function kelas(tokens, modules, context) {
             let metodeBody = '';
 
             if (nextToken.includes('(')) {
-                let motodeLines = [];
+                let metodeLines = [];
                 currentIndex++;
 
                 while (currentIndex < context.lines.length) {
@@ -114,9 +116,9 @@ async function kelas(tokens, modules, context) {
                     metodeLines.push(baris);
                     currentIndex++;
                 }
-                metodeBody = mtodeLines.join('\n');
+                metodeBody = metodeLines.join('\n');
             } else {
-                metodeBody = nextTokens.slice(2).join(" ");
+                metodeBody = nextTokens.slice(2).join(' ');
             }
             metode[metodeName] = metodeBody;
         }
