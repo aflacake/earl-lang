@@ -72,7 +72,7 @@ async function runEarl(code, customModules = modules, parentContext) {
                 await handler(tokens, customModules, { ...context, lines: blockLines, index: 0 });
             } else {
                 try {
-                    await handler[cmd](tokens, modules, context);
+                    await handler(tokens, modules, context);
                 } catch (err) {
                     console.error(`Kesalahan saat menjalankan perintah '${cmd}' di baris ${context.index + 1}:`, err.message);
                 }
