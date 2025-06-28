@@ -33,7 +33,7 @@ function fungsi (tokens, modules, context) {
         if (depth === 0) break;
     }
 
-    body.push(line);
+    body.push(context.lines[context.index]);
     context.index++;
   }
 
@@ -42,6 +42,17 @@ function fungsi (tokens, modules, context) {
   }
 
   context.index++;
+
+  const fungsiAST = {
+      tipe: "fungsi",
+      nama: namaFungsi,
+      parameter: params,
+      body: [...body],
+      lokasi: context.lingkup.length === 1 ? 'global' : 'lokal
+  };
+
+  modules.memory.__fungsi_ast__ = modules.memory.__fungsi_ast__ || {};
+  modules.memory.__fungsi_ast__[namaFungsi] = fungsiAST;
 
   const fungsiBaru = async (tokens, modules, parentContext) => {
     const resolveToken = modules.resolveToken || (t => t);
@@ -86,7 +97,7 @@ function fungsi (tokens, modules, context) {
               .slice()
               .reverse()
               .map(scope => scope[cmd])
-             .find(f => typeof f === 'function');
+              .find(f => typeof f === 'function');
 
       if (func) {
           try {
