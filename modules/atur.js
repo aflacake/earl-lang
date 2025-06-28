@@ -96,7 +96,9 @@ async function atur(tokens, modules, context) {
     if (valueTokens[0] === '[' && valueTokens[valueTokens.length - 1] === ']') {
         value = parseArrayValue(valueTokens);
     } else if (valueTokens[0] === '(' && valueTokens[valueTokens.length - 1] === ')') {
-       value = parseObjekValue(valueTokens);
+        const objekString = valueTokens.join(' ');
+        const objekTokens = modules.tokenize(objekString);
+        value = parseObjekValue(objekTokens);
     } else {
         const valueRaw = valueTokens.join('').trim();
         value = resolveToken(valueRaw, {
