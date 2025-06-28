@@ -4,6 +4,8 @@ const { memory } = require('../memory.js');
 const { resolveToken } = require('./tampilkan'); 
 
 async function atur(tokens, modules, context) {
+    console.log('DEBUG atur.tokens:', tokens);
+
     if (
         tokens[1] === 'hapus' &&
         tokens[2] &&
@@ -66,7 +68,7 @@ async function atur(tokens, modules, context) {
     }
 
     if (operator !== '=') {
-        consol.error(`Operator '${operator}' tidak dikenali. Gunakan '='.`);
+        console.error(`Operator '${operator}' tidak dikenali. Gunakan '='.`);
         return;
     }
 
