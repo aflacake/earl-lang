@@ -48,7 +48,7 @@ function fungsi (tokens, modules, context) {
       nama: namaFungsi,
       parameter: params,
       body: [...body],
-      lokasi: context.lingkup.length === 1 ? 'global' : 'lokal
+      lokasi: context.lingkup.length === 1 ? 'global' : 'lokal'
   };
 
   modules.memory.__fungsi_ast__ = modules.memory.__fungsi_ast__ || {};
@@ -104,7 +104,7 @@ function fungsi (tokens, modules, context) {
               if (typeof func === 'function') {
                   await func(innerTokens, modules, localContext);
               } else {
-                  console.error(`Modul '${cmd}' tidak valid di dalam fungsi '${namaFungsi'`);
+                  console.error(`Modul '${cmd}' tidak valid di dalam fungsi '${namaFungsi}'`);
               }
           } catch (err) {
               console.error(`Kesalahan dalam fungsi '${namaFungsi}':`, err.message);
