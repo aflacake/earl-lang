@@ -9,14 +9,16 @@ async function laksanakanAST(ast, modules, context) {
             continue;
         }
         try {
-            if (body) {
-                await handler(tokens, modules, { ...context, lines: body, index: 0 });
-            } else {
-                await handler(tokens, modules, context);
-            }
+            const newContent = {
+                ...context,
+                currentNode: node
+            };
+            await handler(tokens, modules, newContext);
         } catch (err) {
             console.error(`Kesalahan saat menjalankan '${type}':`, err.message);
         }
+
+        if (context.berhenti || context.lanjutkan) break;
     }
 }
 
