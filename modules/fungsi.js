@@ -37,15 +37,19 @@ function fungsi (tokens, modules, context) {
     context.index++;
   }
 
+  if (context.index >= context.lines.length && depth !== 0) {
+      throw new Error(`Fungsi '${namaFungsi}' tidak ditutup dengan ')'`);
+  }
+
   context.index++;
 
   const fungsiBaru = async (tokens, modules, parentContext) => {
     const resolveToken = modules.resolveToken || (t => t);
 
     const args = await Promise.all(
-        token.slice(1).map(async (tok) => {
+        tokens.slice(1).map(async (tok) => {
             if (typeof tok === 'string' && tok.startsWith(':') && tok.endsWith(':')) {
-                return await resolveToken(tok);
+                return await resolveToken(tok, parentContext);
             }
             return tok;
         })
@@ -86,7 +90,11 @@ function fungsi (tokens, modules, context) {
 
       if (func) {
           try {
-              await func(innerTokens, modules, localContext);
+              if (typeof func === 'function') {
+                  await func(innerTokens, modules, localContext);
+              } else {
+                  console.error(`Modul '${cmd}' tidak valid di dalam fungsi '${namaFungsi'`);
+              }
           } catch (err) {
               console.error(`Kesalahan dalam fungsi '${namaFungsi}':`, err.message);
           }
