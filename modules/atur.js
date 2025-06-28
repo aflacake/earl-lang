@@ -97,7 +97,11 @@ async function atur(tokens, modules, context) {
        value = parseObjekValue(valueTokens);
     } else {
         const valueRaw = valueTokens.join('').trim();
-        value = resolveToken(valueRaw);
+        value = resolveToken(valueRaw, {
+            memory,
+            lingkup: context.lingkup,
+            ini: context.ini
+        });
     }
 
     if (path.match(/^:[^:\[\]]+\[\d+\]:$/)) {
