@@ -26,13 +26,19 @@ async function atur(tokens, modules, context) {
     }
 
     // kasus 1
-    const line = context.lines[context.index].trim();
+    const line = context.lines?.[context.index];
+    if (!line) {
+        console.error("Baris tidak ditemukan dalam konteks.");
+        return;
+    }
+    const trimmedLine = line.trim();
+
     if (!line) {
         console.error("Tidak ada baris untuk diproses.");
         return;
     }
 
-    if (tokens.length >= 2 && tokens[1].startsWith(':') && tokens[1].endsWith(':') && line.endsWith('(')) {
+    if (tokens.length >= 2 && tokens[1].startsWith(':') && tokens[1].endsWith(':') && trimmedLine.endsWith('(')) {
         const key = tokens[1].slice(1, -1);
         const lines = [];
 
