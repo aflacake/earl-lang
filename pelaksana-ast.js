@@ -13,7 +13,7 @@ async function laksanakanAST(ast, modules, context) {
                 ...context,
                 currentNode: node
             };
-            await handler(tokens, modules, newContext);
+            await handler(tokens, modules, newContent);
         } catch (err) {
             console.error(`Kesalahan saat menjalankan '${type}':`, err.message);
         }
