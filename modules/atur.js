@@ -27,6 +27,11 @@ async function atur(tokens, modules, context) {
 
     // kasus 1
     const line = context.lines[context.index].trim();
+    if (!line) {
+        console.error("Tidak ada baris untuk diproses.");
+        return;
+    }
+
     if (tokens.length >= 2 && tokens[1].startsWith(':') && tokens[1].endsWith(':') && line.endsWith('(')) {
         const key = tokens[1].slice(1, -1);
         const lines = [];
@@ -36,7 +41,7 @@ async function atur(tokens, modules, context) {
             const currentLine = context.lines[context.index].trim();
             if (currentLine === ')') break;
             lines.push(currentLine);
-            context.index;
+            context.index++;
         }
 
         memory[key] = lines.join('\n');
@@ -48,6 +53,16 @@ async function atur(tokens, modules, context) {
 
     // kasus 2
     const [_, path, operator, ...valueParts] = tokens;
+
+    if (!operator) {
+        console.error("Operator assignment '=' tidak ditemukan.");
+        return;
+    }
+
+    if (operator !== '=') {
+        consol.error(`Operator '${operator}' tidak dikenali. Gunakan '='.`);
+        return;
+    }
 
     let valueTokens = [...valueParts];
 
@@ -61,16 +76,11 @@ async function atur(tokens, modules, context) {
         context.index++;
 
         while (context.index < context.lines.length) {
-            const line = context.lines[content.index].trim();
+            const line = context.lines[context.index].trim();
             valueTokens.push(...modules.tokenize(line));
             if (line === penutup) break;
-            context.index;
+            context.index++;
         }
-    }
-
-    if (operator !== '=') {
-         console.error(`Operator '{$operator}' tidak dikenali. Gunakan '='.`);
-         return;
     }
 
     let value;
