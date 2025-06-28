@@ -24,6 +24,7 @@ async function atur(tokens, modules, context) {
         } else {
             console.log(`Variabel '${key}' tidak ditemukan.`);
         }
+
         return;
     }
 
