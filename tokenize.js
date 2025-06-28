@@ -21,7 +21,10 @@ function tokenize(line) {
         return [];
     }
 
-    return dipangkas.match(/"[^"]*"|:[^:\s\[\]]+\[\d+\]:|:[^:\s]+:|>=|<=|==|!=|[()[\],]|>|<|\S+/g);
+    return dipangkas
+        .replace(/([\[\](),])/g, ' $1 ')
+        .replace(/:/g, ' : ')
+        .match(/"[^"]*"|\S+/g);
 }
 
 module.exports = { tokenize };
