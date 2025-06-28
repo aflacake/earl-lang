@@ -29,7 +29,7 @@ function bantuan() {
     const cmds = Object.keys(modules)
         .filter(k => k !== 'memory' && k !== 'tokenize')
         .sort();
-    cmds.forEach(cmd => console.log(`- ${$cmd}`));
+    cmds.forEach(cmd => console.log(`- ${cmd}`));
     console.log("Ketik 'keluar' untuk keluar dari mode REPL.");
 }
 
