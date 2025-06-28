@@ -44,7 +44,7 @@ async function ulangi(tokens, modules, context) {
         }
 
     } else {
-        const count = parseInt(resolveToken(tokens[1], modules, context));
+        const count = parseInt(resolveToken(tokens[1], context));
 
         if (isNaN(count)) {
             console.error(`Nilai perulangan tidak valid: ${jumlahToken[1]}`);
