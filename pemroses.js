@@ -8,7 +8,7 @@ async function runEarl(code, customModules = modules, parentContext) {
     const ast = parse(code);
 
     const context = parentContext ?? {
-        index: 0;
+        index: 0,
         lines: [],
         lingkup: [{}],
         berhenti: false,
