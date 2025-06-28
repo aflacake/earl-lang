@@ -1,7 +1,7 @@
 // modules/ulangi.js
 
 const { resolveToken } = require('./tampilkan');
-const { laksanaAST } = require('../pelaksana-ast');
+const { laksanakanAST } = require('../pelaksana-ast');
 
 async function ulangi(tokens, modules, context) {
     if (tokens[1] === 'setiap' && tokens[2] === 'dari') {
