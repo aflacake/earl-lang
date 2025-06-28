@@ -17,14 +17,11 @@ function tokenize(line) {
         return [];
     }
 
-    if(dipangkas.startsWith('--') && dipangkas.endsWith('--')) {
+    if (dipangkas.startsWith('--') && dipangkas.endsWith('--')) {
         return [];
     }
 
-    return dipangkas
-        .replace(/([\[\](),])/g, ' $1 ')
-        .replace(/:/g, ' : ')
-        .match(/"[^"]*"|\S+/g);
+    return dipangkas.match(/"[^"]*"|:[^:\s\[\]]+\[\d+\]:|:[^:\s]+:|>=|<=|==|!=|[()[\],]|>|<|\S+/g);
 }
 
 module.exports = { tokenize };
