@@ -25,7 +25,7 @@ function aksesBersarang(arr, indexes) {
     return current;
 }
 
-function resolveToken(token, context = {}) {
+function resolveToken(token, context = {}, modules = {}) {
     const { memory = {}, lingkup = [{}], ini = null } = context;
         
     function cariDiLingkup(nama) {
