@@ -39,10 +39,12 @@ const { laksanakanAST } = require('./pelaksana-ast')
 async function runEarl(code, customModules = modules, parentContext) {
     const lines = code.trim().split('\n');
     const ast = parse(code);
-    const context = parentContext ?? { index: 0, lines: [], lingkup: [{}] };
+    const context = parentContext ?? {
+        index: 0,
+        lines,
+        lingkup: [{}]
+    };
     await laksanakanAST(ast, customModules, context);
-
-    if (!parentContext) context.lines = lines;
 
     while (context.index < context.lines.length) {
         const line = context.lines[context.index].trim();
