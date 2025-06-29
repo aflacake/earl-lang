@@ -1,6 +1,4 @@
-// modules/ambil.js
-const { memory } = require('../memory.js');
-const { ambilDaftarJikaPerlu } = require('../utili.js');
+// ambil.js
 
 function ambil(tokens, modules, context) {
     if (!tokens || tokens.length < 4 || tokens[2] !== 'dari') {
@@ -8,109 +6,38 @@ function ambil(tokens, modules, context) {
         return;
     }
 
-    if (!tokens[1].startsWith(':') || !tokens[1].endsWith(':')) {
+    if (!context.lingkup || context.lingkup.length === 0) {
+        context.lingkup = [{}];
+    }
+
+    const targetToken = tokens[1];
+    const sumberToken = tokens[3];
+
+    if (!targetToken.startsWith(':') || !targetToken.endsWith(':')) {
         console.error("Variabel tujuan harus dalam format :nama:");
         return;
     }
 
-    const targetVar = tokens[1].slice(1, -1);
-    const sumber = tokens[3];
-    let value;
+    const targetNama = targetToken.slice(1, -1);
+    const sumberNama = sumberToken.slice(1, -1);
 
     function cariDariLingkup(nama) {
-        if (context.lingkup && context.lingkup.length > 0) {
-            for (let i = context.lingkup.length - 1; i >= 0; i--) {
-                if (nama in context.lingkup[i]) {
-                    return context.lingkup[i][nama];
-                }
+        for (let i = context.lingkup.length - 1; i >= 0; i--) {
+            if (nama in context.lingkup[i]) {
+                return context.lingkup[i][nama];
             }
         }
-        return memory[nama];
+        return undefined;
     }
 
-    const daftarNilai = ambilDaftarJikaPerlu(sumber);
-    if (daftarNilai !== null) {
-        value = daftarNilai;
-        if (context.lingkup && context.lingkup.length > 0) {
-            context.lingkup[context.lingkup.length - 1][targetVar] = value;
-        } else {
-            memory[targetVar] = value;
-        }
-        console.log(`Variabel '${targetVar}' diisi dari '${sumber}':`, value);
+    const nilai = cariDariLingkup(sumberNama);
+    if (nilai === undefined) {
+        console.error(`Variabel '${sumberNama}' tidak ditemukan.`);
         return;
     }
 
-    else if (sumber.includes('.')) {
-        const bagian = sumber.split('.');
-        const namaInstance = bagian[0];
-        const instance = cariDariLingkup(namaInstance);
-
-        if (!instance || typeof instance !== 'object') {
-            console.error(`Instance '${namaInstance}' tidak ditemukan atau bukan objek.`);
-            return;
-        }
-
-        value = instance;
-        for (let i = 1; i < bagian.length; i++) {
-            const kunci = bagian[i];
-            if (value && kunci in value) {
-                value = value[kunci];
-            } else {
-                console.error(`Atribut '${kunci}' tidak ditemukan.`);
-                return;
-            }
-        }
-
-        if (instance.__tipe) {
-            const className = instance.__tipe;
-            const classDef = memory[className];
-            const namaAtribut = bagian[1];
-
-            if (!classDef || classDef.__tipe !== 'kelas') {
-                console.error(`'${className}' bukan kelas yang valid.`);
-                return;
-            }
-
-            if (!classDef.atribut.includes(namaAtribut)) {
-                console.warn(`Atribut '${namaAtribut}' tidak didefinisikan di kelas '${className}'.`);
-            }
-        }
-    }
-    else if (sumber.startsWith(':') && sumber.endsWith(':')) {
-        const varName = sumber.slice(1, -1);
-        const varValue = cariDariLingkup(varName);
-
-        if (varValue === undefined) {
-            console.error(`Variabel '${varName}' tidak ditemukan.`);
-            return;
-        }
-        if (typeof varValue === 'object'&& !Array.isArray(varValue)) {
-            if(tokens.length > 4) {
-                const key = tokens[4];
-                if (key in varValue) {
-                    value = varValue[key];
-                } else {
-                    console.error(`Kunci '${key}' tidak ditemukan di dikta '${varName}'.`);
-                    return;
-                }
-            } else {
-                value = varValue;
-            }
-        } else {
-            value = varValue;
-        }
-    }
-    else {
-        value = cariDariLingkup(sumber);
-    }
-
-    if (context.lingkup && context.lingkup.length > 0) {
-        context.lingkup[context.lingkup.length - 1][targetVar] = value;
-    } else {
-        memory[targetVar] = value;
-    }
-    console.log(`Variabel '${targetVar}' diisi dari '${sumber}':`, value);
-    return;
-};
+    context.lingkup[context.lingkup.length - 1][targetNama] = nilai;
+    console.log(`Variabel '${targetNama}' diisi dari '${sumberNama}':`, nilai);
+}
 
 module.exports = { ambil };
