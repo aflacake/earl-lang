@@ -2,7 +2,6 @@
 
 const fs = require('fs');
 const chalk = require('chalk');
-const { memory } = require('../memory.js');
 
 function evalMathExpression(expr) {
     try {
@@ -27,7 +26,7 @@ function aksesBersarang(arr, indexes) {
 
 function resolveToken(token, context = {}, modules = {}) {
     const { memory = {}, lingkup = [{}], ini = null } = context;
-        
+
     function cariDiLingkup(nama) {
         for (let i = lingkup.length - 1; i >= 0; i--) {
             if (nama in lingkup[i]) return lingkup[i][nama];
@@ -66,7 +65,7 @@ function resolveToken(token, context = {}, modules = {}) {
         return aksesBersarang(arr, indexes);
     }
 
-    const daftarSatuMatch = token.match(/^:([^:\[\]]+)\[(\d+)\]:$/);
+    const daftarSatuMatch = token.match(/^:([a-zA-Z_][a-zA-Z0-9_]*)\[(\d+)\]:$/);
     if (daftarSatuMatch) {
         const varName = daftarSatuMatch[1];
         const index = Number(daftarSatuMatch[2]);
@@ -140,6 +139,9 @@ function formatValue(val, verbose = false) {
 }
 
 function tampilkan(tokens, modules, context) {
+    const memory = context.memory || {};
+    const lingkup = context.lingkup || [{}];
+
     if (tokens.length < 2) {
         console.log(chalk.red("Perintah 'tampilkan' memelukan argumen."));
         return;
@@ -172,7 +174,7 @@ function tampilkan(tokens, modules, context) {
         if (token.startsWith('"') && token.endsWith('"')) {
             hasil.push(token.slice(1, -1));
         } else {
-            const nilai = resolveToken(token);
+            const nilai = resolveToken(token, context, modules);
             hasil.push(verbose ? JSON.stringify(nilai, null, 2) : formatValue(nilai, verbose));
         }
         i++;
