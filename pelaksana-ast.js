@@ -10,7 +10,7 @@ async function laksanakanAST(ast, modules, context) {
         }
         try {
             context.currentNode = node;
-            const result = await handler(tokens, modules, newContent);
+            const result = await handler(tokens, modules, context);
 
             if (result !== undefined) {
                 console.log(result);
