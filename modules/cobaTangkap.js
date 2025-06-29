@@ -22,14 +22,15 @@ async function cobaTangkap(tokens, modules, context) {
         lines.push(line);
         context.index++;
     }
-    if (depth !== 0) {
+
+    if (kedalaman !== 0) {
         console.error("Blok kode 'cobaTangkap' tidak ditutup dengan benar ')'");
         return;
     }
 
     context.index++;
 
-    const localContent = {
+    const localContext = {
         index: 0,
         lines: [...lines],
         lingkup: [...context.lingkup],
@@ -46,13 +47,15 @@ async function cobaTangkap(tokens, modules, context) {
                 localContext.index++;
                 continue;
             }
-            const cmd = inneTokens[0];
 
-            if(modules[cmd]) {
+            const cmd = innerTokens[0];
+
+            if (modules[cmd]) {
                 await modules[cmd](innerTokens, modules, localContext);
             } else {
                 console.error(`Perintah '${cmd}' tidak dikenali di dalam 'cobaTangkap'.`);
             }
+
             if (localContext.stopExecution) break;
 
             localContext.index++;
