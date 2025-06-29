@@ -1,15 +1,15 @@
-// modules/buka.js
-
 const fs = require('fs').promises;
 
 async function buka(tokens, modules, context) {
-    const namaVariabel = tokens[1];
+    const namaVariabel = tokens[1];  // ex: ":fileData:"
     const pathFile = tokens[3].replace(/"/g, "");
 
     try {
         const isiFile = await fs.readFile(pathFile, 'utf-8');
 
-        if (!context.memory) context.memory = {};
+        if (!context.memory) {
+            context.memory = {};
+        }
         context.memory[namaVariabel.slice(1, -1)] = isiFile;
 
         console.log(`File '${pathFile}' dibuka dan disimpan ke variabel '${namaVariabel}'`);
