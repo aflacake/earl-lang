@@ -113,6 +113,13 @@ if (args.length > 0) {
 
     rl.prompt();
 
+    const contextGlobal = {
+        index: 0,
+        lines: [],
+        lingkup: [{}],
+        memory
+    };
+
     rl.on('line', async (line) => {
         const input = line.trim();
 
@@ -128,7 +135,7 @@ if (args.length > 0) {
         }
 
         try {
-            await runEarl(input, modules);
+            await runEarl(input, modules, contextGlobal);
         } catch (err) {
             console.error('Kesalahan', err.message);
         }
