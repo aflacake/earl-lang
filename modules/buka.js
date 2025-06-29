@@ -1,3 +1,5 @@
+// modules/buka.js
+
 const fs = require('fs').promises;
 
 async function buka(tokens, modules, context) {
