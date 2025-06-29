@@ -60,17 +60,12 @@ async function kelas(tokens, modules, context) {
         metode,
     };
 
-    let currentIndex = context.index + 1;
-    while (currentIndex < context.lines.length) {
-        const nextLine = context.lines[currentIndex];
-
-        if (!nextLine || !/^\s/.test(nextLine)) break;
-
-        const nextTokens = modules.tokenize(nextLine.trim());
+    for (const subNode of context.currentNode.body) {
+        const [cmd, ...args] = subNode.tokens;
 
         if (nextTokens[0] === 'punggung') {
-            const variables = nextTokens.slice(1).map(v => v.replace(/[:,]/g, ''));
-            variables.forEach(varName => {
+            const vars= args.map(v => v.replace(/[:,]/g, ''));
+            vars.forEach(varName => {
                 if (memory.hasOwnProperty(varName)) {
                     memory[namaKelas].instance[varName] = memory[varName];
                 } else {
@@ -80,51 +75,28 @@ async function kelas(tokens, modules, context) {
         }
 
         if (nextTokens[0] === 'Penguatan') {
-            const subperintah = nextTokens[1].replace(/[()]/g, '');
-            pengaturan[subperintah] = {};
+            const namaPenguatan = args[0].replace(/[()]/g, '');
+            pengaturan[namaPenguatan] = {};
 
-            let subIndex = currentIndex + 1;
-            while (subIndex < context.lines.length) {
-                const subLine = context.lines[subIndex];
+            for (const isiPenguatan of subNode.body) {
+                const [subcmd, ...subargs] = isiPenguatan.tokens;
 
-                if (!subLine || !/^\s{4}/.test(subLine)) break;
-
-                const subTokens = modules.tokenize(subLine.trim());
-
-                if (['tumpuk', 'menimbun', 'melontarkan'].includes(subTokens[0])) {
-                    pengaturan[subperintah][subTokens[0]] = subTokens.slice(1);
+                if (['tumpuk', 'menimbun', 'melontarkan'].includes(subcmd)) {
+                    pengaturan[namaPenguatan][subcmd] = subargs;
                 }
-                else if (subTokens[0] === 'MenangkapBasah' && subTokens[1] === '#debug') {
-                    pengaturan[subperintah].debug = true;
+                else if (subcmd === 'MenangkapBasah' && subargs[0] === '#debug') {
+                    pengaturan[namaPenguatan].debug = true;
                 }
-                subIndex++;
             }
-            currentIndex = subIndex - 1;
         }
 
         if (nextTokens[0] === 'metode') {
-            const metodeName = nextTokens[1].replace(/[:,]/g, '');
-            let metodeBody = '';
-
-            if (nextToken.includes('(')) {
-                let metodeLines = [];
-                currentIndex++;
-
-                while (currentIndex < context.lines.length) {
-                    const baris = context.lines[currentIndex].trim();
-                    if (baris === ')') break;
-                    metodeLines.push(baris);
-                    currentIndex++;
-                }
-                metodeBody = metodeLines.join('\n');
-            } else {
-                metodeBody = nextTokens.slice(2).join(' ');
-            }
-            metode[metodeName] = metodeBody;
+            const namaMetode = args[0].replace(/[:,]/g, '');
+            const metodeLines = subNode.body.map(n => n.tokens.join(' '));
+            metode[namaMetode] = metodeLines.join('\n');   
         }
-        currentIndex ++;
     }
-    context.index = currentIndex - 1;
+
     console.log(`Kelas '${namaKelas}' didefiniskan${parentKelas ? ` (mewarisi '${parentKelas}')` : ''}.`);
     console.log(`Atribut:`, atribut);
     console.log(`Instance:`, instance);
@@ -132,4 +104,5 @@ async function kelas(tokens, modules, context) {
     console.log(`Metode:`, metode);
 }
 
+kelas.isBlock = true;
 module.exports = { kelas };
