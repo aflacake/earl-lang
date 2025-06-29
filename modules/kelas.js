@@ -22,6 +22,7 @@ async function ambilAtributMetodeRekursif(namaKelas) {
     return { atribut, instance, metode };
 }
 
+
 async function kelas(tokens, modules, context) {
     const namaKelas = tokens[1]?.replace(/:/g, '');
     if (!namaKelas) {
@@ -69,29 +70,10 @@ async function kelas(tokens, modules, context) {
     for (let i = 0; i < body.length; i++) {
         const { type, tokens: subTokens, body: subBody } = body[i];
 
-        if (type === 'punggung') {
-            const vars = subTokens.slice(1).map(v => v.replace(/[:,]/g, ''));
-            vars.forEach(varName => {
-                if (memory.hasOwnProperty(varName)) {
-                    memory[namaKelas].instance[varName] = memory[varName];
-                } else {
-                    console.warn(`Variabel '${varName}' tidak ditemukan.`);
-                }
-            });
-        }
-
-        else if (type === 'Penguatan') {
-            const namaPenguatan = subTokens[1]?.replace(/[():]/g, '') || 'tanpaNama';
-            pengaturan[namaPenguatan] = {};
-
-            for (const sub of subBody ?? []) {
-                const [subcmd, ...subargs] = sub.tokens;
-                if (['tumpuk', 'menimbun', 'melontarkan'].includes(subcmd)) {
-                    pengaturan[namaPenguatan][subcmd] = subargs;
-                } else if (subcmd === 'MenangkapBasah' && subargs[0] === '#debug') {
-                    pengaturan[namaPenguatan].debug = true;
-                }
-            }
+        if (type === 'atribut') {
+            // Menambahkan atribut ke kelas
+            const atributNames = subTokens.slice(1);
+            atribut.push(...atributNames);
         }
 
         else if (type === 'metode') {
