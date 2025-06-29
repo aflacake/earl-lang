@@ -1,6 +1,6 @@
 // modules/berhenti.js
 
-const raedline = require('readline');
+const readline = require('readline');
 
 function berhenti(tokens, modules, context) {
     return new Promise(resolve => {
