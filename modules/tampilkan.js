@@ -190,4 +190,9 @@ function tampilkan(tokens, modules, context) {
     }
 }
 
-module.exports = { tampilkan, resolveToken, evalMathExpression };
+async function tampilkanHandler(tokens, modules, context) {
+  tampilkan(tokens, modules, context);
+}
+
+tampilkanHandler.isBlock = false;
+module.exports = { tampilkan: tampilkanHandler, resolveToken, evalMathExpression };
