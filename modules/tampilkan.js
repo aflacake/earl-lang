@@ -94,7 +94,7 @@ function resolveToken(token, context = {}, modules = {}) {
 
     if (token.startsWith(':') && token.endsWith(':')) {
         const varName = token.slice(1, -1);
-        return memory[varName] ?? cariDiLingkup(varName);
+        return memory[varName] ?? `Token '${token}' tidak dikenali atau tidak dapat ditemukan.`;
     }
 
     if (token.includes('.')) {
@@ -119,8 +119,9 @@ function resolveToken(token, context = {}, modules = {}) {
     }
 
     if (/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(token)) {
-        return memory[token] ?? cariDiLingkup(token) ?? token;
+        return memory[token] ?? token;
     }
+    return `Token '${token}' tidak dikenali atau tidak dapat ditemukan.`;
 
     if (!isNaN(token)) return Number(token);
 
