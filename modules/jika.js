@@ -22,12 +22,12 @@ function resolveValueDenganKelas(token) {
 }
 
 async function jika(tokens, modules, context) {
-    if (tokens.length < 6) {
-        console.error("Sintaks tidak lengkap. Gunakan format: jika <kiri> <operator> <kanan> maka <perintah> [argumen]");
+    if (tokens.length < 5) {
+        console.error("Sintaks tidak lengkap. Gunakan format: jika <kiri> <operator> <kanan> maka");
         return;
     }
 
-    const [ , leftToken, operator, rightToken, keyword, cmd, ...args] = tokens;
+    const [ , leftToken, operator, rightToken, keyword] = tokens;
 
     if (keyword !== 'maka') {
         console.error("Sintaks salah. Gunakan 'maka' setelah kondisi.");
@@ -51,14 +51,10 @@ async function jika(tokens, modules, context) {
             return;
     }
     if (hasil) {
-        if (modules[cmd]) {
-            try {
-                await modules[cmd]([cmd, ...args], modules, context);
-            } catch (err) {
-                console.error(`Gagal menjalankan '${cmd}':`, err);
-            }
+        if (context.currentNode.body && context.currentNode.body.length > 0) {
+            await modules.laksanakanAST(context.currentNode.body, modules, context);
         } else {
-            console.error(`Perintah '${cmd}' belum dikenali setelah 'maka'.`);
+            console.error(`Perintah 'maka' kosong atau tidak ditemukan'.`);
         }
     }
 }
