@@ -24,6 +24,7 @@ function aksesBersarang(arr, indexes) {
     return current;
 }
 
+
 function resolveToken(token, context = {}, modules = {}) {
     const { memory = {}, lingkup = [{}], ini = null } = context;
 
@@ -45,11 +46,11 @@ function resolveToken(token, context = {}, modules = {}) {
         }
 
         const obj = memory[objName] ?? cariDiLingkup(objName);
-        if (typeof obj === 'object' && obj !== null) {
+        if (obj && typeof obj === 'object') {
             if (attrName in obj) return obj[attrName];
             return `Error: Atribut '${attrName}' tidak ditemukan di objek '${objName}'.`;
         }
-        return `Error: '${objName}' bukan objek yang valid.`;
+        return `Error: '${objName}' bukan objek yang valid atau tidak ditemukan.`;
     }
 
     const daftarBersarangMatch = token.match(/^:([^:\[\]]+)((\[\d+\])+):$/);
@@ -64,6 +65,8 @@ function resolveToken(token, context = {}, modules = {}) {
 
         return aksesBersarang(arr, indexes);
     }
+
+    return `Token '${token}' tidak dikenali atau tidak dapat ditemukan.`;
 
     const daftarSatuMatch = token.match(/^:([a-zA-Z_][a-zA-Z0-9_]*)\[(\d+)\]:$/);
     if (daftarSatuMatch) {
