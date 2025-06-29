@@ -1,10 +1,19 @@
 // modules/lingkup.js
 
 async function masuklingkup(tokens, modules, context) {
+    if (!Array.isArray(context.lingkup)) {
+        context.lingkup = [{}];
+    }
     context.lingkup.push({});
 }
 
 async function keluarlingkup(tokens, modules, context) {
+    if (!Array.isArray(context.lingkup)) {
+        console.warn('Lingkup belum diinisialisasi.');
+        context.lingkup = [{}];
+        return;
+    }
+
     if (context.lingkup.length > 1) {
         context.lingkup.pop();
     } else {
@@ -13,6 +22,11 @@ async function keluarlingkup(tokens, modules, context) {
 }
 
 async function periksalingkup(tokens, modules, context) {
+    if (!Array.isArray(context.lingkup)) {
+        console.log('Lingkup belum diinisialisasi.');
+        return;
+    }
+
     console.log('=== PERIKSA LINGKUP ===');
     context.lingkup.forEach((scope, index) => {
         console.log(`Lingkup [${index}]`);
