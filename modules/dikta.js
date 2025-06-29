@@ -1,56 +1,119 @@
-// modules/dikta.js
+const { memory } = require('../memory.js');
 
-const { memory } = require('../memory');
+async function ambilAtributMetodeRekursif(namaKelas) {
+    if (!memory[namaKelas]) return { atribut: [], instance: {}, metode: {} };
 
-function parseDikta(tokens, start = 0) {
-    const obj = {};
-    let i = start;
-    while (i < tokens.length) {
-        if (tokens[i] === '}') {
-            return { obj, nextIndex: i + 1 };
-        }
-        const key = tokens[i];
-        if (tokens[i + 1] === '{') {
-            const { obj: nestedObj, nextIndex } = parseDikta(tokens, i + 2);
-            obj[key] = nestedObj;
-            i = nextIndex; 
-        } else {
-            const value = tokens[i + 1];
-            if (value === undefined) {
-                throw new Error(`Nilai untuk kunci '${key}' tidak ditemukan.`);
-            }
-            obj[key] = value;
-            i += 2;
-        }
+    const kelas = memory[namaKelas];
+    if (kelas.__tipe !== 'kelas') return { atribut: [], instance: {}, metode: {} };
+
+    let atribut = [...(kelas.atribut || [])];
+    let instance = { ...(kelas.instance || {}) };
+    let metode = { ...(kelas.metode || {}) };
+
+    if (kelas.mewarisi) {
+        const induk = await ambilAtributMetodeRekursif(kelas.mewarisi);
+        atribut = [...new Set([...induk.atribut, ...atribut])];
+        instance = { ...induk.instance, ...instance };
+        metode = { ...induk.metode, ...metode };
     }
-    return { obj, nextIndex: i };
+
+    return { atribut, instance, metode };
 }
 
-function dikta(tokens, modules, context) {
-    if (tokens.length < 2) {
-        throw new Error("Format dikta tidak valid. Contoh: dikta :huruf: a A b B c C");
-    }
-
-    const nama = tokens[1];
-
-    if (!nama.startsWith(':') || !nama.endsWith(':')) {
-        throw new Error("Nama dikta harus dalam format :nama:");
-    }
-
-    const namaBersih = nama.slice(1, -1);
-
-    if (tokens.length === 2) {
-        const alfabet = {};
-        for (let i = 97; i <= 122; i++) {
-            const huruf = String.fromCharCode(i);
-            alfabet[huruf] = huruf.toUpperCase();
-        }
-        memory[namaBersih] = alfabet;
+async function kelas(tokens, modules, context) {
+    const namaKelas = tokens[1]?.replace(/:/g, '');
+    if (!namaKelas) {
+        console.warn('Nama kelas tidak ditemukan.');
         return;
     }
 
-    const { obj } = parseDikta(tokens, 2);
-    memory[namaBersih] = obj;
+    if (memory[namaKelas]) {
+        console.warn(`Kelas '${namaKelas}' sudah didefinisikan.`);
+        return;
+    }
+
+    let parentKelas = null;
+    const mewarisiIndex = tokens.indexOf('mewarisi');
+    if (mewarisiIndex !== -1 && tokens[mewarisiIndex + 1]) {
+        parentKelas = tokens[mewarisiIndex + 1].replace(/:/g, '');
+        if (!memory[parentKelas] || memory[parentKelas].__tipe !== 'kelas') {
+            console.warn(`Kelas induk '${parentKelas}' tidak ditemukan atau bukan kelas.`);
+            return;
+        }
+    }
+
+    const hasil = parentKelas
+        ? await ambilAtributMetodeRekursif(parentKelas)
+        : { atribut: [], instance: {}, metode: {} };
+
+    const atribut = hasil.atribut;
+    const instance = hasil.instance;
+    const metode = hasil.metode;
+    const pengaturan = {};
+
+    instance.__tipe = namaKelas;
+
+    memory[namaKelas] = {
+        __tipe: 'kelas',
+        mewarisi: parentKelas,
+        atribut,
+        instance,
+        pengaturan,
+        metode,
+    };
+
+    const body = context.currentNode?.body ?? [];
+
+    for (let i = 0; i < body.length; i++) {
+        const { type, tokens: subTokens, body: subBody } = body[i];
+
+        if (type === 'punggung') {
+            const vars = subTokens.slice(1).map(v => v.replace(/[:,]/g, ''));
+            vars.forEach(varName => {
+                if (memory.hasOwnProperty(varName)) {
+                    memory[namaKelas].instance[varName] = memory[varName];
+                } else {
+                    console.warn(`Variabel '${varName}' tidak ditemukan.`);
+                }
+            });
+        }
+
+        else if (type === 'Penguatan') {
+            const namaPenguatan = subTokens[1]?.replace(/[():]/g, '') || 'tanpaNama';
+            pengaturan[namaPenguatan] = {};
+
+            for (const sub of subBody ?? []) {
+                const [subcmd, ...subargs] = sub.tokens;
+                if (['tumpuk', 'menimbun', 'melontarkan'].includes(subcmd)) {
+                    pengaturan[namaPenguatan][subcmd] = subargs;
+                } else if (subcmd === 'MenangkapBasah' && subargs[0] === '#debug') {
+                    pengaturan[namaPenguatan].debug = true;
+                }
+            }
+        }
+
+        else if (type === 'metode') {
+            const namaMetode = subTokens[1]?.replace(/[:,]/g, '');
+            if (!namaMetode) {
+                console.warn('Metode tanpa nama ditemukan.');
+                continue;
+            }
+
+            const isiMetode = (subBody ?? []).map(n => n.tokens.join(' ')).join('\n');
+            metode[namaMetode] = isiMetode;
+        }
+
+        else {
+            console.warn(`Perintah '${type}' tidak dikenali dalam kelas.`);
+        }
+    }
+
+    console.log(`Kelas '${namaKelas}' berhasil dibuat${parentKelas ? ` (mewarisi '${parentKelas}')` : ''}.`);
+    console.log(`Atribut:`, atribut);
+    console.log(`Instance:`, instance);
+    console.log(`Pengaturan:`, pengaturan);
+    console.log(`Metode:`, Object.keys(metode));
 }
 
-module.exports = { dikta };
+kelas.isBlock = true;
+module.exports = { kelas };
