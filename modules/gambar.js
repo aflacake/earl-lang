@@ -21,7 +21,7 @@ function validasiAngka (angkaArray, namaArgumen) {
     return true;
 }
 
-function terapkanModeMenggambar(ctx, shapeType) {
+function terapkanModeMenggambar(ctx) {
     const mode = memory.gambar.mode || "isi";
     if (mode === "isi") {
         ctx.fill();
@@ -110,7 +110,7 @@ async function gambar(tokens, modules, context) {
             const ctx = memory.gambar.ctx;
             ctx.beginPath();
             ctx.rect(x, y, w, h);
-            terapkanModeMenggambar();
+            terapkanModeMenggambar(ctx);
             break;
        }
 
@@ -133,7 +133,7 @@ async function gambar(tokens, modules, context) {
             ctx.beginPath();
             ctx.arc(lx, ly, radius, 0, Math.PI * 2);
             console.log("Warna saat lingkaran digambar:", ctx.fillStyle);
-            terapkanModeMenggambar();
+            terapkanModeMenggambar(ctx);
             break;
         }
 
@@ -158,7 +158,7 @@ async function gambar(tokens, modules, context) {
                 ctx.lineTo(koordi[i], koordi[i + 1]);
             }
             ctx.closePath();
-            terapkanModeMenggambar();
+            terapkanModeMenggambar(ctx);
             break;
         }
 
