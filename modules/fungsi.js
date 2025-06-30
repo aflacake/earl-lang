@@ -119,4 +119,5 @@ function fungsi(tokens, modules, context) {
   }
 }
 
+fungsi.isBlock = true;
 module.exports = { fungsi };
