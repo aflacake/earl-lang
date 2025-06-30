@@ -68,16 +68,39 @@ if (args.length > 0) {
         memory
     };
 
+    let multilineBuffer = [];
+    let inMultiline = false;
+
     rl.on('line', async (line) => {
         const input = line.trim();
 
-        if (line.trim() === 'keluar') {
+        if (input === 'keluar') {
             rl.close();
             return;
         }
 
         if (input === 'bantuan') {
             bantuan();
+            rl.prompt();
+            return;
+        }
+
+        if (input === 'selesai') {
+            inMultiline = false;
+            const fullCode = multilineBuffer.join('\n');
+            multilineBuffer = [];
+            try {
+                await runEarl(fullCode, modules, contextGlobal);
+            } catch (err) {
+                console.error('Kesalahan', err.message);
+            }
+            rl.prompt();
+            return;
+        }
+
+        if (input.startsWith('fungsi') || inMultiline) {
+            inMultiline = true;
+            multilineBuffer.push(line);
             rl.prompt();
             return;
         }
@@ -90,6 +113,7 @@ if (args.length > 0) {
 
         rl.prompt();
     });
+
 
     rl.on('close', () => {
         console.log('Keluar!');
