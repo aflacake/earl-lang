@@ -8,20 +8,23 @@ async function evaluasi(tokens, modules, context) {
         return;
     }
 
-    const ekspresiToken = tokens.slice(1);
-    const nilaiTokens = [];
+    const ekspresi = tokens.slice(1).map(token => {
+        const operatorSet = new Set(['+', '-', '*', '/', '%', '(', ')', '**', '>', '<', '>=', '<=', '==', '!=', '&&', '||']);
 
-    for (const token of ekspresiToken) {
-        const nilai = resolveToken(token, context);
+        if (operatorSet.has(token)) {
+            return token;
+        }
+
+        if (typeof nilai === 'string' && nilai.startsWith('Error:')) {
+            return `"${nilai}"`;
+        }
 
         if (typeof nilai === 'string') {
-            nilaiTokens.push(`"${nilai}"`);
-        } else {
-            nilaiTokens.push(nilai);
+            return `"${nilai}"`;
         }
-    }
 
-    const ekspresi = nilaiTokens.join(' ');
+        return nilai;
+    }).join(' ');
 
     try {
         const hasil = Function(`"use strict"; return (${ekspresi})`)();
