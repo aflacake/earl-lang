@@ -162,6 +162,90 @@ async function matematika(tokens, modules, context = {}) {
             break;
         }
 
+        case 'akarKubik': {
+            const x = ambilNilai(tokens[offset + 1]);
+            if (isNaN(x)) return console.error('Nilai tidak valid untuk akar kubik.');
+            simpanAtauTampilkan(Math.cbrt(x));
+            break;
+        }
+
+        case 'akarKeN': {
+            const x = ambilNilai(tokens[offset + 1]);
+            const n = ambilNilai(tokens[offset + 2]);
+            if (isNaN(x) || isNaN(n) || n === 0) return console.error('Nilai atau pangkat tidak valid.');
+            simpanAtauTampilkan(Math.pow(x, 1 / n));
+            break;
+        }
+
+        case 'faktorial': {
+            const n = ambilNilai(tokens[offset + 1]);
+            if (isNaN(n) || n < 0) return console.error('Faktorial hanya dapat dihitung untuk angka positif.');
+            let hasil = 1;
+            for (let i = 1; i <= n; i++) {
+                hasil *= i;
+            }
+            simpanAtauTampilkan(hasil);
+            break;
+        }
+
+        case 'modulus': {
+            const a = ambilNilai(tokens[offset + 1]);
+            const b = ambilNilai(tokens[offset + 2]);
+            if (isNaN(a) || isNaN(b)) return console.error('Nilai tidak valid untuk modulus.');
+            simpanAtauTampilkan(Math.abs(a - b));
+            break;
+        }
+
+        case 'sec': {
+            const x = ambilNilai(tokens[offset + 1]);
+            if (isNaN(x)) return console.error("Nilai tidak valid.");
+            simpanAtauTampilkan(1 / Math.cos(x));
+            break;
+        }
+
+        case 'csc': {
+            const x = ambilNilai(tokens[offset + 1]);
+            if (isNaN(x)) return console.error("Nilai tidak valid.");
+            simpanAtauTampilkan(1 / Math.sin(x));
+            break;
+        }
+
+        case 'cot': {
+            const x = ambilNilai(tokens[offset + 1]);
+            if (isNaN(x)) return console.error("Nilai tidak valid.");
+            simpanAtauTampilkan(1 / Math.tan(x));
+            break;
+        }
+
+        case 'derajatKeRadian': {
+            const deg = ambilNilai(tokens[offset + 1]);
+            if (isNaN(deg)) return console.error("Nilai derajat tidak valid.");
+            simpanAtauTampilkan(deg * Math.PI / 180);
+            break;
+        }
+
+        case 'radianKeDerajat': {
+            const rad = ambilNilai(tokens[offset + 1]);
+            if (isNaN(rad)) return console.error("Nilai radian tidak valid.");
+            simpanAtauTampilkan(rad * 180 / Math.PI);
+            break;
+        }
+
+        case 'log2': {
+            const x = ambilNilai(tokens[offset + 1]);
+            if (isNaN(x) || x <= 0) return console.error("Nilai log2 harus lebih besar dari 0.");
+            simpanAtauTampilkan(Math.log2(x));
+            break;
+        }
+
+        case 'log10': {
+            const x = ambilNilai(tokens[offset + 1]);
+            if (isNaN(x) || x <= 0) return console.error("Nilai log10 harus lebih besar dari 0.");
+            simpanAtauTampilkan(Math.log10(x));
+            break;
+        }
+
+
         default:
             console.error(`Perintah matematika '${operasi}' tidak dikenali.`);
     }
