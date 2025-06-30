@@ -24,10 +24,10 @@ async function evaluasi(tokens, modules, context) {
     const ekspresi = nilaiTokens.join(' ');
 
     try {
-        const hasil = Function(`"use-strict"; return (${ekspresi})`)();
+        const hasil = Function(`"use strict"; return (${ekspresi})`)();
         console.log(hasil);
     } catch (err) {
-        console.error(`Gagal evaluasi ekspresi 'ekspresi': ${err.message}`);
+        console.error(`Gagal evaluasi ekspresi '${ekspresi}': ${err.message}`);
     }
 }
 
