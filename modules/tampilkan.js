@@ -40,8 +40,8 @@ function resolveToken(token, context = {}, modules = {}) {
         const objName = objAttrMatch[1];
         const attrName = objAttrMatch[2];
 
-        if (objName === 'ini' && context.ini) {
-            if (attrName in context.ini) return context.ini[attrName];
+        if (objName === 'ini' && ini) {
+            if (attrName in ini) return ini[attrName];
             return `Error: Atribut '${attrName}' tidak ditemukan di 'ini'.`;
         }
 
@@ -63,10 +63,14 @@ function resolveToken(token, context = {}, modules = {}) {
             return `Error: '${varName}' bukan array yang valid.`;
         }
 
-        return aksesBersarang(arr, indexes);
+        let current = arr;
+        for (const idx of indexes) {
+            if (!Array.isArray(current)) return undefined;
+            if (idx < 0 || idx >= current.length || isNaN(idx)) return undefined;
+            current = current[idx];
+        }
+        return current;
     }
-
-    return `Token '${token}' tidak dikenali atau tidak dapat ditemukan.`;
 
     const daftarSatuMatch = token.match(/^:([a-zA-Z_][a-zA-Z0-9_]*)\[(\d+)\]:$/);
     if (daftarSatuMatch) {
@@ -99,34 +103,27 @@ function resolveToken(token, context = {}, modules = {}) {
 
     if (token.includes('.')) {
         const [instanceName, attrName] = token.split('.');
-        const instance = memory[instanceName];
+        const instance = memory[instanceName] ?? cariDiLingkup(instanceName);
 
-        if (
-            instance &&
-            instance.__tipe &&
-            memory[instance.__tipe] &&
-            memory[instance.__tipe].__tipe === 'kelas'
-        ) {
+        if (instance && typeof instance === 'object') {
             if (attrName in instance) {
                 return instance[attrName];
             }
-            return `Error: Atribut '${attrName}' tidak ditemukan di instance '${instanceName}'.`;
+            return `Error: Atribut '${attrName}' tidak ditemukan di '${instanceName}'.`;
         }
-        if (typeof instance === 'object' && instance !== null) {
-            return instance[attrName] ?? `Error: Atribut '${attrName}' tidak ditemukan.`;
-        }
-        return `Error: '${instanceName}' bukan instance yang valid.`;
+        return `Error: '${instanceName}' bukan objek yang valid.`;
     }
 
     if (/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(token)) {
         return memory[token] ?? token;
     }
-    return `Token '${token}' tidak dikenali atau tidak dapat ditemukan.`;
 
     if (!isNaN(token)) return Number(token);
 
     try {
-        return evalMathExpression(token);
+        const disanitasi = token.replace(/[^0-9+\-*/%.() ]/g, '');
+        if (!disanitasi.trim()) return token;
+        return Function(`"use strict"; return (${disanitasi})`)();
     } catch {
         return token;
     }
