@@ -98,10 +98,12 @@ function resolveToken(token, context = {}, modules = {}) {
 
     if (token.startsWith(':') && token.endsWith(':')) {
         const varName = token.slice(1, -1);
-        const nilai = memory[varName];
-        if (typeof nilai === 'number') return nilai;
-        return nilai ?? `Token '${token}' tidak dikenali atau tidak dapat ditemukan.`;
+        const val = memory[varName];
+        if (typeof val === 'number') return val;
+        if (!isNaN(val)) return Number(val);
+        return val ?? `Token '${token}' tidak dikenali atau tidak dapat ditemukan.`;
     }
+
 
 
     if (token.includes('.')) {
