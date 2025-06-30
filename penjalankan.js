@@ -4,10 +4,10 @@ const fs = require('fs');
 const path = require('path');
 
 const { memory } = require('./memory');
-const { tokenize } = require('./tokenize.js');
-const { runEarl } = require('./pemroses.js');
+const { tokenize } = require('./tokenize');
+const { runEarl } = require('./pemroses');
 
-const modules = {};
+const modules = { memory, tokenize, runEarl };
 
 const modulesPath = path.join(__dirname, 'modules');
 fs.readdirSync(modulesPath).forEach(file => {
@@ -22,9 +22,5 @@ fs.readdirSync(modulesPath).forEach(file => {
         }
     }
 });
-
-modules.memory = memory;
-modules.tokenize = tokenize;
-modules.runEarl = runEarl;
 
 module.exports = { runEarl, modules };
