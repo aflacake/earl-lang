@@ -165,7 +165,12 @@ function hitung(tokens) {
         return;
     }
 
-    const resolvedToken = tokensExpr.map(token => resolveToken(token, { memory }));
+    const resolvedToken = tokensExpr.map(token => {
+        if (!isNaN(token)) return token; // angka langsung
+        if (typeof token === 'string' && memory[token] !== undefined) return memory[token];
+        return token;
+    });
+
 
     const postfix = toPostfix(resolvedToken);
     const hasil = evaluatePostfix(postfix);
