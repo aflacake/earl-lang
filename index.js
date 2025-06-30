@@ -33,7 +33,7 @@ function bantuan() {
     console.log("Ketik 'keluar' untuk keluar dari mode REPL.");
 }
 
-const { runEarl, modules } = require('./penjalankan');
+const { runEarl, modules: loadedModules } = require('./penjalankan');
 
 const args = process.argv.slice(2);
 
