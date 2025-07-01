@@ -21,34 +21,6 @@ masukkan :nama: sebagai earl
 tampikan :nama:
 ```
 
-Contoh Earl Script (_Task Runner_):
-```earl
--- 1. Minta input dari user untuk nama file sumber --
-masukkan :namaFile:
-
--- 2. Coba buka file tersebut --
-buka :isi: dari ":namaFile:"
-
--- 3. Jika file berhasil dibuka, tampilkan preview --
-jika :isi: != "" maka tampilkan "File berhasil dibaca."
-
--- 4. Simpan isi ke file baru --
-atur :salinan: = :isi:
-tulis :salinan:
-
--- 5. Catat log sederhana --
-atur :log: [
-    "File dibuka: :namafile:",
-    "Isi disalin ke file: output.txt"
-]
-
--- 6. Tampilkan log hasil proses --
-tampilkan -v :log:
-
--- 7. Simpan log ke file --
-tampilkan :log: > "log.txt"
-```
-
 # Dokumentasi
 Menyajikan berbagai tutorial terkini seputar topik Earl. 
 - Blog: [Nazwa Blogger](https://postnazwablogger.blogspot.com/search/label/Earl), Topik hangat Earl disajikan di Blog ini, Mari merapat!
