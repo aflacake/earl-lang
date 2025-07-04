@@ -10,7 +10,7 @@ async function kembalikan(tokens, modules, context) {
     } else if (exprTokens.length === 1) {
         context.return = resolveToken(exprTokens[0]);
     } else {
-        const resolvedExpr = exprToken.map(token => {
+        const resolvedExpr = exprTokens.map(token => {
             const val = resolveToken(token);
             return typeof val === 'number' || typeof val === 'boolean' ? val : `"${val}"`;
         }).join(' ');
