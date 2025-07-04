@@ -33,6 +33,11 @@ async function langkah(tokens, modules, context) {
                     resolve();
                 }
             }));
+
+            for (let i = 1; i < tokens.length; i++) {
+                tokens[i] = await modules.resolveToken(tokens[i], context);
+            }
+
             await modules[cmd](tokens, modules, context);
         }
         index++;
