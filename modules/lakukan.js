@@ -22,7 +22,7 @@ async function lakukan(tokens, modules, context) {
     if (!line.includes('(') && line.endsWith(')')) {
         const start = line.indexOf('(');
         const end = line.lastIndexOf(')');
-        const inner = lines.substring(start + 1, end).trim();
+        const inner = line.substring(start + 1, end).trim();
 
         if (inner) {
             context.lines.splice(context.index + 1, 0, inner);
@@ -48,8 +48,8 @@ async function lakukan(tokens, modules, context) {
     const command = tokens.slice(1).join(' ');
     if (command) {
         context.lines.splice(context.index + 1, 0, command);
-        
     }
 }
+
 lakukan.isBlock = true;
 module.exports = { lakukan };
