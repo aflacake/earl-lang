@@ -1,6 +1,6 @@
 // modules/langkah.js
 
-async function langkah (tokens, modules, context) {
+async function langkah(tokens, modules, context) {
     const lines = context.lines.slice(context.index + 1);
     let index = 0;
 
@@ -18,11 +18,12 @@ async function langkah (tokens, modules, context) {
             index++;
             continue;
         }
+
         const tokens = modules.tokenize(line);
         const cmd = tokens[0];
 
         if (modules[cmd]) {
-            console.log(`\n Baris ${context.index + index + 1}: ${line}`);
+            console.log(`\nBaris ${context.index + index + 1}: ${line}`);
             await new Promise(resolve => rl.question('> ', input => {
                 if (input.trim() === 'selesai') {
                     rl.close();
@@ -36,6 +37,7 @@ async function langkah (tokens, modules, context) {
         }
         index++;
     }
+
     rl.close();
     context.index += index;
 }
