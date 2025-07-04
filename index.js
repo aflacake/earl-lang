@@ -150,17 +150,17 @@ if (args.length > 0) {
                 multilineBuffer = [];
 
                 try {
-                    await runEarl(input, modules, contextGlobal);
+                    await runEarl(codeBlock, modules, contextGlobal);
                 } catch (err) {
                     console.error('Kesalahan:', err.message);
                 }
                 rl.prompt();
             } else {
-        
+                rl.prompt();
             }
         } else {
             try {
-                await runEarl(input, modules, contextGlobal);
+                await runEarl(codeBlock, modules, contextGlobal);
             } catch (err) {
                 console.error('Kesalahan:', err.message);
             }
