@@ -14,8 +14,12 @@ async function lakukan(tokens, modules, context) {
             return;
         }
 
-        const linesFromMemory = kode.trim().split('\n');
-        context.lines.splice(context.index + 1, 0, ...linesFromMemory);
+        if (typeof kode === 'string') {
+            const linesFromMemory = kode.trim().split('\n');
+            context.lines.splice(context.index + 1, 0, ...linesFromMemory);
+        } else {
+            console.error(`Memori '${tokens[1]}' tidak berisi kode yang valid.`);
+        }
         return;
     }
 
@@ -52,4 +56,5 @@ async function lakukan(tokens, modules, context) {
 }
 
 lakukan.isBlock = true;
+
 module.exports = { lakukan };
