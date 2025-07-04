@@ -160,7 +160,7 @@ if (args.length > 0) {
             }
         } else {
             try {
-                await runEarl(codeBlock, modules, contextGlobal);
+                await runEarl(input, modules, contextGlobal);
             } catch (err) {
                 console.error('Kesalahan:', err.message);
             }
