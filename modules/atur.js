@@ -1,5 +1,7 @@
 // modules/atur.js
 
+const { resolveToken } = require('./tampilkan');
+
 function atur(tokens, modules, context) {
     if (!context.memory) {
         context.memory = {};
@@ -19,18 +21,7 @@ function atur(tokens, modules, context) {
     const nama = namaVariabel.slice(1, -1);
     const nilaiToken = tokens.slice(3).join(' ');
 
-    let nilai;
-    if (!isNaN(nilaiToken)) {
-        nilai = Number(nilaiToken);
-    } else if (nilaiToken === 'benar') {
-        nilai = true;
-    } else if (nilaiToken === 'salah') {
-        nilai = false;
-    } else if (nilaiToken.startsWith('"') && nilaiToken.endsWith('"')) {
-        nilai = nilaiToken.slice(1, -1);
-    } else {
-        nilai = nilaiToken;
-    }
+    let nilai = resolveToken(nilaiToken, context, modules);
 
     context.memory[nama] = nilai;
 
