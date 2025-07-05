@@ -28,7 +28,7 @@ async function peranti(tokens, modules, context) {
                 }
             });
         });
-    } else if (panggung === 'linux' || platform === 'darwin') {
+    } else if (panggung === 'linux' || panggung === 'darwin') {
         exec('df -k /', (error, stdout, stderr) => {
             if (error) {
                 console.error('Gagal mendapatkan info disk di Unix-like OS.');
