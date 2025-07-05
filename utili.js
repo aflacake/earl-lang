@@ -1,7 +1,7 @@
 // utili.js
 const { memory } = require('./memory');
 
-function tokenize(input) {
+function tokenizekedua(input) {
   const tokens = [];
   let current = '';
   let inQuotes = false;
@@ -39,4 +39,4 @@ function ambilDaftarJikaPerlu(token) {
   return null;
 }
 
-module.exports = { tokenize, ambilDaftarJikaPerlu };
+module.exports = { tokenizekedua, ambilDaftarJikaPerlu };
