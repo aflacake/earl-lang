@@ -19,9 +19,17 @@ function atur(tokens, modules, context) {
     }
 
     const nama = namaVariabel.slice(1, -1);
-    const nilaiToken = tokens.slice(3).join(' ');
 
-    let nilai = resolveToken(nilaiToken, context, modules);
+    if (tokens.length === 4) {
+        nilai = resolveToken(tokens[3], context, modules);
+    } else {
+        nilai = tokens.slice(3).map(token => {
+            if (token.startsWith('"') && token.endsWith('"')) {
+                return token.slice(1, -1);
+            }
+            return token;
+        }).join(' ');
+    }
 
     context.memory[nama] = nilai;
 
