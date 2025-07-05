@@ -16,6 +16,7 @@ async function keluarlingkup(tokens, modules, context) {
 
     if (context.lingkup.length > 1) {
         const lingkupKeluar = context.lingkup.pop();
+
         Object.assign(context.lingkup[0], lingkupKeluar);
     } else {
         console.warn('Tidak bisa keluar dari lingkup global.');
