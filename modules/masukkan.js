@@ -43,6 +43,11 @@ function masukkan(tokens) {
             return resolve();
         }
 
+        if (memory[varName]) {
+            console.error(`Variabel ${varName} sudah didefinisikan.`);
+            return resolve();
+        }
+
         let prompt = 'Masukkan nilai untuk ' + varName + ': ';
         const sisa = tokens.slice(2).join(' ').trim();
         const quoted = sisa.match(/^"(.*)"$/);
