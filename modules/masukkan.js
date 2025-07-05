@@ -57,11 +57,13 @@ function masukkan(tokens) {
 
         rl.question(prompt, (penggunaMasukkan) => {
             let nilai = penggunaMasukkan;
+
             if (penggunaMasukkan.startsWith(':') && penggunaMasukkan.endsWith(':')) {
-                nilai = resolveToken(userInput);
+                nilai = resolveToken(penggunaMasukkan, {}, {});
             }
 
-            if (typeof nilai === 'number') {
+            if (!isNaN(nilai)) {
+                nilai = Number(nilai);
                 memory[varName] = nilai;
                 console.log(`${varName} disimpan sebagai angka.`);
             } else if (typeof nilai === 'string') {
@@ -72,13 +74,13 @@ function masukkan(tokens) {
                     memory[varName] = nilai;
                     console.log(`${varName} disimpan sebagai teks valid.`);
                 } else {
-                    console.error(`Input untuk ${varName} tidak valid.`)
+                    console.error(`Input untuk ${varName} tidak valid.`);
                 }
             } else {
                 memory[varName] = nilai;
-                console.log(`${varName} disimpan.`)
+                console.log(`${varName} disimpan.`);
             }
-           
+
             rl.close();
             resolve();
         });
