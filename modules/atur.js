@@ -1,8 +1,8 @@
 // modules/atur.js
 
 function atur(tokens, modules, context) {
-    if (!context.lingkup || context.lingkup.length === 0) {
-        context.lingkup = [{}];
+    if (!context.memory) {
+        context.memory = {};
     }
 
     if (tokens.length < 4 || tokens[2] !== '=') {
@@ -32,7 +32,7 @@ function atur(tokens, modules, context) {
         nilai = nilaiToken;
     }
 
-    context.lingkup[context.lingkup.length - 1][nama] = nilai;
+    context.memory[nama] = nilai;
 
     console.log(`Variabel '${nama}' diatur ke`, nilai);
 }
