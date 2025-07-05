@@ -1,4 +1,4 @@
-// modules/debug.js
+// modules/periksa.js
 
 const { memory } = require('../memory.js');
 
@@ -18,13 +18,13 @@ async function periksa(tokens, modules, context) {
     });
 
   } else if (arg === 'gambar') {
-      if (!memory.gambar) {
-          console.log("Belum ada kanvas yang dibuat.");
-      } else {
-          console.log("=== PERIKSA GAMBAR ===");
-          console.log(`Ukuran kanvas: ${memory.gambar.lebar} x ${memory.gambar.tinggi}`);
-          console.log(`Warna aktif: ${memory.gambar.warna}`);
-      }
+    if (!memory.gambar) {
+      console.log("Belum ada kanvas yang dibuat.");
+    } else {
+      console.log("=== PERIKSA GAMBAR ===");
+      console.log(`Ukuran kanvas: ${memory.gambar.lebar} x ${memory.gambar.tinggi}`);
+      console.log(`Warna aktif: ${memory.gambar.warna}`);
+    }
 
   } else if (arg === 'semua') {
     console.log('=== PERIKSA MEMORI ===');
@@ -43,8 +43,8 @@ async function periksa(tokens, modules, context) {
     const index = parseInt(match[2]);
 
     if (!(nama in memory)) {
-        console.warn(`Variabel '${nama}' tidak ditemukan.`);
-        return;
+      console.warn(`Variabel '${nama}' tidak ditemukan.`);
+      return;
     }
 
     const daftar = memory[nama];
@@ -52,6 +52,7 @@ async function periksa(tokens, modules, context) {
       console.warn(`Variabel '${nama}' bukan daftar.`);
       return;
     }
+
     const nilai = daftar[index];
     console.log(`=== PERIKSA DAFTAR: ${nama}[${index}] ===`);
     console.log(nilai !== undefined ? nilai : `Tidak ada elemen pada indeks ${index}`);
@@ -63,9 +64,10 @@ async function periksa(tokens, modules, context) {
   } else if (memory[arg]?.__tipe === 'kelas') {
     console.log(`=== PERIKSA KELAS: ${arg} ===`);
     console.log({
-        atribut: memory[arg].atribut,
-        instance: memory[arg].instance
+      atribut: memory[arg].atribut,
+      instance: memory[arg].instance
     });
+
   } else {
     console.warn(`Argumen periksa tidak dikenali: '${arg}'`);
   }
