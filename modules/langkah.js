@@ -25,7 +25,7 @@ async function langkah(tokens, modules, context) {
         if (modules[cmd]) {
             console.log(`\nBaris ${context.index + index + 1}: ${line}`);
             await new Promise(resolve => rl.question('> ', input => {
-                if (input.trim() === 'selesai') {
+                if (input.trim() === 'berakhir') {
                     rl.close();
                     index = lines.length;
                     resolve();
