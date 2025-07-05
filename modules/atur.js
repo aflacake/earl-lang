@@ -20,6 +20,7 @@ function atur(tokens, modules, context) {
 
     const nama = namaVariabel.slice(1, -1);
 
+    let nilai;
     if (tokens.length === 4) {
         nilai = resolveToken(tokens[3], context, modules);
     } else {
@@ -27,7 +28,7 @@ function atur(tokens, modules, context) {
             if (token.startsWith('"') && token.endsWith('"')) {
                 return token.slice(1, -1);
             }
-            return token;
+            return resolveToken(token, context, modules);
         }).join(' ');
     }
 
