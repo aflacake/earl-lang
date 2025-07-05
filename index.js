@@ -8,7 +8,12 @@ const { memory } = require('./memory');
 const { tokenize } = require('./tokenize');
 const { tokenizekedua } = require('./utili');
 
-const modules = { memory, tokenize, tokenizekedua };
+function pilihTokenizer(line) {
+    if (line.includes('"')) return tokenizekedua(line);
+    return tokenize(line);
+}
+
+const modules = { memory, tokenize: pilihTokenizer };
 
 const modulesPath = path.join(__dirname, 'modules');
 fs.readdirSync(modulesPath).forEach(file => {
