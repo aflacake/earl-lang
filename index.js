@@ -6,8 +6,9 @@ const readline = require('readline');
 const { memory } = require('./memory');
 
 const { tokenize } = require('./tokenize');
+const { tokenizekedua } = require('./utili');
 
-const modules = { memory, tokenize };
+const modules = { memory, tokenize, tokenizekedua };
 
 const modulesPath = path.join(__dirname, 'modules');
 fs.readdirSync(modulesPath).forEach(file => {
