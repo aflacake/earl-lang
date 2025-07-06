@@ -22,7 +22,12 @@ function atur(tokens, modules, context) {
 
     let nilai;
     if (tokens.length === 4) {
-        nilai = resolveToken(tokens[3], context, modules);
+        const valToken = tokens[3];
+        if (valToken.startsWith('"') && valToken.endsWith('"')) {
+            nilai = valToken.slice(1, -1);
+        } else {
+            nilai = resolveToken(valToken, context, modules);
+        }
     } else {
         nilai = tokens.slice(3).map(token => {
             if (token.startsWith('"') && token.endsWith('"')) {
