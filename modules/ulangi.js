@@ -36,7 +36,7 @@ async function ulangi(tokens, modules, context) {
         for (const item of list) {
             console.log('Item:', item);
 
-            context.lingkup.push({ item: item });
+            context.lingkup.push({ _item: item });
             context.berhenti = false;
             context.lanjutkan = false;
 
