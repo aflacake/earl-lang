@@ -7,6 +7,9 @@ async function ulangi(tokens, modules, context) {
     if (tokens[1] === 'setiap' && tokens[2] === 'dari') {
         const sumber = tokens[3];
         const list = resolveToken(sumber, context, modules);
+        console.log(context.lingkup);
+        console.log(list);
+        console.log(list, Array.isArray(list));
 
         if (sumber.includes('.')) {
             const [instanceName, attr] = sumber.split('.');
