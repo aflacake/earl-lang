@@ -34,7 +34,9 @@ async function ulangi(tokens, modules, context) {
         }
        
         for (const item of list) {
-            context.lingkup.push({ item: JSON.parse(JSON.stringify(item)) });
+            console.log('Item:', item);
+
+            context.lingkup.push({ item: item });
             context.berhenti = false;
             context.lanjutkan = false;
 
