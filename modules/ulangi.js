@@ -6,7 +6,7 @@ const { laksanakanAST } = require('../pelaksana-ast');
 async function ulangi(tokens, modules, context) {
     if (tokens[1] === 'setiap' && tokens[2] === 'dari') {
         const sumber = tokens[3];
-        const list = resolveToken(sumber, modules, context);
+        const list = resolveToken(sumber, context, modules);
 
         if (sumber.includes('.')) {
             const [instanceName, attr] = sumber.split('.');
@@ -21,13 +21,11 @@ async function ulangi(tokens, modules, context) {
             }
         }
             
-
         if (!Array.isArray(list)) {
             console.error(`Sumber '${sumber}' bukan daftar atau array.`);
             return;
         }
        
-
         for (const item of list) {
             context.lingkup.push({ item });
             context.berhenti = false;
@@ -44,10 +42,10 @@ async function ulangi(tokens, modules, context) {
         }
 
     } else {
-        const count = parseInt(resolveToken(tokens[1], context));
+        const count = parseInt(resolveToken(tokens[1], context, modules));
 
         if (isNaN(count)) {
-            console.error(`Nilai perulangan tidak valid: ${jumlahToken[1]}`);
+            console.error(`Nilai perulangan tidak valid: ${tokens[1]}`);
             return;
         }
 
