@@ -59,7 +59,7 @@ async function waktu(tokens, modules, context) {
 
         let simpanKe = null;
         const indexKe = tokens.indexOf("ke");
-        if (indexke !== -1 && tokens[indexKe + 1]?.startsWith(":") && tokens[indexKe + 1]?.endsWith(":")) {
+        if (indexKe !== -1 && tokens[indexKe + 1]?.startsWith(":") && tokens[indexKe + 1]?.endsWith(":")) {
             simpanKe = tokens[indexKe + 1].slice(1, -1);
         }
 
@@ -72,7 +72,7 @@ async function waktu(tokens, modules, context) {
         const interval = 1000;
         let sisaDetik = Math.ceil(totalMs / 1000);
 
-        while (sisaDeti > 0) {
+        while (sisaDetik > 0) {
             console.log(sisaDetik);
             await new Promise(resolve => setTimeout(resolve, interval));
             sisaDetik--;
@@ -88,12 +88,12 @@ async function waktu(tokens, modules, context) {
                 lines: [perintahLanjut],
                 index: 0
             };
-            await modules.tokenize;
-            await modules[fakeContext.lines[0].split(' ')[0]]?.(
-                modules.tokenize(perintahLanjut),
-                modules,
-                fakeContext
-            );
+            const namaModul = perintahLanjut.split(' ')[0];
+            const tokenLanjut = modules.tokenize(perintahLanjut);
+
+            if (modules[namaModul]) {
+                await modules[namaModul](tokenLanjut, modules, fakeContext);
+            }
         }
         break;
     }
@@ -173,7 +173,7 @@ async function waktu(tokens, modules, context) {
             return;
         }
 
-        sekarang = new Date();
+        const sekarang = new Date();
         const format = rawFormat.slice(1, -1);
 
         const hasil = format
