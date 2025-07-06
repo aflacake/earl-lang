@@ -1,11 +1,22 @@
 // modules/tulis.js
 
 const fs = require('fs');
-const { memory } = require('../memory.js');
 
 async function tulis(tokens, modules, context) {
+    if (!context.memory) {
+        context.memory = {};
+    }
+
     const namaVariabel = tokens[1];
-    const isi = modules.memory[namaVariabel];
+
+    if (!namaVariabel.startsWith(':') || !namaVariabel.endsWith(':')) {
+        console.error("Variabel harus dalam format :nama:");
+        return;
+    }
+
+    const nama = namaVariabel.slice(1, -1);
+
+    const isi = context.memory[nama];
 
     if (typeof isi === 'undefined') {
         console.error(`Variabel '${namaVariabel}' tidak ditemukan.`);
