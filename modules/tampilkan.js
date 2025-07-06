@@ -115,6 +115,9 @@ function resolveToken(token, context = {}, modules = {}) {
     }
 
     if (/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(token)) {
+        for (let i = lingkup.length - 1; i >= 0; i--) {
+            if (token in lingkup[i]) return lingkup[i][token];
+        }
         return memory[token] ?? token;
     }
 
