@@ -11,10 +11,6 @@ async function ulangi(tokens, modules, context) {
         }
         const list = resolveToken(sumber, context, modules);
 
-        console.log(context.lingkup);
-        console.log(list);
-        console.log(list, Array.isArray(list));
-
         if (sumber.includes('.')) {
             const [instanceName, attr] = sumber.split('.');
             const instance = context.lingkup[0][instanceName];
@@ -34,9 +30,7 @@ async function ulangi(tokens, modules, context) {
         }
        
         for (const item of list) {
-            console.log('Item:', item);
-
-            context.lingkup.push({ _item: item });
+            context.lingkup.push({ item: {...item} });
             context.berhenti = false;
             context.lanjutkan = false;
 
