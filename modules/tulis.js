@@ -24,8 +24,8 @@ async function tulis(tokens, modules, context) {
     }
 
     try {
-        fs.writeFileSync('output.txt', isi.toString(), 'utf-8');
-        console.log("Isi berhasil ditulis ke file 'output.txt'");
+        fs.writeFileSync('keluaran.txt', isi.toString(), 'utf-8');
+        console.log("Isi berhasil ditulis ke file 'keluaran.txt'");
     } catch (err) {
         console.error("Gagal menulis file:", err);
     }
