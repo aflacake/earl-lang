@@ -16,6 +16,9 @@
       "bin/**/*",
       "tests/**/*.js"
     ],
+    "scripts": [
+      "modules/**/*.js"
+    ],
     "targets": [
       "node18-linux-x64",
       "node18-win-x64",
