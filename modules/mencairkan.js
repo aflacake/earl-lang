@@ -19,7 +19,18 @@ function cairkanTeks(tokens, modules, context) {
 }
 
 function cairkanAngka(tokens, modules, context) {
-    const nilai = tokens[1];
+    let nilai = tokens[1];
+
+    if (typeof nilai === 'string') {
+        const angka = Number(nilai);
+        if (!isNaN(angka)) {
+            nilai = angka;
+        } else {
+            console.error(`Harap memberikan angka sebagai input untuk perintah 'cairkanAngka'.`);
+            return;
+        }
+    }
+
     if (typeof nilai === 'number') {
         const str = nilai.toString();
         console.log(str);
@@ -27,6 +38,7 @@ function cairkanAngka(tokens, modules, context) {
         console.error(`Harap memberikan angka sebagai input untuk perintah 'cairkanAngka'.`);
     }
 }
+
 
 module.exports = {
     cairkanTeks,
