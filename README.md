@@ -96,9 +96,10 @@ npm install github:aflacake/earl-lang
 
 ## Unduh versi
 Download versi memungkinkan Anda menggunakan tautan eksternal. Versi ini seutuhnya stabil dari berbagai uji coba rata-rata, versi tidak stabil saat ini belum memungkinkan untuk dirilis, sehingga masih dalam bentuk instalasi berlangsung, untuk versi download sesuaikan perangkat yang Anda gunakan. Silahkan coba versi stabil:
-- [Versi 2.0.0](https://www.dropbox.com/scl/fo/zbb12ru3lomywj1jgbgpd/ANs9qHu8ZD8Li3kJ0o9qSSs?rlkey=94ig1gxrgrs3akop9557gwuqr&st=j49xw59f&dl=0)
-- [Versi 1.0.3](https://www.dropbox.com/scl/fo/tx28twsekamv4r7ijjmd3/AJNeWSaor3yBgXDp803y1Fs?rlkey=7nyjdjt26lk4jjdq57jif3fw9&st=zcxzbqr1&dl=0)
-- [Versi 1.0.0](https://www.dropbox.com/scl/fo/92zqglhfbdlteyrzfg5el/AMJTipi0hB7207rwC5lQsC8?rlkey=q9p8jspq3xfztz3q79w0f263p&st=xu169lsy&dl=0)
+- [Versi 2.0.2](https://www.dropbox.com/scl/fo/4xhi8bl739h9ekvoi8v8g/AMTP_jDgAJYkCq59pgYXhb0?rlkey=66b2w5oy6bhynpe8w4tvvym61&st=ngyngz75&dl=0)
+- [Versi 2.0.0](https://www.dropbox.com/scl/fo/zbb12ru3lomywj1jgbgpd/ANs9qHu8ZD8Li3kJ0o9qSSs?rlkey=94ig1gxrgrs3akop9557gwuqr&st=dytdlwqw&dl=0)
+- [Versi 1.0.3](https://www.dropbox.com/scl/fo/tx28twsekamv4r7ijjmd3/AJNeWSaor3yBgXDp803y1Fs?rlkey=7nyjdjt26lk4jjdq57jif3fw9&st=du30wcw5&dl=0)
+- [Versi 1.0.0](https://www.dropbox.com/scl/fo/92zqglhfbdlteyrzfg5el/AMJTipi0hB7207rwC5lQsC8?rlkey=q9p8jspq3xfztz3q79w0f263p&st=qksjuol9&dl=0)
 
 # Berkontribusi
 Earl masih dalam pengembangan dan terbuka untuk:
