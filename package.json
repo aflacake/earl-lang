@@ -11,6 +11,11 @@
     "start": "node index.js"
   },
   "pkg": {
+    "assets": [
+      "modules/**/*.js",
+      "bin/**/*",
+      "tests/**/*.js"
+    ],
     "targets": [
       "node18-linux-x64",
       "node18-win-x64",
