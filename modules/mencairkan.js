@@ -1,8 +1,12 @@
 // modules/mencairkan.js
 
 function cairkanTeks(tokens, modules, context) {
-    const nilai = tokens[1];
+    let nilai = tokens[1];
     if (typeof nilai === 'string') {
+        if (nilai.startsWith('"') && nilai.endsWith('"')) {
+            nilai = nilai.slice(1, -1);
+        }
+
         const angka = parseFloat(nilai);
         if (!isNaN(angka)) {
             console.log(angka);
@@ -10,7 +14,7 @@ function cairkanTeks(tokens, modules, context) {
             console.error(`Tidak bisa mengonversi '${nilai}' menjadi angka.`);
         }
     } else {
-        console.error(`Harap memberikan teks sebagai input untuk perintah 'mencairkan'.`);
+        console.error(`Harap memberikan teks sebagai input untuk perintah 'cairkanTeks'.`);
     }
 }
 
@@ -20,7 +24,7 @@ function cairkanAngka(tokens, modules, context) {
         const str = nilai.toString();
         console.log(str);
     } else {
-        console.error(`Harap memberikan angka sebagai input untuk perintah 'mencairkan'.`);
+        console.error(`Harap memberikan angka sebagai input untuk perintah 'cairkanAngka'.`);
     }
 }
 
