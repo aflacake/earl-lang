@@ -113,20 +113,16 @@ function resolveToken(token, context = {}, modules = {}) {
 
     if (token.startsWith(':') && token.endsWith(':')) {
         const varName = token.slice(1, -1);
-        return memory[varName] ?? `Token '${token}' tidak dikenali atau tidak dapat ditemukan.`;
+        return memory[varName] ?? cariDiLingkup(varName) ?? `Token '${token}' tidak ditemukan.`;
     }
 
     if (token.includes('.')) {
         const [instanceName, attrName] = token.split('.');
         const instance = memory[instanceName] ?? cariDiLingkup(instanceName);
-
         if (instance && typeof instance === 'object') {
-            if (attrName in instance) {
-                return instance[attrName];
-            }
-            return `Error: Atribut '${attrName}' tidak ditemukan di '${instanceName}'.`;
+            return instance[attrName] ?? `Error: Atribut '${attrName}' tidak ditemukan.`;
         }
-        return `Error: '${instanceName}' bukan objek yang valid.`;
+        return `Error: '${instanceName}' bukan objek.`;
     }
 
     if (/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(token)) {
