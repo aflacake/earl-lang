@@ -24,3 +24,5 @@ async function laksanakanAST(ast, modules, context) {
     if (context.lanjutkan) break;
   }
 }
+
+module.exports = { laksanakanAST };
