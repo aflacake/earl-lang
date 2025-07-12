@@ -35,6 +35,21 @@ function resolveToken(token, context = {}, modules = {}) {
         return undefined;
     }
 
+    const nestedKeyMatch = token.match(/^:([a-zA-Z0-9_]+(?::[a-zA-Z0-9_]+)+):$/);
+    if (nestedKeyMatch) {
+        const keys = token.slice(1, -1).split(':');
+        let value = memory[keys[0]] ?? cariDiLingkup(keys[0]);
+
+        for (let i = 1; i < keys.length; i++) {
+            if (value && typeof value === 'object' && keys[i] in value) {
+                value = value[keys[i]];
+            } else {
+                return `Error: Kunci '${keys[i]}' tidak ditemukan di objek.`;
+            }
+        }
+        return value;
+    }
+
     const objAttrMatch = token.match(/^:([^:\[\]]+)\.([^:\[\]]+):$/);
     if (objAttrMatch) {
         const objName = objAttrMatch[1];
