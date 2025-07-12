@@ -8,15 +8,16 @@ async function laksanakanAST(ast, modules, context) {
       console.error(`Modul tidak dikenali: '${type}'`);
       continue;
     }
+
     try {
       context.currentNode = node;
       await handler(tokens, modules, context);
 
       if (context.berhenti) {
-        console.log('Eksekusi dihentikan sementara oleh perintah berhenti.');
-        context.berhenti = false;
+        console.log('Diberhentikan. Tekan ENTER untuk melanjutkan...');
         break;
       }
+
     } catch (err) {
       console.error(`Kesalahan saat menjalankan '${type}':`, err.message);
     }
@@ -24,5 +25,6 @@ async function laksanakanAST(ast, modules, context) {
     if (context.lanjutkan) break;
   }
 }
+
 
 module.exports = { laksanakanAST };
