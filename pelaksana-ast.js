@@ -14,6 +14,7 @@ async function laksanakanAST(ast, modules, context) {
 
       if (context.berhenti) {
         console.log('Eksekusi dihentikan sementara oleh perintah berhenti.');
+        context.berhenti = false;
         break;
       }
     } catch (err) {
@@ -23,5 +24,3 @@ async function laksanakanAST(ast, modules, context) {
     if (context.lanjutkan) break;
   }
 }
-
-module.exports = { laksanakanAST };
