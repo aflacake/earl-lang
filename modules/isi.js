@@ -3,7 +3,7 @@
 const { resolveToken } = require('./tampilkan');
 
 function isi(tokens, modules, context) {
-    if (!context.memmory) {
+    if (!context.memory) {
         context.memory = {};
     }
 
@@ -14,11 +14,11 @@ function isi(tokens, modules, context) {
 
     const namaVariabel = tokens[1];
     if (!namaVariabel.startsWith(':') || !namaVariabel.endsWith(':')) {
-        console.error("Varibel harus dalam format :nama:");
+        console.error("Variabel harus dalam format :nama:");
         return;
     }
 
-    const nama = namaVaribel.slice(1, -1);
+    const nama = namaVariabel.slice(1, -1);
     const nilaiToken = tokens.slice(3).join(' ');
 
     let nilai;
@@ -30,7 +30,7 @@ function isi(tokens, modules, context) {
 
     context.memory[nama] = nilai;
 
-    console.log(`Variabel '${nama}' diiisi dengan,` nilai);
+    console.log(`Variabel '${nama}' diisi dengan`, nilai);
 }
 
 module.exports = { isi };
