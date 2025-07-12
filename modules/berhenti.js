@@ -1,19 +1,25 @@
 // modules/berhenti.js
 
-async function berhenti(tokens, modules, context) {
-  return new Promise(resolve => {
-    const rl = require('readline').createInterface({
-      input: process.stdin,
-      output: process.stdout
-    });
+const readline = require('readline');
 
-    rl.question('Diberhentikan. Tekan ENTER untuk melanjutkan...', () => {
-      rl.close();
-      context.berhenti = true;
-      resolve();
+function berhenti(tokens, modules, context) {
+    context.berhenti = true;
+
+    return new Promise(resolve => {
+        const rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout
+        });
+
+        rl.question('Diberhentikan. Tekan ENTER untuk melanjutkan...', () => {
+            rl.close();
+            context.berhenti = false;
+            resolve();
+        });
     });
-  });
 }
+
+module.exports = { berhenti };
 
 
 module.exports = { berhenti };
