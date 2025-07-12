@@ -168,6 +168,7 @@ if (args.length > 0) {
         } else {
             try {
                 await runEarl(input, modules, contextGlobal);
+                contextGlobal.berhenti = false;
             } catch (err) {
                 console.error('Kesalahan:', err.message);
             }
