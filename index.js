@@ -51,6 +51,7 @@ async function runEarl(code, customModules = modules, parentContext) {
         lingkup: [{}]
     };
     await laksanakanAST(ast, customModules, context);
+    context.berhenti = false;
 
     while (context.index < context.lines.length) {
         const line = context.lines[context.index].trim();
