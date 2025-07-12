@@ -158,6 +158,7 @@ if (args.length > 0) {
 
                 try {
                     await runEarl(codeBlock, modules, contextGlobal);
+                    contextGlobal.berhenti = false;
                 } catch (err) {
                     console.error('Kesalahan:', err.message);
                 }
