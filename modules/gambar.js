@@ -31,7 +31,7 @@ function terapkanModeMenggambar(ctx) {
         ctx.fill();
         ctx.stroke();
     } else {
-        console.warn(`Mode gambar tidak dikenal: '${node}', fallback ke 'isi'`);
+        console.warn(`Mode gambar tidak dikenal: '${mode}', fallback ke 'isi'`);
         ctx.fill();
     }
 }
@@ -110,7 +110,7 @@ async function gambar(tokens, modules, context) {
             const ctx = memory.gambar.ctx;
             ctx.beginPath();
             ctx.rect(x, y, w, h);
-            terapkanModeMenggambar(ctx);
+            terapkanModeMenggambar();
             break;
        }
 
@@ -133,7 +133,7 @@ async function gambar(tokens, modules, context) {
             ctx.beginPath();
             ctx.arc(lx, ly, radius, 0, Math.PI * 2);
             console.log("Warna saat lingkaran digambar:", ctx.fillStyle);
-            terapkanModeMenggambar(ctx);
+            terapkanModeMenggambar();
             break;
         }
 
@@ -158,7 +158,7 @@ async function gambar(tokens, modules, context) {
                 ctx.lineTo(koordi[i], koordi[i + 1]);
             }
             ctx.closePath();
-            terapkanModeMenggambar(ctx);
+            terapkanModeMenggambar();
             break;
         }
 
@@ -219,9 +219,25 @@ async function gambar(tokens, modules, context) {
             break;
         }
 
+        case 'warna-isi': {
+            memory.gambar.ctx.fillStyle = tokens[2].replace(/"/g, '');
+            break;
+        }
+
+        case 'warna-garis': {
+            memory.gambar.ctx.strokeStyle = tokens[2].replace(/"/g, '');
+            break;
+        }
+
         case 'simpan': {
             if (!cekKanvas()) break;
             const namafile = tokens[2].replace(/"/g, '');
+
+            if (!namafile || !namafile.endsWith('.png')) {
+                console.error("Nama file harus valid dan diakhiri dengan .png");
+                break;
+            }
+
             try {
                 const out = fs.createWriteStream(namafile);
                 const stream = memory.gambar.kanvas.createPNGStream();
@@ -242,6 +258,20 @@ async function gambar(tokens, modules, context) {
             ctx.fillRect(0, 0, lebar, tinggi);
             ctx.fillStyle = memory.gambar.warna;
             console.log("Kanvas dibersihkan.");
+            break;
+        }
+
+        case 'status': {
+            if (!cekKanvas()) break;
+            console.log('Status kanvas:', {
+                lebar: memory.gambar.lebar,
+                tinggi: memory.gambar.tinggi,
+                warna: memory.gambar.warna,
+                mode: memory.gambar.mode,
+                huruf: memory.gambar.huruf,
+                rata: memory.gambar.meluruskan,
+                dasar: memory.gamar.garisdasar
+            });
             break;
         }
  
