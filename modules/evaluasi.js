@@ -2,56 +2,36 @@
 
 const { resolveToken } = require('./tampilkan');
 
-const operatorSet = new Set([
-  '+', '-', '*', '/', '%', '(', ')', '**', '>', '<', '>=', '<=', '==', '!=', '===', '!==', '&&', '||', '!', '^'
-]);
-
-function isOperator(token) {
-  return operatorSet.has(token);
-}
-
 async function evaluasi(tokens, modules, context) {
-  if (tokens.length < 2) {
-    console.log("Perintah 'evaluasi' membutuhkan ekspresi sebagai argumen.");
-    return;
-  }
-
-  const ekspresiParts = [];
-
-  for (let i = 1; i < tokens.length; i++) {
-    const token = tokens[i];
-
-    if (isOperator(token)) {
-      ekspresiParts.push(token);
-      continue;
+    if (tokens.length < 2) {
+        console.log("Perintah 'evaluasi' membutuhkan ekspresi sebagai argumen.");
+        return;
     }
 
-    if (!isNaN(token)) {
-      ekspresiParts.push(token);
-      continue;
+    const ekspresiToken = tokens.slice(1);
+    const nilaiTokens = [];
+
+    for (const token of ekspresiToken) {
+        const nilai = resolveToken(token, context, modules);
+
+        if (typeof nilai === 'string') {
+            nilaiTokens.push(`"${nilai}"`);
+        } else {
+            nilaiTokens.push(nilai);
+        }
     }
 
-    const nilai = resolveToken(token, context);
+    const ekspresi = nilaiTokens.join(' ');
 
-    if (typeof nilai === 'string' && nilai.startsWith('Error:')) {
-      ekspresiParts.push(`"${nilai}"`);
+    try {
+        const hasil = Function(`"use strict"; return (${ekspresi})`)();
+        console.log(hasil);
+    } catch (err) {
+        console.error(`Gagal evaluasi ekspresi '${ekspresi}': ${err.message}`);
     }
-    else if (typeof nilai === 'string') {
-      ekspresiParts.push(`"${nilai}"`);
-    }
-    else {
-      ekspresiParts.push(nilai);
-    }
-  }
-
-  const ekspresi = ekspresiParts.join(' ');
-
-  try {
-    const hasil = Function(`"use strict"; return (${ekspresi})`)();
-    console.log(hasil);
-  } catch (err) {
-    console.error(`Gagal evaluasi ekspresi '${ekspresi}': ${err.message}`);
-  }
 }
+
+evaluasi.isBlock = false;
 
 module.exports = { evaluasi };
+
