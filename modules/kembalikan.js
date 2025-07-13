@@ -8,22 +8,23 @@ async function kembalikan(tokens, modules, context) {
     if (exprTokens.length === 0) {
         context.return = undefined;
     } else if (exprTokens.length === 1) {
-        context.return = resolveToken(exprTokens[0]);
+        context.return = resolveToken(exprTokens[0], context, modules);
     } else {
         const resolvedExpr = exprTokens.map(token => {
-            const val = resolveToken(token);
+            const val = resolveToken(token, context, modules);
             return typeof val === 'number' || typeof val === 'boolean' ? val : `"${val}"`;
         }).join(' ');
 
-        const hasilEvaluasi = evalMathExpression(resolvedExpr);
-
-        if (typeof hasilEvaluasi === 'number' && !isNaN(hasilEvaluasi)) {
+        try {
+            const hasilEvaluasi = evalMathExpression(resolvedExpr);
             context.return = hasilEvaluasi;
-        } else {
+        } catch {
             context.return = resolvedExpr;
         }
     }
+
     context.stopExecution = true;
 }
 
 module.exports = { kembalikan };
+
