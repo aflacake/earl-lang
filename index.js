@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
 const { memory } = require('./memory');
+const { laksanakanAST } = require('./pelaksana-ast');
 
 const { tokenize } = require('./tokenize');
 const { tokenizekedua } = require('./utili');
@@ -13,7 +14,11 @@ function pilihTokenizer(line) {
     return tokenize(line);
 }
 
-const modules = { memory, tokenize: pilihTokenizer };
+const modules = { 
+    memory,
+    tokenize: pilihTokenizer,
+    laksanakanAST
+};
 
 const modulesPath = path.join(__dirname, 'modules');
 fs.readdirSync(modulesPath).forEach(file => {
