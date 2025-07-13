@@ -45,7 +45,6 @@ function bantuan() {
 }
 
 const { parse } = require('./parser');
-const { laksanakanAST } = require('./pelaksana-ast')
 
 async function runEarl(code, customModules = modules, parentContext) {
     const lines = code.trim().split('\n');
