@@ -2,6 +2,8 @@
 
 const { resolveToken } = require('./tampilkan');
 
+const operatorSet = new Set(['+', '-', '*', '/', '%', '==', '!=', '>=', '<=', '>', '<', '&&', '||', '!', '(', ')']);
+
 async function evaluasi(tokens, modules, context) {
     if (tokens.length < 2) {
         console.log("Perintah 'evaluasi' membutuhkan ekspresi sebagai argumen.");
@@ -12,12 +14,15 @@ async function evaluasi(tokens, modules, context) {
     const nilaiTokens = [];
 
     for (const token of ekspresiToken) {
-        const nilai = resolveToken(token, context, modules);
-
-        if (typeof nilai === 'string') {
-            nilaiTokens.push(`"${nilai}"`);
+        if (operatorSet.has(token)) {
+            nilaiTokens.push(token);
         } else {
-            nilaiTokens.push(nilai);
+            const nilai = resolveToken(token, context, modules);
+            if (typeof nilai === 'string') {
+                nilaiTokens.push(`"${nilai}"`);
+            } else {
+                nilaiTokens.push(nilai);
+            }
         }
     }
 
@@ -34,4 +39,3 @@ async function evaluasi(tokens, modules, context) {
 evaluasi.isBlock = false;
 
 module.exports = { evaluasi };
-
