@@ -17,7 +17,7 @@ async function evaluasi(tokens, modules, context) {
         } else {
             const nilai = resolveToken(token, context, modules);
             if (typeof nilai === 'string') {
-                nilaiTokens.push(`"${nilai}"`);
+                nilaiTokens.push(JSON.stringify(nilai));
             } else {
                 nilaiTokens.push(nilai);
             }
