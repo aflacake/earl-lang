@@ -14,17 +14,18 @@ async function evaluasi(tokens, modules, context) {
     const nilaiTokens = [];
 
     for (const token of ekspresiToken) {
-        if (operatorSet.has(token)) {
-            nilaiTokens.push(token);
+        const nilai = resolveToken(token, context, modules);
+        if (nilai === `Token '${token}' tidak ditemukan.`) {
+            console.error(`Variabel atau token ${token} belum diatur.`);
+            return;
+        }
+        if (typeof nilai === 'string') {
+            nilaiTokens.push(`"${nilai}"`);
         } else {
-            const nilai = resolveToken(token, context, modules);
-            if (typeof nilai === 'string') {
-                nilaiTokens.push(`"${nilai}"`);
-            } else {
-                nilaiTokens.push(nilai);
-            }
+            nilaiTokens.push(nilai);
         }
     }
+
 
     const ekspresi = nilaiTokens.join(' ');
 
