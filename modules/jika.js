@@ -1,25 +1,6 @@
 // modules/jika.js
-const { memory } = require('../memory.js');
+
 const { resolveToken } = require('./tampilkan');
-
-function resolveValueDenganKelas(token) {
-    const hasil = resolveToken(token);
-
-    if (typeof hasil === 'string' && token.includes('.')) {
-       const [instanceName, attr] = token.split('.');
-       const instance = memory[instanceName];
-
-       if (
-           instance &&
-           instance.__tipe &&
-           memory[instance.__tipe] &&
-           memory[instance.__tipe].__tipe === 'kelas'
-       ) {
-           return instance[attr];
-       }
-    }
-    return hasil;
-}
 
 async function jika(tokens, modules, context) {
     if (tokens.length < 5) {
@@ -34,8 +15,8 @@ async function jika(tokens, modules, context) {
         return;
     }
 
-    const value1 = resolveValueDenganKelas(leftToken);
-    const value2 = resolveValueDenganKelas(rightToken);
+    const value1 = resolveToken(leftToken, context, modules);
+    const value2 = resolveToken(rightToken, context, modules);
 
     let hasil = false;
 
@@ -50,14 +31,17 @@ async function jika(tokens, modules, context) {
             console.error(`Operator tidak dikenali: ${operator}`);
             return;
     }
+
     if (hasil) {
         if (context.currentNode.body && context.currentNode.body.length > 0) {
             await modules.laksanakanAST(context.currentNode.body, modules, context);
         } else {
-            console.error(`Perintah 'maka' kosong atau tidak ditemukan'.`);
+            console.error(`Perintah 'maka' kosong atau tidak ditemukan.`);
         }
     }
 }
 
 jika.isBlock = true;
+
 module.exports = { jika };
+
