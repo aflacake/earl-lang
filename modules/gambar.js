@@ -13,7 +13,7 @@ function cekKanvas() {
     return true;
 }
 
-function validasiAngka (angkaArray, namaArgumen) {
+function validasiAngka(angkaArray, namaArgumen) {
     if (angkaArray.some(isNaN)) {
         console.error(`Argumen '${namaArgumen}' harus berupa angka valid.`);
         return false;
@@ -55,7 +55,8 @@ function buatKanvas(lebar, tinggi) {
         warna: "white",
         huruf: "20px Arial",
         meluruskan: "left",
-        garisdasar: "alphabetic"
+        garisdasar: "alphabetic",
+        mode: "isi"
     };
     console.log(`Kanvas ${lebar}x${tinggi} berhasil dibuat.`);
 }
@@ -73,7 +74,11 @@ async function gambar(tokens, modules, context) {
 
         case 'warna': {
             if (!cekKanvas()) break;
-            const warna = tokens[2].replace(/"/g,'');
+            if (!tokens[2]) {
+                console.error("Argumen warna tidak ditemukan.");
+                break;
+            }
+            const warna = tokens[2].replace(/"/g, '');
             console.log("Set warna ke:", warna);
             memory.gambar.ctx.fillStyle = warna;
             memory.gambar.ctx.strokeStyle = warna;
@@ -82,6 +87,10 @@ async function gambar(tokens, modules, context) {
         }
 
         case 'mode': {
+            if (!tokens[2]) {
+                console.error("Argumen mode tidak ditemukan.");
+                break;
+            }
             const mode = tokens[2];
             if (!["isi", "garis", "isi-garis"].includes(mode)) {
                 console.error(`Mode gambar tidak dikenali: '${mode}'`);
@@ -110,9 +119,9 @@ async function gambar(tokens, modules, context) {
             const ctx = memory.gambar.ctx;
             ctx.beginPath();
             ctx.rect(x, y, w, h);
-            terapkanModeMenggambar();
+            terapkanModeMenggambar(ctx);
             break;
-       }
+        }
 
         case 'lingkaran': {
             if (!cekKanvas()) break;
@@ -133,12 +142,12 @@ async function gambar(tokens, modules, context) {
             ctx.beginPath();
             ctx.arc(lx, ly, radius, 0, Math.PI * 2);
             console.log("Warna saat lingkaran digambar:", ctx.fillStyle);
-            terapkanModeMenggambar();
+            terapkanModeMenggambar(ctx);
             break;
         }
 
         case 'poligon': {
-            if(!cekKanvas()) break;
+            if (!cekKanvas()) break;
             let koordi = tokens.slice(2).map(Number);
             const daftarDariMemori = ambilDaftarJikaPerlu(tokens[2]);
             if (daftarDariMemori) {
@@ -158,7 +167,7 @@ async function gambar(tokens, modules, context) {
                 ctx.lineTo(koordi[i], koordi[i + 1]);
             }
             ctx.closePath();
-            terapkanModeMenggambar();
+            terapkanModeMenggambar(ctx);
             break;
         }
 
@@ -187,7 +196,7 @@ async function gambar(tokens, modules, context) {
 
         case 'teks': {
             if (!cekKanvas()) break;
-            const teks = tokens[2].replace(/"/g, '');
+            const teks = (tokens[2] || "").replace(/"/g, '');
             const x = parseInt(tokens[3], 10);
             const y = parseInt(tokens[4], 10);
             if (!validasiAngka([x, y], 'teks')) break;
@@ -205,6 +214,10 @@ async function gambar(tokens, modules, context) {
 
         case 'rata': {
             if (!cekKanvas()) break;
+            if (!tokens[2]) {
+                console.error("Argumen rata tidak ditemukan.");
+                break;
+            }
             const meluruskan = tokens[2];
             memory.gambar.ctx.textAlign = meluruskan;
             memory.gambar.meluruskan = meluruskan;
@@ -213,6 +226,10 @@ async function gambar(tokens, modules, context) {
 
         case 'dasar': {
             if (!cekKanvas()) break;
+            if (!tokens[2]) {
+                console.error("Argumen dasar tidak ditemukan.");
+                break;
+            }
             const garisdasar = tokens[2];
             memory.gambar.ctx.textBaseline = garisdasar;
             memory.gambar.garisdasar = garisdasar;
@@ -220,18 +237,20 @@ async function gambar(tokens, modules, context) {
         }
 
         case 'warna-isi': {
-            memory.gambar.ctx.fillStyle = tokens[2].replace(/"/g, '');
+            if (!cekKanvas()) break;
+            memory.gambar.ctx.fillStyle = (tokens[2] || "").replace(/"/g, '');
             break;
         }
 
         case 'warna-garis': {
-            memory.gambar.ctx.strokeStyle = tokens[2].replace(/"/g, '');
+            if (!cekKanvas()) break;
+            memory.gambar.ctx.strokeStyle = (tokens[2] || "").replace(/"/g, '');
             break;
         }
 
         case 'simpan': {
             if (!cekKanvas()) break;
-            const namafile = tokens[2].replace(/"/g, '');
+            const namafile = (tokens[2] || '').replace(/"/g, '');
 
             if (!namafile || !namafile.endsWith('.png')) {
                 console.error("Nama file harus valid dan diakhiri dengan .png");
@@ -242,7 +261,7 @@ async function gambar(tokens, modules, context) {
                 const out = fs.createWriteStream(namafile);
                 const stream = memory.gambar.kanvas.createPNGStream();
                 stream.pipe(out);
-                out.on('finish', () =>  {
+                out.on('finish', () => {
                     console.log(`Gambar tersimpan sebagai ${namafile}`);
                 });
             } catch (err) {
@@ -270,11 +289,11 @@ async function gambar(tokens, modules, context) {
                 mode: memory.gambar.mode,
                 huruf: memory.gambar.huruf,
                 rata: memory.gambar.meluruskan,
-                dasar: memory.gamar.garisdasar
+                dasar: memory.gambar.garisdasar
             });
             break;
         }
- 
+
         default:
             console.error(`Perintah gambar tidak dikenali: ${perintah}`);
     }
