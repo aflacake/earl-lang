@@ -8,8 +8,8 @@ function tokenizeExpression(expr) {
 }
 
 function toPostfix(tokens) {
-    const mendahului = { '+': 1, '-': 1, '*': 2, '/': 2, '%': 2, '^': 3 }
-    const keluaran = []
+    const mendahului = { '+': 1, '-': 1, '*': 2, '/': 2, '%': 2, '^': 3 };
+    const keluaran = [];
     const operators = [];
 
     for (const token of tokens) {
@@ -22,14 +22,17 @@ function toPostfix(tokens) {
             ) {
                 keluaran.push(operators.pop());
             }
-
             operators.push(token);
         } else if (token.endsWith('(')) {
             operators.push(token);
         } else if (token === '(') {
             operators.push(token);
         } else if (token === ')') {
-            while (operators.length && operators[operators.length - 1] !== '(' && !operators[operators.length - 1].endsWith(`(`)) {
+            while (
+                operators.length &&
+                operators[operators.length - 1] !== '(' &&
+                !operators[operators.length - 1].endsWith('(')
+            ) {
                 keluaran.push(operators.pop());
             }
             if (operators.length && operators[operators.length - 1] === '(') {
@@ -39,6 +42,7 @@ function toPostfix(tokens) {
             }
         }
     }
+
     while (operators.length) {
         keluaran.push(operators.pop());
     }
@@ -66,11 +70,7 @@ function evaluatePostfix(postfix) {
                 case '*': tumpukan.push(a * b); break;
                 case '/': tumpukan.push(b === 0 ? NaN : a / b); break;
                 case '%': {
-                    if (a === undefined || b === undefined) {
-                        console.error(`Operator '%' membutuhkan dua operand`);
-                        return NaN;
-                    }
-
+                    // Perbaiki pop operand ganda, pakai 'a' dan 'b' yang sudah ada
                     if (Array.isArray(a) && typeof b === 'number') {
                         tumpukan.push(a.map(x => x % b));
                     } else if (typeof a === 'number' && Array.isArray(b)) {
@@ -127,6 +127,7 @@ function evaluatePostfix(postfix) {
             tumpukan.push(Math.tan(val));
         }
     }
+
     if (tumpukan.length !== 1) {
         console.error("Ekspresi tidak valid. Hasil akhir tidak tunggal.");
         return NaN;
@@ -135,17 +136,14 @@ function evaluatePostfix(postfix) {
     return tumpukan[0];
 }
 
-
-
-
 function hitung(tokens) {
-    if (tokens.length < 5 || tokens[0] !== 'hitung' || tokens[1]!== 'ke' || tokens[3] !== 'dari') {
+    if (tokens.length < 5 || tokens[0] !== 'hitung' || tokens[1] !== 'ke' || tokens[3] !== 'dari') {
         console.error("Format salah. Gunakan: hitung ke :var: dari (ekspresi)");
         return;
     }
 
     const targetVar = tokens[2].replace(/:/g, '');
-    let rawExpr = tokens.slice(4).join('');
+    let rawExpr = tokens.slice(4).join(' ');  // kasih spasi supaya tokenisasi tepat
 
     rawExpr = rawExpr.replace(/panjang :(\w+):/g, (_, nama) => {
         const nilai = memory[nama];
@@ -165,12 +163,7 @@ function hitung(tokens) {
         return;
     }
 
-    const resolvedToken = tokensExpr.map(token => {
-        if (!isNaN(token)) return token; // angka langsung
-        if (typeof token === 'string' && memory[token] !== undefined) return memory[token];
-        return token;
-    });
-
+    const resolvedToken = tokensExpr.map(token => resolveToken(token, { memory }));
 
     const postfix = toPostfix(resolvedToken);
     const hasil = evaluatePostfix(postfix);
