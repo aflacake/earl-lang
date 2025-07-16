@@ -172,6 +172,8 @@ if (args.length > 0) {
             }
         } else {
             try {
+                contextGlobal.lines = [input];
+                contextGlobal.index = 0;
                 await runEarl(input, modules, contextGlobal);
                 contextGlobal.berhenti = false;
             } catch (err) {
