@@ -1,88 +1,102 @@
 // modules/atur.js
 
-const { memory } = require('../memory.js');
 const { resolveToken } = require('./tampilkan');
 
-function parseArrayFromTokens(tokens, startIndex, context, modules) {
-    if (tokens[startIndex] !== '[') return null;
+function parseArrayString(arrStr, context, modules) {
+  arrStr = arrStr.trim();
+  if (!arrStr.startsWith('[') || !arrStr.endsWith(']')) {
+    console.error("Format array salah, harus diakhiri dengan ']'");
+    return null;
+  }
+  const isi = arrStr.slice(1, -1).trim();
+  if (!isi) return [];
 
-    let arr = [];
-    let i = startIndex + 1;
-    while (i < tokens.length && tokens[i] !== ']') {
-        let token = tokens[i];
+  const tokens = [];
+  let current = '';
+  let inString = false;
 
-        if (token.startsWith('"') && token.endsWith('"')) {
-            arr.push(token.slice(1, -1));
-        } else {
-            arr.push(resolveToken(token, context, modules));
-        }
-        i++;
+  for (let i = 0; i < isi.length; i++) {
+    const ch = isi[i];
+    if (ch === '"') {
+      inString = !inString;
+      current += ch;
+    } else if (ch === ' ' && !inString) {
+      if (current) {
+        tokens.push(current);
+        current = '';
+      }
+    } else {
+      current += ch;
     }
+  }
+  if (current) tokens.push(current);
 
-    if (i === tokens.length || tokens[i] !== ']') {
-        console.error("Format array salah, harus diakhiri dengan ']'");
-        return null;
+  const hasil = tokens.map(token => {
+    if (token.startsWith('"') && token.endsWith('"')) {
+      return token.slice(1, -1);
     }
+    return resolveToken(token, context, modules);
+  });
 
-    return { array: arr, nextIndex: i };
+  return hasil;
 }
 
 function atur(tokens, modules, context) {
-    if (!context.memory) {
-        context.memory = {};
-    }
+  if (!context.memory) {
+    context.memory = {};
+  }
 
-    if (tokens.length < 3) {
-        console.error("Format salah. Gunakan: atur :nama: = nilai atau atur :nama: [nilai1 nilai2 ...]");
-        return;
-    }
+  if (tokens.length < 3) {
+    console.error("Format salah. Gunakan: atur :nama: = nilai atau atur :nama: [nilai1 nilai2 ...]");
+    return;
+  }
 
-    const namaVariabel = tokens[1];
-    if (!namaVariabel.startsWith(':') || !namaVariabel.endsWith(':')) {
-        console.error("Variabel harus dalam format :nama:");
-        return;
-    }
-    const nama = namaVariabel.slice(1, -1);
+  const namaVariabel = tokens[1];
+  if (!namaVariabel.startsWith(':') || !namaVariabel.endsWith(':')) {
+    console.error("Variabel harus dalam format :nama:");
+    return;
+  }
+  const nama = namaVariabel.slice(1, -1);
 
-    if (tokens[2] === '[') {
-        const parsed = parseArrayFromTokens(tokens, 2, context, modules);
-        if (!parsed) return;
-        context.memory[nama] = parsed.array;
-        memory[nama] = parsed.array;
-        console.log(`Variabel '${nama}' diatur ke array`, parsed.array);
-        return;
-    }
+  let nilai = null;
 
-    if (tokens[2] !== '=') {
-        console.error("Format salah. Gunakan: atur :nama: = nilai");
-        return;
-    }
-
-    let nilai;
-    if (tokens[3] === '[') {
-        const parsed = parseArrayFromTokens(tokens, 3, context, modules);
-        if (!parsed) return;
-        nilai = parsed.array;
-    } else if (tokens.length === 4) {
-        const valToken = tokens[3];
-        if (valToken.startsWith('"') && valToken.endsWith('"')) {
-            nilai = valToken.slice(1, -1);
-        } else {
-            nilai = resolveToken(valToken, context, modules);
-        }
-    } else {
+  if (tokens[2] === '=') {
+    if (tokens.length === 4) {
+      const valToken = tokens[3];
+      if (valToken.startsWith('[') && valToken.endsWith(']')) {
+        nilai = parseArrayString(valToken, context, modules);
+      } else if (valToken.startsWith('"') && valToken.endsWith('"')) {
+        nilai = valToken.slice(1, -1);
+      } else {
+        nilai = resolveToken(valToken, context, modules);
+      }
+    } else if (tokens.length > 4) {
+      if (tokens[3].startsWith('[') && tokens[tokens.length - 1].endsWith(']')) {
+        const arrString = tokens.slice(3).join(' ');
+        nilai = parseArrayString(arrString, context, modules);
+      } else {
         nilai = tokens.slice(3).map(token => {
-            if (token.startsWith('"') && token.endsWith('"')) {
-                return token.slice(1, -1);
-            }
-            return resolveToken(token, context, modules);
+          if (token.startsWith('"') && token.endsWith('"')) {
+            return token.slice(1, -1);
+          }
+          return resolveToken(token, context, modules);
         }).join(' ');
+      }
+    } else {
+      console.error("Format salah. Gunakan: atur :nama: = nilai");
+      return;
     }
+  } else if (tokens[2].startsWith('[')) {
+    const arrString = tokens.slice(2).join(' ');
+    nilai = parseArrayString(arrString, context, modules);
+    if (nilai === null) return;
+  } else {
+    console.error("Format salah. Gunakan: atur :nama: = nilai atau atur :nama: [nilai1 nilai2 ...]");
+    return;
+  }
 
-    context.memory[nama] = nilai;
-    memory[nama] = nilai;
-
-    console.log(`Variabel '${nama}' diatur ke`, nilai);
+  context.memory[nama] = nilai;
+  console.log(`Variabel '${nama}' diatur ke`, nilai);
 }
 
 module.exports = { atur };
