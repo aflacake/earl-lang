@@ -42,10 +42,15 @@ async function lakukan(tokens, modules, context) {
             const currentLine = context.lines[context.index].trim();
             if (currentLine === ')') break;
 
-            blockLines.push(currentLine);
+            blockLines.push(context.lines[context.index]);
             context.index++;
         }
-        context.lines.splice(context.index + 1, 0, ...blockLines);
+
+        if (context.index < context.lines.length && context.lines[context.index].trim() === ')') {
+            context.index++;
+        }
+
+        context.lines.splice(context.index, 0, ...blockLines);
         return;
     }
 
