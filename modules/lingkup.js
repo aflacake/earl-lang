@@ -18,6 +18,10 @@ async function keluarlingkup(tokens, modules, context) {
         const lingkupKeluar = context.lingkup.pop();
 
         Object.assign(context.lingkup[0], lingkupKeluar);
+
+        if (context.memory && typeof context.memory === 'object') {
+            Object.assign(context.memory, lingkupKeluar);
+        }
     } else {
         console.warn('Tidak bisa keluar dari lingkup global.');
     }
