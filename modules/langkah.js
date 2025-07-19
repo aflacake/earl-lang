@@ -28,11 +28,13 @@ async function langkah(tokens, modules, context) {
                 if (input.trim() === 'berakhir') {
                     rl.close();
                     index = lines.length;
-                    resolve();
+                    resolve(true);
                 } else {
-                    resolve();
+                    resolve(false);
                 }
-            }));
+            })).then(ended => {
+                if (ended) return;
+            });
 
             for (let i = 1; i < tokens.length; i++) {
                 tokens[i] = await modules.resolveToken(tokens[i], context);
