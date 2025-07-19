@@ -60,7 +60,7 @@ function masukkan(tokens) {
             rl.question(prompt, (penggunaMasukkan) => {
                 let nilai = penggunaMasukkan;
 
-                if (penggunaMasukkan.startsWith(':') && penggunaMasukkan.endsWith(':')) {
+                if (/^:[a-zA-Z0-9_]+:$/.test(penggunaMasukkan)) {
                     nilai = resolveToken(penggunaMasukkan, {}, {});
                 }
 
