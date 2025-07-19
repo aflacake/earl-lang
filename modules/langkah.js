@@ -9,7 +9,7 @@ async function langkah(tokens, modules, context) {
         input: process.stdin,
         output: process.stdout
     });
-    console.log('Masuk ke mode langkah demi langkah. Ketik ENTER untuk lanjut, "selesai" untuk keluar.');
+    console.log('Masuk ke mode langkah demi langkah. Ketik ENTER untuk lanjut, "berakhir" untuk keluar.');
 
     while (index < lines.length) {
         const line = lines[index].trim();
