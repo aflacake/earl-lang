@@ -145,6 +145,7 @@ function resolveToken(token, context = {}, modules = {}) {
 
 function formatValue(val, verbose = false) {
     if (val === undefined) return chalk.gray('[undefined]');
+    if (val === null) return chalk.gray('[null]');
     if (typeof val === 'number') return chalk.cyan(val);
     if (typeof val === 'string') return chalk.green(`"${val}"`);
     if (typeof val === 'boolean') return chalk.yellow(val);
