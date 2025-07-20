@@ -149,7 +149,9 @@ function formatValue(val, verbose = false) {
     if (typeof val === 'number') return chalk.cyan(val);
     if (typeof val === 'string') return chalk.green(`"${val}"`);
     if (typeof val === 'boolean') return chalk.yellow(val);
-    if (Array.isArray(val)) return verbose ? chalk.magenta(JSON.stringify(val, null, 2)) : chalk.magenta(`[daftar(${val.length})]`);
+    if (Array.isArray(val)) {
+        return verbose ? chalk.magenta(JSON.stringify(val, null, 2)) : chalk.magenta(val.join(' '));
+    }
     if (typeof val === 'object') return verbose ? chalk.blue(JSON.stringify(val, null, 2)) : chalk.blue(`[objek]`);
     return String(val);
 }
