@@ -12,7 +12,7 @@ function cairkanTeks(tokens, modules, context) {
         offset = 2;
     }
 
-    let nilai = resolveToken(tokens[offset], context);
+    let nilai = resolveToken(tokens[offset], context, modules);
 
     if (typeof nilai === 'string') {
         if (nilai.startsWith('"') && nilai.endsWith('"')) {
