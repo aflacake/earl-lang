@@ -11,8 +11,17 @@ function membangun(tokens) {
 
         if (!isNaN(dari) && !isNaN(sampai)) {
             const hasil = [];
-            for (let i = parseInt(dari); i <= parseInt(sampai); i++) {
-                hasil.push(i);
+            let start = parseInt(dari);
+            let end = parseInt(sampai);
+
+            if (start > end) {
+                for (let i = start; i >= end; i--) {
+                    hasil.push(i);
+                }
+            } else {
+                for (let i = start; i <= end; i++) {
+                    hasil.push(i);
+                }
             }
             memory[varName] = hasil;
         } 
@@ -20,13 +29,20 @@ function membangun(tokens) {
             const hasil = [];
             let start = dari.charCodeAt(0);
             let end = sampai.charCodeAt(0);
-            for (let i = start; i <= end; i++) {
-                hasil.push(String.fromCharCode(i));
+
+            if (start > end) {
+                for (let i = start; i >= end; i--) {
+                    hasil.push(String.fromCharCode(i));
+                }
+            } else {
+                for (let i = start; i <= end; i++) {
+                    hasil.push(String.fromCharCode(i));
+                }
             }
             memory[varName] = hasil;
         }
         else {
-            console.error("Format membangun tidak dikenali.")
+            console.error("Format membangun tidak dikenali.");
         }
     }
 }
