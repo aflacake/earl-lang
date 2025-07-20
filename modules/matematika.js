@@ -23,8 +23,9 @@ async function matematika(tokens, modules, context = {}) {
     const simpanAtauTampilkan = (hasil) => {
         if (targetVar) {
             memory[targetVar] = hasil;
+            return null;
         } else {
-            console.log(hasil);
+            return hasil;
         }
     };
 
@@ -40,7 +41,9 @@ async function matematika(tokens, modules, context = {}) {
         case 'akar': {
             const x = ambilNilai(tokens[offset + 1]);
             if (isNaN(x)) return console.error('Nilai tidak valid untuk akar.');
-            simpanAtauTampilkan(Math.sqrt(x));
+            const hasil = Math.sqrt(x);
+            const output = simpanAtauTampilkan(hasil);
+            if (output !== null) console.log(output);
             break;
         }
 
