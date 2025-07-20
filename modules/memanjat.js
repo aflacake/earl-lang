@@ -3,28 +3,33 @@
 const { runEarl } = require('../penjalankan');
 
 async function memanjat(tokens, modules, context) {
+    console.log("Mulai memanjat...");
+
     if (!context.lines || !Array.isArray(context.lines)) {
         console.error("Context tidak memiliki properti 'lines' berupa array.");
         return;
     }
 
-    if (!context.log) {
-        context.log = [];
-    }
-
-    console.log("Mulai memanjat...");
-
-    const blokLines = context.lines.filter(line => line.trim() !== 'selesai');
+    const blockCode = context.lines.join('\n');
 
     try {
-        await runEarl(blokLines.join('\n'), modules, {
+        const nestedContext = {
             ...context,
-            lines: blokLines,
-            index: 0
-        });
-        context.log.push({ block: blokLines.join('\n'), result: 'Berhasil' });
+            lines: context.lines,
+            index: 0,
+            lingkup: [...(context.lingkup || [{}])],
+            memory: context.memory || {},
+        };
+
+        await runEarl(blockCode, modules, nestedContext);
+        if (!context.log) context.log = [];
+        context.log.push({ block: blockCode, result: 'Berhasil' });
+
     } catch (err) {
         console.error(`Kesalahan saat menjalankan blok memanjat:`, err.message || err);
+        if (!context.log) context.log = [];
+        context.log.push({ block: blockCode, error: err.message || err });
+        return;
     }
 
     console.log("Selesai memanjat!");
