@@ -1,8 +1,8 @@
-// modules/memanjat.js
-
 const { runEarl } = require('../penjalankan');
 
 async function memanjat(tokens, modules, context) {
+    if (!context.log) context.log = [];
+
     console.log("Mulai memanjat...");
 
     if (!context.lines || !Array.isArray(context.lines)) {
@@ -15,9 +15,15 @@ async function memanjat(tokens, modules, context) {
         if (!trimmed) continue;
 
         try {
-            await runEarl(trimmed, modules, context);
+            const hasilContext = await runEarl(trimmed, modules, context);
+            context.log.push({
+                line: trimmed,
+                result: hasilContext
+            });
         } catch (err) {
             console.error(`Kesalahan saat memanjat baris: "${trimmed}"`, err.message || err);
+            console.log("Eksekusi dihentikan karena error.");
+            break;
         }
     }
 
