@@ -18,15 +18,22 @@ function mengandung(tokens, modules, context) {
     const sumber = resolveToken(sumberToken, context, modules);
     const cari = resolveToken(cariToken, context, modules);
 
+    if (typeof sumber !== 'string' && !Array.isArray(sumber)) {
+        console.error("Tipe sumber tidak mendukung untuk operasi 'mengandung'. Harus string atau array.");
+        return;
+    }
+
+    if (cari === undefined) {
+        console.error("Nilai yang dicari tidak ditemukan.");
+        return;
+    }
+
     let hasil = false;
 
     if (typeof sumber === 'string') {
         hasil = sumber.includes(cari);
     } else if (Array.isArray(sumber)) {
         hasil = sumber.includes(cari);
-    } else {
-        console.error("Tipe sumber tidak mendukung utuk operasi 'mengandung'. Harus teks (string) atau daftar (array).");
-        return;
     }
 
     console.log(hasil);
