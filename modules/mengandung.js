@@ -33,7 +33,9 @@ function mengandung(tokens, modules, context) {
     if (typeof sumber === 'string') {
         hasil = sumber.includes(cari);
     } else if (Array.isArray(sumber)) {
-        hasil = sumber.includes(cari);
+        hasil = sumber.some(element => {
+            return String(element).trim() === String(cari).trim();
+        });
     }
 
     console.log(hasil);
