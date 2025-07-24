@@ -69,7 +69,7 @@ npm link
 
 Jalankan dengan menggunakan perintah:
 ```bash
-pearl contoh.earl
+earl contoh.earl
 ```
 
 ### Pengguna Linux dan MacOS
@@ -77,12 +77,12 @@ File CLI bernama: `earl`
 #### Tambahkan ke PATH
 Dengan menjalankan folder langsung atau saat ini:
 ```bash
-./pearl contoh.earl
+./earl contoh.earl
 ```
 atau
 Berikan hak akses eksekusi:
 ```bash
-chmod +x bin/pearl
+chmod +x bin/earl
 ```
 link ke global:
 ``` bash
