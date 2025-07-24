@@ -10,9 +10,9 @@ async function buka(tokens, modules, context) {
         if (!context.memory) {
             context.memory = {};
         }
-        context.memory[namaVariabel.slice(1, -1)] = isiFile;
+        context.memory[namaToken.slice(1, -1)] = isiFile;
+        console.log(`File '${pathFile}' dibuka dan disimpan ke variabel '${namaToken.slice(1, -1)}'`);
 
-        console.log(`File '${pathFile}' dibuka dan disimpan ke variabel '${namaVariabel}'`);
     } catch (err) {
         console.error(`Gagal membuka file '${pathFile}':`, err.message);
     }
