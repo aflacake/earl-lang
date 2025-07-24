@@ -22,10 +22,7 @@ async function laksanakanAST(ast, modules, context) {
       console.error(`Kesalahan saat menjalankan '${type}':`, err.message);
     }
 
-    if (context.lanjutkan) {
-      context.lanjutkan = false;
-      continue;
-    }
+    if (context.lanjutkan) continue;
   }
 }
 
