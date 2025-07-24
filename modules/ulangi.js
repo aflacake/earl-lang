@@ -30,7 +30,7 @@ async function ulangi(tokens, modules, context) {
         }
        
         for (const item of list) {
-            context.lingkup.push({ item: {...item} });
+            context.lingkup.push({ item });
             context.berhenti = false;
             context.lanjutkan = false;
 
