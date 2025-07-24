@@ -26,7 +26,7 @@ async function tulis(tokens, modules, context) {
     }
 
     let file = 'keluaran.txt';
-    let append = false;
+    let lampirkan = false;
 
     for (let i = 2; i < tokens.length; i++) {
         if (tokens[i] === '>' && tokens[i + 1]) {
@@ -34,7 +34,7 @@ async function tulis(tokens, modules, context) {
             break;
         } else if (tokens[i] === '>>' && tokens[i + 1]) {
             file = tokens[i + 1].replace(/^"+|"+$/g, '');
-            append = true;
+            lampirkan = true;
             break;
         }
     }
@@ -42,7 +42,7 @@ async function tulis(tokens, modules, context) {
     try {
         const mode = append ? 'a' : 'w';
         fs.writeFileSync(file, isi.toString() + '\n', { encoding: 'utf-8', flag: mode });
-        console.log(`Isi '${nama}' berhasil ${append ? 'ditambahkan ke' : 'ditulis ke'} file '${file}'`);
+        console.log(`Isi '${nama}' berhasil ${lampirkan ? 'ditambahkan ke' : 'ditulis ke'} file '${file}'`);
     } catch (err) {
         console.error("Gagal menulis file:", err.message);
     }
