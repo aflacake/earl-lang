@@ -60,14 +60,22 @@ async function teks(tokens, modules, context) {
                 console.error("Format: teks ganti :nama: \"yang dicari\" \"pengganti\"");
                 return;
             }
-            const dari = resolveToken(tokens[3], context);
-            const menjadi = resolveToken(tokens[4] ?? '""', context);
+            let dari = resolveToken(tokens[3], context);
+            let menjadi = resolveToken(tokens[4] ?? '""', context);
+
+            if (typeof dari === 'string' && dari.startsWith('"') && dari.endsWith('"')) {
+                dari = dari.slice(1, -1);
+            }
+            if (typeof menjadi === 'string' && menjadi.startsWith('"') && menjadi.endsWith('"')) {
+                menjadi = menjadi.slice(1, -1);
+            }
+
             if (!dari) {
                 console.error("Argumen 'yang dicari' tidak valid atau kosong.");
                 return;
             }
             memory[namaVariabel] = isi.split(dari).join(String(menjadi));
-            console.log(`Semua '${dari}' diganti dengan '${menjadi}':`);
+            console.log(`Semua '${dari}' telah diganti dengan '${menjadi}' dalam variabel '${namaVariabel}'.`);
             break;
         }
 
