@@ -5,7 +5,7 @@ const { laksanakanAST } = require('../pelaksana-ast');
 
 async function ulangi(tokens, modules, context) {
     if (tokens[1] === 'setiap' && tokens[2] === 'dari') {
-        const sumber = tokens[3];
+        let sumber = tokens[3];
         if (sumber.startsWith(':') && sumber.endsWith(':')) {
             sumber = sumber.slice(1, -1);
         }
