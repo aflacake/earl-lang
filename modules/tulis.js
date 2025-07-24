@@ -40,7 +40,7 @@ async function tulis(tokens, modules, context) {
     }
 
     try {
-        const mode = append ? 'a' : 'w';
+        const mode = lampirkan ? 'a' : 'w';
         fs.writeFileSync(file, isi.toString() + '\n', { encoding: 'utf-8', flag: mode });
         console.log(`Isi '${nama}' berhasil ${lampirkan ? 'ditambahkan ke' : 'ditulis ke'} file '${file}'`);
     } catch (err) {
