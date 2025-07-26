@@ -35,4 +35,5 @@ async function untukSetiap(tokens, modules, context) {
     console.log(`Perintah 'untukSetiap' selesai dieksekusi untuk koleksi: ${koleksiToken}`);
 }
 
+untukSetiap.isBlock = true;
 module.exports = { untukSetiap };
