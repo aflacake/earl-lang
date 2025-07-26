@@ -84,13 +84,14 @@ async function kelas(tokens, modules, context) {
             }
 
             const isiMetode = (subBody ?? []).map(n => n.tokens.join(' ')).join('\n');
-            metode[namaMetode] = isiMetode;
+
+            if (isiMetode.includes('tampilkan')) {
+                metode[namaMetode] = `function ${namaMetode}() {\n  console.log('Output dari metode ${namaMetode}:', ${isiMetode});\n}`;
+            } else {
+                metode[namaMetode] = isiMetode;
+            }
         }
 
-        else {
-            console.warn(`Perintah '${type}' tidak dikenali dalam kelas.`);
-        }
-    }
 
     console.log(`Kelas '${namaKelas}' berhasil dibuat${parentKelas ? ` (mewarisi '${parentKelas}')` : ''}.`);
     console.log(`Atribut:`, atribut);
