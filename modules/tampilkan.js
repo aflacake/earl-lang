@@ -161,7 +161,7 @@ function tampilkan(tokens, modules, context) {
     const lingkup = context.lingkup || [{}];
 
     if (tokens.length < 2) {
-        console.log(chalk.red("Perintah 'tampilkan' memelukan argumen."));
+        console.log(chalk.red("Perintah 'tampilkan' memerlukan argumen."));
         return;
     }
 
@@ -181,6 +181,21 @@ function tampilkan(tokens, modules, context) {
         return;
     }
 
+    function resolveNestedKey(key, context) {
+        let value = memory[key]; // Cek di memory
+
+        if (!value) {
+            for (let scope of context.lingkup) {
+                if (key in scope) {
+                    value = scope[key];
+                    break;
+                }
+            }
+        }
+
+        return value;
+    }
+
     while (i < tokens.length) {
         const token = tokens[i];
 
@@ -189,12 +204,21 @@ function tampilkan(tokens, modules, context) {
             break;
         }
 
-        if (token.startsWith('"') && token.endsWith('"')) {
+        if (token.startsWith(':') && token.endsWith(':')) {
+            const nestedKey = token.slice(1, -1);
+            let value = resolveNestedKey(nestedKey, context);
+            if (value) {
+                hasil.push(verbose ? JSON.stringify(value, null, 2) : formatValue(value, verbose));
+            } else {
+                console.error(`Variabel '${nestedKey}' tidak ditemukan.`);
+            }
+        } else if (token.startsWith('"') && token.endsWith('"')) {
             hasil.push(token.slice(1, -1));
         } else {
             const nilai = resolveToken(token, context, modules);
             hasil.push(verbose ? JSON.stringify(nilai, null, 2) : formatValue(nilai, verbose));
         }
+
         i++;
     }
 
