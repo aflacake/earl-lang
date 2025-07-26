@@ -177,7 +177,7 @@ async function waktu(tokens, modules, context) {
         const format = rawFormat.slice(1, -1);
 
         const hasil = format
-            .replace(/TTTT/g, now.getFullYear())
+            .replace(/TTTT/g, sekarang.getFullYear())
             .replace(/BB/g, String(sekarang.getMonth() + 1).padStart(2, '0'))
             .replace(/HH/g, String(sekarang.getDate()).padStart(2, '0'))
             .replace(/JJ/g, String(sekarang.getHours()).padStart(2, '0'))
