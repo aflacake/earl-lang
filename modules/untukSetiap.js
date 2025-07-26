@@ -8,12 +8,13 @@ async function untukSetiap(tokens, modules, context) {
 
     const koleksiToken = tokens[1];
     const itemToken = tokens[3];
-    const blokPerintah = context.currentNode?.body ?? [];
+    const blokPerintah = context.currentNode?.body || [];
 
     if (!koleksiToken || !itemToken || blokPerintah.length === 0) {
         console.error("Format perintah 'untukSetiap' tidak lengkap.");
         return;
     }
+
     const koleksi = resolveToken(koleksiToken, context, modules);
 
     if (!Array.isArray(koleksi)) {
@@ -23,15 +24,19 @@ async function untukSetiap(tokens, modules, context) {
 
     for (const item of koleksi) {
         context.memory[itemToken] = item;
+        console.log(`Memproses item: ${item}`);
 
         for (let i = 0; i < blokPerintah.length; i++) {
             const { type, tokens: subTokens, body: subBody } = blokPerintah[i];
+
             if (type === 'perintah') {
                 await modules[subTokens[0]](subTokens, modules, context);
             }
         }
     }
+
     console.log(`Perintah 'untukSetiap' selesai dieksekusi untuk koleksi: ${koleksiToken}`);
 }
+
 
 module.exports = { untukSetiap };
