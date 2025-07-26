@@ -31,7 +31,7 @@ async function untukSetiap(tokens, modules, context) {
             }
         }
     }
-    console.log(`Perintah 'untukSetiap` selesai dieksekusi untuk koleksi: ${koleksiToken}`);
+    console.log(`Perintah 'untukSetiap' selesai dieksekusi untuk koleksi: ${koleksiToken}`);
 }
 
 module.exports = { untukSetiap };
