@@ -51,7 +51,11 @@ async function cobaTangkap(tokens, modules, context) {
             const cmd = innerTokens[0];
 
             if (modules[cmd]) {
-                await modules[cmd](innerTokens, modules, localContext);
+                try {
+                    await modules[cmd](innerTokens, modules, localContext);
+                } catch (err) {
+                    console.error(`Error dalam perintah '${cmd}': ${err.message}`);
+                }
             } else {
                 console.error(`Perintah '${cmd}' tidak dikenali di dalam 'cobaTangkap'.`);
             }
