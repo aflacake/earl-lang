@@ -12,7 +12,7 @@ function parse(code) {
         const tokens = raw.match(/"[^"]*"|:[^:\s]+:|[()[\],]|>=|<=|==|!=|>|<|\S+/g);
         const command = tokens[0];
 
-        if (['jika', 'ulangi', 'fungsi', 'kelas'].includes(command)) {
+        if (['jika', 'ulangi', 'fungsi', 'kelas', 'untukSetiap'].includes(command)) {
             const node = {
                 type: command,
                 tokens,
