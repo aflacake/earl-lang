@@ -22,7 +22,6 @@ async function ambilAtributMetodeRekursif(namaKelas) {
     return { atribut, instance, metode };
 }
 
-
 async function kelas(tokens, modules, context) {
     const namaKelas = tokens[1]?.replace(/:/g, '');
     if (!namaKelas) {
@@ -91,7 +90,7 @@ async function kelas(tokens, modules, context) {
                 metode[namaMetode] = isiMetode;
             }
         }
-
+    }
 
     console.log(`Kelas '${namaKelas}' berhasil dibuat${parentKelas ? ` (mewarisi '${parentKelas}')` : ''}.`);
     console.log(`Atribut:`, atribut);
@@ -102,4 +101,3 @@ async function kelas(tokens, modules, context) {
 
 kelas.isBlock = true;
 module.exports = { kelas };
-
