@@ -27,7 +27,7 @@ function ambil(tokens, modules, context) {
                 return context.lingkup[i][nama];
             }
         }
-        return undefined;
+        return context.memory ? context.memory[nama] : undefined;
     }
 
     const nilai = cariDariLingkup(sumberNama);
