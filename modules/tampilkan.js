@@ -28,6 +28,10 @@ function aksesBersarang(arr, indexes) {
 function resolveToken(token, context = {}, modules = {}) {
     const { memory = {}, lingkup = [{}], ini = null } = context;
 
+    if (token.startsWith('"') && token.endsWith('"')) {
+        return token.slice(1, -1);
+    }
+
     function cariDiLingkup(nama) {
         for (let i = lingkup.length - 1; i >= 0; i--) {
             if (nama in lingkup[i]) return lingkup[i][nama];
