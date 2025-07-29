@@ -44,19 +44,26 @@ function cairkanTeks(tokens, modules, context) {
 
 function cairkanAngka(tokens, modules, context) {
     let targetVar = null;
-    let masukkanTokenIndex = 1;
+    let inputTokenIndex = 1;
 
     if (tokens[1]?.startsWith(':') && tokens[1]?.endsWith(':')) {
         targetVar = tokens[1].slice(1, -1);
-        masukkanTokenIndex = 2;
+        inputTokenIndex = 2;
     }
 
-    if (tokens.length <= masukkanTokenIndex) {
+    if (tokens.length <= inputTokenIndex) {
         console.error("Argumen tidak lengkap untuk 'cairkanAngka'");
         return;
     }
 
-    let nilai = resolveToken(tokens[masukkanTokenIndex], context, modules);
+    const token = tokens[inputTokenIndex];
+    let nilai;
+
+    if (/^-?\d+(\.\d+)?$/.test(token)) {
+        nilai = Number(token);
+    } else {
+        nilai = resolveToken(token, context, modules);
+    }
 
     if (typeof nilai !== 'number') {
         console.error(`Masukkan untuk 'cairkanAngka' harus berupa angka, ditemukan tipe: ${typeof nilai}`);
