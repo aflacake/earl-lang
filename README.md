@@ -1,5 +1,5 @@
 <p align="right">Bahasa: Indonesia</p>
-<img src="https://raw.githubusercontent.com/aflacake/earl-lang/main/img/Earl (1).png" width="150px" height="150px" alt="Pearl" />
+<img src="https://raw.githubusercontent.com/aflacake/earl-lang/main/img/Earl (1).png" width="150px" height="150px" alt="Earl" />
 
 # Earl - Bahasa Pemrograman Alur Kerja
 Earl adalah bahasa pemrograman scripting domain-spesifik (DSL) yang dirancang untuk **otomasi, pengaturan logika, konfigurasi dinamis** dalam sistem modern. Dengan sintaks yang sederhana dan modular, Earl memungkinkan pengguna untuk membuat alur kerja, memanipulasi data, dan kontrol sistem secara ekspresif namun terstruktur.
