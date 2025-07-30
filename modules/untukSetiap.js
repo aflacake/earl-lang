@@ -1,18 +1,16 @@
-// modules/untukSetiap.js
-
 const { resolveToken } = require('./tampilkan');
 
 async function untukSetiap(tokens, modules, context) {
   if (tokens.length < 4 || tokens[2] !== 'setiap') {
-    console.error("Format salah. Gunakan: untukSetiap koleksi setiap :barang:");
+    console.error("Format salah. Gunakan: untukSetiap koleksi setiap :item:");
     return;
   }
 
   const koleksiToken = tokens[1];
-  const barangToken = tokens[3];
+  const itemToken = tokens[3];
 
-  if (!barangToken.startsWith(':') || !barangToken.endsWith(':')) {
-    console.error("Variabel barang harus dalam format :nama:");
+  if (!itemToken.startsWith(':') || !itemToken.endsWith(':')) {
+    console.error("Variabel item harus dalam format :nama:");
     return;
   }
 
@@ -30,11 +28,10 @@ async function untukSetiap(tokens, modules, context) {
     return;
   }
 
-  const namaVariabel = barangToken.slice(1, -1);
+  const namaVariabel = itemToken.slice(1, -1);
 
   for (const item of koleksi) {
-    const lingkupTeratas = context.lingkup[context.lingkup.length - 1];
-    lingkupTeratas[namaVariabel] = item;
+    context.lingkup.push({ [namaVariabel]: item });
 
     for (const node of blokPerintah) {
       const handler = modules[node.type];
@@ -48,6 +45,8 @@ async function untukSetiap(tokens, modules, context) {
         console.error(`Kesalahan saat menjalankan '${node.type}':`, err.message);
       }
     }
+
+    context.lingkup.pop();
   }
 
   console.log(`Perintah 'untukSetiap' selesai dieksekusi untuk koleksi: ${koleksiToken}`);
@@ -56,4 +55,3 @@ async function untukSetiap(tokens, modules, context) {
 untukSetiap.isBlock = true;
 
 module.exports = { untukSetiap };
-
