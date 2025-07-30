@@ -1,3 +1,5 @@
+// modules/untukSetiap.js
+
 const { resolveToken } = require('./tampilkan');
 
 async function untukSetiap(tokens, modules, context) {
@@ -14,15 +16,12 @@ async function untukSetiap(tokens, modules, context) {
     return;
   }
 
-  const blokPerintah = context.currentNode?.body ?? [];
-
-  if (!blokPerintah.length) {
+  if (!context.currentNode || !Array.isArray(context.currentNode.body)) {
     console.error("Blok perintah tidak ditemukan untuk 'untukSetiap'.");
     return;
   }
 
   const koleksi = resolveToken(koleksiToken, context, modules);
-
   if (!Array.isArray(koleksi)) {
     console.error(`Koleksi '${koleksiToken}' bukan array.`);
     return;
@@ -30,10 +29,13 @@ async function untukSetiap(tokens, modules, context) {
 
   const namaVariabel = itemToken.slice(1, -1);
 
+  const lingkupAsli = context.lingkup || [{}];
+  context.lingkup = [...lingkupAsli];
+
   for (const item of koleksi) {
     context.lingkup.push({ [namaVariabel]: item });
 
-    for (const node of blokPerintah) {
+    for (const node of context.currentNode.body) {
       const handler = modules[node.type];
       if (!handler) {
         console.error(`Modul tidak dikenali: '${node.type}'`);
@@ -49,9 +51,12 @@ async function untukSetiap(tokens, modules, context) {
     context.lingkup.pop();
   }
 
+  context.lingkup = lingkupAsli;
+
   console.log(`Perintah 'untukSetiap' selesai dieksekusi untuk koleksi: ${koleksiToken}`);
 }
 
 untukSetiap.isBlock = true;
 
 module.exports = { untukSetiap };
+
