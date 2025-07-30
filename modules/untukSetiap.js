@@ -1,39 +1,58 @@
 // modules/untukSetiap.js
 
+const { resolveToken } = require('./tampilkan');
+
 async function untukSetiap(tokens, modules, context) {
-    if (tokens.length < 4 || tokens[2] !== 'setiap') {
-        console.error("Format salah. Gunakan: untukSetiap koleksi setiap :item: { perintah }");
-        return;
+  if (tokens.length < 4 || tokens[2] !== 'setiap') {
+    console.error("Format salah. Gunakan: untukSetiap koleksi setiap :barang:");
+    return;
+  }
+
+  const koleksiToken = tokens[1];
+  const barangToken = tokens[3];
+
+  if (!itemToken.startsWith(':') || !itemToken.endsWith(':')) {
+    console.error("Variabel item harus dalam format :nama:");
+    return;
+  }
+
+  const blokPerintah = context.currentNode?.body ?? [];
+
+  if (!blokPerintah.length) {
+    console.error("Blok perintah tidak ditemukan untuk 'untukSetiap'.");
+    return;
+  }
+
+  const koleksi = resolveToken(koleksiToken, context, modules);
+
+  if (!Array.isArray(koleksi)) {
+    console.error(`Koleksi '${koleksiToken}' bukan array.`);
+    return;
+  }
+
+  const namaVariabel = itemToken.slice(1, -1);
+
+  for (const item of koleksi) {
+    const lingkupTeratas = context.lingkup[context.lingkup.length - 1];
+    lingkupTeratas[namaVariabel] = item;
+
+    for (const node of blokPerintah) {
+      const handler = modules[node.type];
+      if (!handler) {
+        console.error(`Modul tidak dikenali: '${node.type}'`);
+        continue;
+      }
+      try {
+        await handler(node.tokens, modules, context);
+      } catch (err) {
+        console.error(`Kesalahan saat menjalankan '${node.type}':`, err.message);
+      }
     }
+  }
 
-    const koleksiToken = tokens[1];
-    const itemToken = tokens[3];
-    const blokPerintah = context.currentNode?.body ?? [];
-
-    if (!koleksiToken || !itemToken || blokPerintah.length === 0) {
-        console.error("Format perintah 'untukSetiap' tidak lengkap.");
-        return;
-    }
-
-    const koleksi = resolveToken(koleksiToken, context, modules);
-
-    if (!Array.isArray(koleksi)) {
-        console.error(`Koleksi '${koleksiToken}' bukan array.`);
-        return;
-    }
-
-    for (const item of koleksi) {
-        context.memory[itemToken] = item;
-
-        for (let i = 0; i < blokPerintah.length; i++) {
-            const { type, tokens: subTokens, body: subBody } = blokPerintah[i];
-            if (type === 'perintah') {
-                await modules[subTokens[0]](subTokens, modules, context);
-            }
-        }
-    }
-    console.log(`Perintah 'untukSetiap' selesai dieksekusi untuk koleksi: ${koleksiToken}`);
+  console.log(`Perintah 'untukSetiap' selesai dieksekusi untuk koleksi: ${koleksiToken}`);
 }
 
 untukSetiap.isBlock = true;
+
 module.exports = { untukSetiap };
