@@ -11,8 +11,8 @@ async function untukSetiap(tokens, modules, context) {
   const koleksiToken = tokens[1];
   const barangToken = tokens[3];
 
-  if (!itemToken.startsWith(':') || !itemToken.endsWith(':')) {
-    console.error("Variabel item harus dalam format :nama:");
+  if (!barangToken.startsWith(':') || !barangToken.endsWith(':')) {
+    console.error("Variabel barang harus dalam format :nama:");
     return;
   }
 
@@ -30,7 +30,7 @@ async function untukSetiap(tokens, modules, context) {
     return;
   }
 
-  const namaVariabel = itemToken.slice(1, -1);
+  const namaVariabel = barangToken.slice(1, -1);
 
   for (const item of koleksi) {
     const lingkupTeratas = context.lingkup[context.lingkup.length - 1];
@@ -56,3 +56,4 @@ async function untukSetiap(tokens, modules, context) {
 untukSetiap.isBlock = true;
 
 module.exports = { untukSetiap };
+
