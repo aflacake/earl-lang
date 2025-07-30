@@ -1,11 +1,11 @@
 // modules/atur.js
 
-const { resolveToken } = require('./tampilkan');
+const { resolveToken, evalMathExpression } = require('./tampilkan');
 
 function parseArrayString(arrStr, context, modules) {
   arrStr = arrStr.trim();
   if (!arrStr.startsWith('[') || !arrStr.endsWith(']')) {
-    console.error("Format array salah, harus diakhiri dengan ']'");
+    console.error("Format array salah, harus diawali dengan '[' dan diakhiri dengan ']'");
     return null;
   }
   const isi = arrStr.slice(1, -1).trim();
@@ -31,20 +31,16 @@ function parseArrayString(arrStr, context, modules) {
   }
   if (current) tokens.push(current);
 
-  const hasil = tokens.map(token => {
+  return tokens.map(token => {
     if (token.startsWith('"') && token.endsWith('"')) {
       return token.slice(1, -1);
     }
     return resolveToken(token, context, modules);
   });
-
-  return hasil;
 }
 
 function atur(tokens, modules, context) {
-  if (!context.memory) {
-    context.memory = {};
-  }
+  if (!context.memory) context.memory = {};
 
   if (tokens.length < 3) {
     console.error("Format salah. Gunakan: atur :nama: = nilai atau atur :nama: [nilai1 nilai2 ...]");
@@ -61,30 +57,19 @@ function atur(tokens, modules, context) {
   let nilai = null;
 
   if (tokens[2] === '=') {
-    if (tokens.length === 4) {
-      const valToken = tokens[3];
-      if (valToken.startsWith('[') && valToken.endsWith(']')) {
-        nilai = parseArrayString(valToken, context, modules);
-      } else if (valToken.startsWith('"') && valToken.endsWith('"')) {
-        nilai = valToken.slice(1, -1);
-      } else {
-        nilai = resolveToken(valToken, context, modules);
-      }
-    } else if (tokens.length > 4) {
-      if (tokens[3].startsWith('[') && tokens[tokens.length - 1].endsWith(']')) {
-        const arrString = tokens.slice(3).join(' ');
-        nilai = parseArrayString(arrString, context, modules);
-      } else {
-        nilai = tokens.slice(3).map(token => {
-          if (token.startsWith('"') && token.endsWith('"')) {
-            return token.slice(1, -1);
-          }
-          return resolveToken(token, context, modules);
-        }).join(' ');
-      }
+    const ekspresi = tokens.slice(3).join(' ');
+
+    if (ekspresi.trim().startsWith('[') && ekspresi.trim().endsWith(']')) {
+      nilai = parseArrayString(ekspresi, context, modules);
     } else {
-      console.error("Format salah. Gunakan: atur :nama: = nilai");
-      return;
+      let expr = ekspresi.replace(/:([a-zA-Z0-9_]+):/g, (_, v) => {
+        const val = context.memory[v] ?? (context.lingkup?.[context.lingkup.length - 1] ?? {})[v];
+        if (typeof val === 'number') return val;
+        if (typeof val === 'string' && !isNaN(Number(val))) return Number(val);
+        return val ?? 0;
+      });
+
+      nilai = evalMathExpression(expr);
     }
   } else if (tokens[2].startsWith('[')) {
     const arrString = tokens.slice(2).join(' ');
