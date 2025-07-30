@@ -148,7 +148,7 @@ if (args.length > 0) {
             return;
         }
 
-        if (!insideBlock && /^(jika|fungsi|ulangi|kelas)\b/.test(input)) {
+        if (!insideBlock && /^(jika|fungsi|ulangi|kelas|untukSetiap)\b/.test(input)) {
             insideBlock = true;
         }
 
