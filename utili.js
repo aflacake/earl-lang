@@ -39,4 +39,27 @@ function ambilDaftarJikaPerlu(token) {
   return null;
 }
 
-module.exports = { tokenizekedua, ambilDaftarJikaPerlu };
+function setTokenNilai(token, context, nilaiBaru) {
+    if (token.startsWith(':') && token.endsWith(':')) {
+        token = token.slice(1, -1);
+    }
+
+    const jalur = token.split(/[\.\[\]]+/).filter(Boolean);
+    let target = context.memory;
+
+    for (let i = 0; i < jalur.length - 1; i++) {
+        const bagian = isNaN(jalur[i]) ? jalur[i] : Number(jalur[i]);
+        if (!(bagian in target)) return false;
+        target = target[bagian];
+    }
+
+    const bagianAkhir = isNaN(jalur.at(-1)) ? jalur.at(-1) : Number(jalur.at(-1));
+    target[bagianAkhir] = nilaiBaru;
+    return true;
+}
+
+module.exports = { 
+    tokenizekedua,
+    ambilDaftarJikaPerlu,
+    setTokenNilai
+};
