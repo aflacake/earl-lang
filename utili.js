@@ -68,10 +68,25 @@ function menguraikanJalur(token) {
     );
 }
 
+function setNilaiBersarang(obj, token, nilaiBaru) {
+    const bagian = menguraikanJalur(token);
+    let saatIni = obj;
+
+    for (let i = 0; i < bagian.length - 1; i++) {
+        const kunci = bagian[i];
+        saatIni = saatIni?.[kunci];
+        if (saatIni === undefined || saatIni === null) return false;
+    }
+
+    const terakhir = bagian.at(-1);
+    saatIni[terakhir] = nilaiBaru;
+    return true;
+}
 
 module.exports = { 
     tokenizekedua,
     ambilDaftarJikaPerlu,
     setTokenNilai,
-    menguraikanJalur
+    menguraikanJalur,
+    setNilaiBersarang
 };
