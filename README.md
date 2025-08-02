@@ -47,6 +47,10 @@ node index.js
   ```bash
   npm install form-data
   ```
+- Memanggil API GitHub, misalnya untuk `picuAlurKerja`.
+  ```bash
+  npm install axios
+  ```
 
 ## Dengan CLI
 ### Pengguna Windows
