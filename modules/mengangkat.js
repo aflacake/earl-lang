@@ -1,65 +1,92 @@
-// modules/mengangkat.js
+// utili.js
+const { memory } = require('./memory');
 
-const { resolveToken, evalMathExpression } = require('./tampilkan');
-const { setNilaiBersarang } = require('./utili');
+function tokenizekedua(input) {
+  const tokens = [];
+  let current = '';
+  let inQuotes = false;
 
-function naikkanNilai(tokens, context) {
-    if (tokens.length < 3) {
-        console.error("Perintah 'mengangkat' memerlukan dua argumen: variabel dan nilai.");
-        return;
-    }
+  for (let i = 0; i < input.length; i++) {
+    const ch = input[i];
 
-    const tokenVar = tokens[1];
-    const ekspresiKenaikan = tokens.slice(2).join(' ');
-
-    const nilaiSaatIni = resolveToken(tokenVar, context);
-    const kenaikan = evalMathExpression(ekspresiKenaikan);
-
-    if (isNaN(kenaikan)) {
-        console.error(`Nilai yang akan ditambahkan (${ekspresiKenaikan}) tidak valid.`);
-        return;
-    }
-
-    const varName = tokenVar.startsWith(':') && tokenVar.endsWith(':')
-        ? tokenVar.slice(1, -1)
-        : tokenVar;
-
-    if (typeof nilaiSaatIni === 'number') {
-        const berhasil = setNilaiBersarang(context.memory, varName, nilaiSaatIni + kenaikan);
-        if (berhasil) {
-            console.log(`Nilai '${varName}' dinaikkan menjadi ${nilaiSaatIni + kenaikan}`);
-        } else {
-            console.error(`Gagal mengatur nilai untuk '${varName}'`);
+    if (ch === '"') {
+      inQuotes = !inQuotes;
+      current += ch;
+    } else if (/\s/.test(ch)) {
+      if (inQuotes) {
+        current += ch;
+      } else {
+        if (current.length > 0) {
+          tokens.push(current);
+          current = '';
         }
-    } else if (Array.isArray(nilaiSaatIni)) {
-        if (nilaiSaatIni.length > 0 && typeof nilaiSaatIni[0] === 'object') {
-            for (const obj of nilaiSaatIni) {
-                for (const kunci in obj) {
-                    if (typeof obj[kunci] === 'number') {
-                        obj[kunci] += kenaikan;
-                        console.log(`Atribut '${kunci}' pada objek dinaikkan menjadi ${obj[kunci]}`);
-                    }
-                }
-            }
-        } else {
-            nilaiSaatIni.push(kenaikan);
-            console.log(`Elemen baru ${kenaikan} ditambahkan ke daftar atau array '${varName}'`);
-        }
-    } else if (typeof nilaiSaatIni === 'object' && nilaiSaatIni !== null) {
-        for (const kunci in nilaiSaatIni) {
-            if (typeof nilaiSaatIni[kunci] === 'number') {
-                nilaiSaatIni[kunci] += kenaikan;
-                console.log(`Atribut '${kunci}' pada objek '${varName}' dinaikkan menjadi ${nilaiSaatIni[kunci]}`);
-            }
-        }
+      }
     } else {
-        console.error(`Variabel '${varName}' bukan tipe data yang valid untuk 'mengangkat'`);
+      current += ch;
     }
+  }
+  if (current.length > 0) tokens.push(current);
+
+  return tokens;
 }
 
-async function penanganMengangkat(tokens, modules, context) {
-    naikkanNilai(tokens, context);
+function ambilDaftarJikaPerlu(token) {
+  if (token.startsWith(':') && token.endsWith(':')) {
+    const nama = token.slice(1, -1);
+    const nilai = memory[nama];
+    if (Array.isArray(nilai)) return nilai;
+  }
+  return null;
 }
 
-penanganMengangkat.isBlock = false;
-module.exports = { mengangkat: penanganMengangkat };
+function setTokenNilai(token, context, nilaiBaru) {
+    if (token.startsWith(':') && token.endsWith(':')) {
+        token = token.slice(1, -1);
+    }
+
+    const jalur = token.split(/[\.\[\]]+/).filter(Boolean);
+    let target = context.memory;
+
+    for (let i = 0; i < jalur.length - 1; i++) {
+        const bagian = isNaN(jalur[i]) ? jalur[i] : Number(jalur[i]);
+        if (!(bagian in target)) return false;
+        target = target[bagian];
+    }
+
+    const bagianAkhir = isNaN(jalur.at(-1)) ? jalur.at(-1) : Number(jalur.at(-1));
+    target[bagianAkhir] = nilaiBaru;
+    return true;
+}
+
+function menguraikanJalur(token) {
+    if (token.startsWith(':') && token.endsWith(':')) {
+        token = token.slice(1, -1);
+    }
+
+    return token.split(/[\.\[\]]+/).filter(Boolean).map(p =>
+        /^\d+$/.test(p) ? Number(p) : p
+    );
+}
+
+function setNilaiBersarang(obj, jalur, nilaiBaru) {
+    const bagian = jalur.split(/[\.\[\]]+/).filter(Boolean);
+    let saatIni = obj;
+    for (let i = 0; i < bagian.length - 1; i++) {
+        const kunci = isNaN(bagian[i]) ? bagian[i] : Number(bagian[i]);
+        if (!(kunci in saatIni)) return false;
+        saatIni = saatIni[kunci];
+        if (saatIni === undefined || saatIni === null) return false;
+    }
+
+    const terakhir = isNaN(bagian.at(-1)) ? bagian.at(-1) : Number(bagian.at(-1));
+    saatIni[terakhir] = nilaiBaru;
+    return true;
+}
+
+module.exports = { 
+    tokenizekedua,
+    ambilDaftarJikaPerlu,
+    setTokenNilai,
+    menguraikanJalur,
+    setNilaiBersarang
+};
