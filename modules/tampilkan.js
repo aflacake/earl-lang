@@ -136,6 +136,26 @@ function resolveToken(token, context = {}, modules = {}) {
         return memory[token] ?? token;
     }
 
+    let namaVar = token;
+
+    if (namaVar.startsWith(':') && namaVar.endsWith(':')) {
+        namaVar = namaVar.slice(1, -1);
+    }
+
+    const bagianPath = namaVar.split(/[\.\[\]]+/).filter(Boolean);
+
+    let nilai = context.memory;
+    for (const bagian of bagianPath) {
+        if (nilai === undefined || nilai === null) break;
+
+        if (!isNaN(bagian)) {
+            nilai = nilai[Number(bagian)];
+        } else {
+            nilai = nilai[bagian];
+        }
+    }
+    return nilai;
+
     if (!isNaN(token)) return Number(token);
 
     try {
