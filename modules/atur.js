@@ -52,14 +52,22 @@ function atur(tokens, modules, context) {
     console.error("Variabel harus dalam format :nama:");
     return;
   }
-  const nama = namaVariabel.slice(1, -1);
 
+  const nama = namaVariabel.slice(1, -1);
   let nilai = null;
 
   if (tokens[2] === '=') {
-    const ekspresi = tokens.slice(3).join(' ');
+    const ekspresi = tokens.slice(3).join(' ').trim();
 
-    if (ekspresi.trim().startsWith('[') && ekspresi.trim().endsWith(']')) {
+    if (ekspresi.startsWith('{') && ekspresi.endsWith('}')) {
+      try {
+        const denganKutip = ekspresi.replace(/([{,])\s*([a-zA-Z0-9_]+)\s*:/g, '$1"$2":');
+        nilai = JSON.parse(denganKutip);
+      } catch (e) {
+        console.error("Objek tidak valid:", e.message);
+        return;
+      }
+    } else if (ekspresi.startsWith('[') && ekspresi.endsWith(']')) {
       nilai = parseArrayString(ekspresi, context, modules);
     } else {
       let expr = ekspresi.replace(/:([a-zA-Z0-9_]+):/g, (_, v) => {
@@ -68,7 +76,6 @@ function atur(tokens, modules, context) {
         if (typeof val === 'string' && !isNaN(Number(val))) return Number(val);
         return val ?? 0;
       });
-
       nilai = evalMathExpression(expr);
     }
   } else if (tokens[2].startsWith('[')) {
