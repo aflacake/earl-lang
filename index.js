@@ -46,7 +46,7 @@ function bantuan() {
 
 const { parse } = require('./parser');
 
-async function runEarl(code, customModules = modules, parentContext) {
+async function runEarl(code, customModules = modules, parentContext, lewatiManual = false) {
     const lines = code.trim().split('\n');
     const ast = parse(code);
     const context = parentContext ?? {
@@ -56,6 +56,8 @@ async function runEarl(code, customModules = modules, parentContext) {
     };
     await laksanakanAST(ast, customModules, context);
     context.berhenti = false;
+
+    if (lewatiManual) return context;
 
     while (context.index < context.lines.length) {
         const line = context.lines[context.index].trim();
@@ -174,7 +176,7 @@ if (args.length > 0) {
             try {
                 contextGlobal.lines = [input];
                 contextGlobal.index = 0;
-                await runEarl(input, modules, contextGlobal);
+                await runEarl(input, modules, contextGlobal, true);
                 contextGlobal.berhenti = false;
             } catch (err) {
                 console.error('Kesalahan:', err.message);
