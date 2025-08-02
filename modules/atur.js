@@ -68,7 +68,12 @@ function atur(tokens, modules, context) {
         return;
       }
     } else if (ekspresi.startsWith('[') && ekspresi.endsWith(']')) {
-      nilai = parseArrayString(ekspresi, context, modules);
+      try {
+        const denganKutip = ekspresi.replace(/([{,])\s*([a-zA-Z0-9_]+)\s*:/g, '$1"$2":');
+        nilai = JSON.parse(denganKutip);
+      } catch (e) {
+        nilai = parseArrayString(ekspresi, context, modules);
+      }
     } else {
       let expr = ekspresi.replace(/:([a-zA-Z0-9_]+):/g, (_, v) => {
         const val = context.memory[v] ?? (context.lingkup?.[context.lingkup.length - 1] ?? {})[v];
