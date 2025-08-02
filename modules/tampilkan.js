@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const chalk = require('chalk');
-const { menguraikanJalur } = require('./utili');
+const { menguraikanJalur } = require('../utili');
 
 function evalMathExpression(expr) {
     try {
