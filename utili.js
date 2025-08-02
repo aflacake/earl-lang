@@ -58,6 +58,17 @@ function setTokenNilai(token, context, nilaiBaru) {
     return true;
 }
 
+function menguraikanJalur(token) {
+    if (token.startsWith(':') && token.endsWith(':')) {
+        token = token.slice(1, -1);
+    }
+
+    return token.split(/[\.\[\]]+/).filter(Boolean).map(p =>
+        /^\d+$/.test(p) ? Number(p) : p
+    );
+}
+
+
 module.exports = { 
     tokenizekedua,
     ambilDaftarJikaPerlu,
