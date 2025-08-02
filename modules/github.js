@@ -13,7 +13,7 @@ async function picuAlurKerja(tokens, modules,context) {
 
     try {
       await axios.post(
-       `https://api.github.com/repos/${repo}/actions/workflows/${workflow_id}/dispatches`,
+       `https://api.github.com/repos/${repo}/actions/workflows/${alurKerja_id}/dispatches`,
         { ref },
         {
           headers: {
