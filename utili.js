@@ -72,5 +72,6 @@ function menguraikanJalur(token) {
 module.exports = { 
     tokenizekedua,
     ambilDaftarJikaPerlu,
-    setTokenNilai
+    setTokenNilai,
+    menguraikanJalur
 };
