@@ -2,24 +2,6 @@
 
 const { resolveToken, evalMathExpression } = require('./tampilkan');
 
-function setNilaiBersarang(obj, jalur, nilaiBaru) {
-    const bagian = jalur.split(/[\.\[\]]+/).filter(Boolean);
-    let saatIni = obj;
-    for (let i = 0; i < bagian.length - 1; i++) {
-        const kunci = bagian[i];
-        saatIni = !isNaN(kunci) ? saatIni[Number(kunci)] : saatIni[kunci];
-        if (saatIni === undefined || saatIni === null) return false;
-    }
-
-    const terakhir = bagian[bagian.length - 1];
-    if (!isNaN(terakhir)) {
-        saatIni[Number(terakhir)] = nilaiBaru;
-    } else {
-        saatIni[terakhir] = nilaiBaru;
-    }
-    return true;
-}
-
 function naikkanNilai(tokens, context) {
     if (tokens.length < 3) {
         console.error("Perintah 'mengangkat' memerlukan dua argumen: variabel dan nilai.");
