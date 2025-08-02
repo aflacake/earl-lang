@@ -25,7 +25,7 @@ function naikkanNilai(tokens, context) {
         : tokenVar;
 
     if (typeof nilaiSaatIni === 'number') {
-        const berhasil = setNilaiBersarang(context.memory, tokenVar, nilaiSaatIni + kenaikan);
+        const berhasil = setNilaiBersarang(context.memory, varName, nilaiSaatIni + kenaikan);
         if (berhasil) {
             console.log(`Nilai '${varName}' dinaikkan menjadi ${nilaiSaatIni + kenaikan}`);
         } else {
