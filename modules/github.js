@@ -5,6 +5,7 @@ const axios = require('axios');
 async function picuAlurKerja(tokens, modules,context) {
     const [_, repo, alurKerja_id, ref = 'main'] = tokens;
     const token = process.env.GITHUB_TOKEN;
+    console.log("GITHUB_TOKEN =", token);
 
     if (!token || !repo || !alurKerja_id) {
         console.error("Gunakan format: picuAlurKerja pemilik/repo deploy.yml [ref]");
@@ -17,7 +18,7 @@ async function picuAlurKerja(tokens, modules,context) {
         { ref },
         {
           headers: {
-            'Authorization': 'Bearer ${token}',
+            'Authorization': `Bearer ${token}`,
             'Accept': 'application/vnd.github+json'
           }
         }
