@@ -68,18 +68,22 @@ function menguraikanJalur(token) {
     );
 }
 
-function setNilaiBersarang(obj, token, nilaiBaru) {
-    const bagian = menguraikanJalur(token);
-    let saatIni = obj;
-
-    for (let i = 0; i < bagian.length - 1; i++) {
-        const kunci = bagian[i];
-        saatIni = saatIni?.[kunci];
-        if (saatIni === undefined || saatIni === null) return false;
+function setNilaiBersarang(obj, jalurToken, nilaiBaru) {
+    if (jalurToken.startsWith(':') && jalurToken.endsWith(':')) {
+        jalurToken = jalurToken.slice(1, -1);
     }
 
-    const terakhir = bagian.at(-1);
-    saatIni[terakhir] = nilaiBaru;
+    const bagian = jalurToken.split(/[\.\[\]]+/).filter(Boolean);
+    let target = obj;
+    for (let i = 0; i < bagian.length - 1; i++) {
+        const kunci = isNaN(bagian[i]) ? bagian[i] : Number(bagian[i]);
+        if (target[kunci] === undefined) return false;
+        target = target[kunci];
+    }
+
+    const bagianTerakhir = bagian.at(-1);
+    const kunciTerakhir = isNaN(bagianTerakhir) ? bagianTerakhir : Number(bagianTerakhir);
+    target[kunciTerakhir] = nilaiBaru;
     return true;
 }
 
