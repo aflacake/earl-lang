@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const chalk = require('chalk');
+const { menguraikanJalur } = require('./utili');
 
 function evalMathExpression(expr) {
     try {
@@ -165,6 +166,15 @@ function resolveToken(token, context = {}, modules = {}) {
     } catch {
         return token;
     }
+
+    let bagianJalur = menguraikanJalur(token);
+    let nilai = context.memory;
+
+    for (const bagian of bagianJalur) {
+        if (nilai === undefined || nilai === null) break;
+        nilai = typeof bagian === 'number' ? nilai[bagian] : nilai[bagian];
+    }
+    return nilai;
 }
 
 function formatValue(val, verbose = false) {
