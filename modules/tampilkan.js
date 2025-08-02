@@ -168,13 +168,13 @@ function resolveToken(token, context = {}, modules = {}) {
     }
 
     let bagianJalur = menguraikanJalur(token);
-    let nilai = context.memory;
+    let nilaiJalur = context.memory;
 
     for (const bagian of bagianJalur) {
-        if (nilai === undefined || nilai === null) break;
-        nilai = typeof bagian === 'number' ? nilai[bagian] : nilai[bagian];
+        if (nilaiJalur === undefined || nilaiJalur === null) break;
+        nilaiJalur = typeof bagian === 'number' ? nilai[bagian] : nilai[bagian];
     }
-    return nilai;
+    return nilaiJalur;
 }
 
 function formatValue(val, verbose = false) {
