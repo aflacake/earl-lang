@@ -1,6 +1,7 @@
 // modules/mengangkat.js
 
 const { resolveToken, evalMathExpression } = require('./tampilkan');
+const { setNilaiBersarang } = require('./utili');
 
 function naikkanNilai(tokens, context) {
     if (tokens.length < 3) {
