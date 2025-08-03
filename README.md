@@ -66,7 +66,7 @@ npm link
 2. Tambahkan folder tersebut ke PATH:
    - Tekan `Win + R`, ketik _Edit the system environment variables_ lalu _Enter_
    - Tab _**Advanced**_ > _Environment Variables_
-   - Dibagian _User variables_, pilih Path lalu
+   - Dibagian _User variables_, pilih _Path_ lalu
    - **New** > masukkan
      > Misalnya di C:\Users\KAMU\earl
    - **OK** dan restart terminal
@@ -84,6 +84,7 @@ Dengan menjalankan folder langsung atau saat ini:
 ./earl contoh.earl
 ```
 atau
+
 Berikan hak akses eksekusi:
 ```bash
 chmod +x bin/earl
