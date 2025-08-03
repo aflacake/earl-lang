@@ -13,16 +13,27 @@ function naikkanNilai(tokens, context) {
     const ekspresiKenaikan = tokens.slice(2).join(' ');
 
     const nilaiSaatIni = resolveToken(tokenVar, context);
+
+    if (typeof nilaiSaatIni === 'string' && nilaiSaatIni.startsWith('Kesalahan:')) {
+        console.error(nilaiSaatIni);
+        return;
+    }
+
     const kenaikan = evalMathExpression(ekspresiKenaikan);
 
-    if (isNaN(kenaikan)) {
-        console.error(`Nilai yang akan ditambahkan (${ekspresiKenaikan}) tidak valid.`);
+    if (typeof kenaikan !== 'number' || isNaN(kenaikan)) {
+        console.error(`Nilai kenaikan '${ekspresiKenaikan}' tidak valid.`);
         return;
     }
 
     const varName = tokenVar.startsWith(':') && tokenVar.endsWith(':')
         ? tokenVar.slice(1, -1)
         : tokenVar;
+
+    if (typeof nilaiSaatIni !== 'number' && !Array.isArray(nilaiSaatIni) && (typeof nilaiSaatIni !== 'object' || nilaiSaatIni === null)) {
+        console.error(`Variabel '${varName}' bukan tipe data yang valid untuk 'mengangkat'`);
+        return;
+    }
 
     if (typeof nilaiSaatIni === 'number') {
         const berhasil = setNilaiBersarang(context.memory, varName, nilaiSaatIni + kenaikan);
