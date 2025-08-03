@@ -121,6 +121,16 @@ function resolveToken(token, context = {}, modules = {}) {
         return memory[varName] ?? cariDiLingkup(varName) ?? `Token '${token}' tidak ditemukan.`;
     }
 
+    const tokenMatchObjAttr = token.match(/^:([a-zA-Z_][\w]*)\.([a-zA-Z_][\w]*):$/);
+    if (tokenMatchObjAttr) {
+        const [, objName, attr] = tokenMatchObjAttr;
+        const obj = memory[objName] ?? cariDiLingkup(objName);
+        if (obj && typeof obj === 'object') {
+            return attr in obj ? obj[attr] : `Error: Atribut '${attr}' tidak ditemukan di objek '${objName}'`;
+        }
+        return `Error: '${objName}' bukan objek yang valid atau tidak ditemukan.`;
+    }
+
     if (token.includes('.')) {
         const [instanceName, attrName] = token.split('.');
         const instance = memory[instanceName] ?? cariDiLingkup(instanceName);
