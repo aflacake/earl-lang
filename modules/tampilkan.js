@@ -181,7 +181,10 @@ function formatValue(val, verbose = false) {
     if (val === undefined) return chalk.gray('[undefined]');
     if (val === null) return chalk.gray('[null]');
     if (typeof val === 'number') return chalk.cyan(val);
-    if (typeof val === 'string') return chalk.green(`"${val}"`);
+    if (typeof val === 'string') {
+        if (val.startsWith('"') && val.endsWith('"')) return chalk.green(val);
+        return chalk.green(`"${val}"`);
+    }
     if (typeof val === 'boolean') return chalk.yellow(val);
     if (Array.isArray(val)) {
         return verbose ? chalk.magenta(JSON.stringify(val, null, 2)) : chalk.magenta(val.join(' '));
