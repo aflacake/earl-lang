@@ -51,6 +51,10 @@ node index.js
   ```bash
   npm install axios
   ```
+- Memungkinkan memasang Electron bisa bikin dan kontrol jendela aplikasi desktop dari skrip.
+  ```bash
+  npm install electron
+  ```
 
 ## Dengan CLI
 ### Pengguna Windows
