@@ -8,13 +8,19 @@ async function buatJendela(url) {
   if (!app.isReady()) {
     await app.whenReady();
   }
+
   jendela = new BrowserWindow({
     width: 800,
     height: 600,
+    show: false,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
     }
+  });
+
+  jendela.once('ready-to-show', () => {
+    jendela.show();
   });
   await jendela.loadURL(url);
 }
