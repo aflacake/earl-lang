@@ -55,6 +55,9 @@ node index.js
   ```bash
   npm install electron
   ```
+  ```bash
+  npm install electron chalk
+  ```
 
 ## Dengan CLI
 ### Pengguna Windows
