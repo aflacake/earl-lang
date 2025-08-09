@@ -28,7 +28,7 @@ async function buatJendela(url) {
   ipcMain.on('pesan-dari-jendela', (event, arg) => {
     console.log('Dari jendela:', arg);
     if (jendela && jendela.webContents) {
-      event.reply('balasan-dari-main', `Pesan diterima: ${arg}`);
+      event.reply('balasan-dari-utama', `Pesan diterima: ${arg}`);
     }
   });
 }
@@ -43,7 +43,7 @@ async function apg(tokens, modules, context) {
     } else if (perintah === 'kirim') {
       if (jendela) {
         const pesan = tokens.slice(2).join(' ');
-        jendela.webContents.send('pesan-dari-main', pesan);
+        jendela.webContents.send('pesan-dari-utama', pesan);
         context.return = `Pesan dikirim ke jendela: ${pesan}`;
       } else {
         context.return = 'Tidak ada jendela yang terbuka';
