@@ -1,6 +1,6 @@
 // modules/apg.js
 
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 
 let jendela;
 
@@ -22,7 +22,15 @@ async function buatJendela(url) {
   jendela.once('ready-to-show', () => {
     jendela.show();
   });
+
   await jendela.loadURL(url);
+
+  ipcMain.on('pesan-dari-jendela', (event, arg) => {
+    console.log('Dari jendela:', arg);
+    if (jendela && jendela.webContents) {
+      event.reply('balasan-dari-main', `Pesan diterima: ${arg}`);
+    }
+  });
 }
 
 async function apg(tokens, modules, context) {
@@ -32,6 +40,14 @@ async function apg(tokens, modules, context) {
       const url = tokens[2] || 'https://example.com';
       await buatJendela(url);
       context.return = 'Jendela dibuka';
+    } else if (perintah === 'kirim') {
+      if (jendela) {
+        const pesan = tokens.slice(2).join(' ');
+        jendela.webContents.send('pesan-dari-main', pesan);
+        context.return = `Pesan dikirim ke jendela: ${pesan}`;
+      } else {
+        context.return = 'Tidak ada jendela yang terbuka';
+      }
     } else if (perintah === 'tutup') {
       if (jendela) {
         jendela.close();
@@ -47,5 +63,7 @@ async function apg(tokens, modules, context) {
     context.return = `Kesalahan: ${err.message}`;
   }
 }
+
+apg.isBlock = false;
 
 module.exports = { apg };
