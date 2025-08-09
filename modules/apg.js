@@ -1,7 +1,7 @@
 // modules/apg.js
 
 const { app, BrowserWindow, ipcMain } = require('electron');
-const path = require('path');
+const jalur = require('path');
 
 let jendela;
 
@@ -26,7 +26,7 @@ async function buatJendela(url) {
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
-      preload: path.join(__dirname, 'pramuat.js'),
+      preload: jalur.join(__dirname, 'pramuat.js'),
     }
   });
 
