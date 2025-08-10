@@ -26,7 +26,7 @@ async function buatJendela(url, opsi = {}, id = 'default') {
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
-      preload: jalur.join(__dirname, 'pramuat.js'),
+      preload: jalur.resolve(__dirname, 'preload/pramuat.js'),
     }
   }, opsi);
 
