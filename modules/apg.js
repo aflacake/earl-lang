@@ -89,10 +89,10 @@ async function apg(tokens, modules, context) {
 
       const opsi = {};
       tokens.forEach(t => {
-        if (t.startsWith(':width=')) opsi.width = parseInt(t.slice(7));
-        else if (t.startsWith(':height=')) opsi.height = parseInt(t.slice(8));
-        else if (t.startsWith(':title=')) opsi.title = t.slice(7);
-        else if (t.startsWith(':fullscreen=')) opsi.fullscreen = t.slice(12) === 'true';
+        if (t.startsWith(':lebar=')) opsi.width = parseInt(t.slice(7));
+        else if (t.startsWith(':tinggi=')) opsi.height = parseInt(t.slice(8));
+        else if (t.startsWith(':judul=')) opsi.title = t.slice(7);
+        else if (t.startsWith(':layarpenuh=')) opsi.fullscreen = t.slice(12) === 'true';
       });
 
       await buatJendela(url, opsi, id);
