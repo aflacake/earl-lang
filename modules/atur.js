@@ -1,6 +1,7 @@
 // modules/atur.js
 
 const { resolveToken, evalMathExpression } = require('./tampilkan');
+const { validasiIndeks, validasiNumerik } = require('../utili');
 
 function parseArrayString(arrStr, context, modules) {
   arrStr = arrStr.trim();
@@ -82,6 +83,10 @@ function atur(tokens, modules, context) {
         return val ?? 0;
       });
       nilai = evalMathExpression(expr);
+      if (!validasiNumerik(nilai)) {
+        console.error('Nilai numerik berada di luar batas yang diizinkan.');
+        return;
+      }
     }
   } else if (tokens[2].startsWith('[')) {
     const arrString = tokens.slice(2).join(' ');
