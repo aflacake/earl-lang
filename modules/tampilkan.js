@@ -29,6 +29,10 @@ function aksesBersarang(arr, indexes) {
 function resolveToken(token, context = {}, modules = {}) {
     const { memory = {}, lingkup = [{}], ini = null } = context;
 
+    if (isNaN(token)) {
+        return Number(token);
+    }
+
     if (token.startsWith('"') && token.endsWith('"')) {
         return token.slice(1, -1);
     }
