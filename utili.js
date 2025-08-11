@@ -87,10 +87,26 @@ function setNilaiBersarang(obj, jalurToken, nilaiBaru) {
     return true;
 }
 
+function validasiIndeks(daft, indeks) {
+    if (!Array.isArray(daft)) throw new Error('Parameter pertama harus daftar atau array.');
+    if (typeof indeks !== 'number') throw new Error('Indeks harus berupa angka.');
+    if (indeks < 0) return false;
+    if (indeks >= daft.length) return false;
+    return true;
+}
+
+function validasiNumerik(nilai, min = Number.MIN_SAFE_INTEGER, maks = Number.MAX_SAFE_INTEGER) {
+    if (typeof nilai !== 'number') throw new Error('Nilai harus numerik.');
+    if (nilai < min || nilai > maks) return false;
+    return true;
+}
+
 module.exports = { 
     tokenizekedua,
     ambilDaftarJikaPerlu,
     setTokenNilai,
     menguraikanJalur,
-    setNilaiBersarang
+    setNilaiBersarang,
+    validasiIndeks,
+    validasiNumberik
 };
