@@ -47,7 +47,7 @@ async function buatJendela(url, opsi = {}, id = 'default') {
   return win;
 }
 
-if (!ipcMain.listenerCount('pesan-dari-jendela')) {
+if (ipcMain && !ipcMain.listenerCount('pesan-dari-jendela')) {
   ipcMain.on('pesan-dari-jendela', (event, arg) => {
     console.log('Dari jendela:', arg);
     const { pesan, saluranBalasan } = arg;
