@@ -36,6 +36,11 @@ function parseArrayString(arrStr, context, modules) {
     if (token.startsWith('"') && token.endsWith('"')) {
       return token.slice(1, -1);
     }
+
+    if (!isNaN(token)) {
+      return Number(token);
+    }
+
     return resolveToken(token, context, modules);
   });
 }
