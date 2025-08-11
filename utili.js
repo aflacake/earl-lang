@@ -108,5 +108,5 @@ module.exports = {
     menguraikanJalur,
     setNilaiBersarang,
     validasiIndeks,
-    validasiNumberik
+    validasiNumerik
 };
