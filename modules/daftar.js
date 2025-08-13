@@ -2,6 +2,7 @@
 
 const { memory } = require('../memory.js');
 const { resolveToken } = require('./tampilkan');
+const { validasiIndeks, validasiNumerik } = require('../utili')
 
 async function daftar(tokens, modules, context) {
     const cmd = tokens[1];
@@ -51,9 +52,13 @@ async function daftar(tokens, modules, context) {
             console.error(`'${varName}' bukan daftar.`);
             return;
         }
-        memory[varName].pop();
-        console.log(`Elemen terakhir dari '${varName}' dihapus.`);
-        return;
+        if (memory[varName].length === 0) {
+            console.error(`Underflow: '${varName}' kosong, tidak bisa pop.`);
+            return;
+        }
+        const removed = memory[varName].pop();
+        console.log(`Elemen '${removed}' terakhir dari '${varName}' dihapus.`);
+        return; 
     }
 
     if (cmd === 'gabung') {
@@ -78,11 +83,11 @@ async function daftar(tokens, modules, context) {
 
         for (const idx of indexes) {
             if (!Array.isArray(current)) {
-                console.error(`Daftar bersarang tidak valid di '${varName}' pada index ${idx}.`);
+                console.error(`Daftar bersarang tidak valid di '${varName}' pada indeks ${idx}.`);
                 return;
             }
-            if (isNaN(idx) || idx < 0 || idx >= current.length) {
-                console.error(`Index '${idx}' tidak valid untuk daftar '${varName}'.`);
+            if (!validasiIndeks(current, idx)) {
+                console.error(`Indeks '${idx}' underflow atau overflow untuk daftar '${varName}'.`);
                 return;
             }
             current = current[idx];
@@ -102,14 +107,15 @@ async function daftar(tokens, modules, context) {
             return;
         }
 
-        if (isNaN(index) || index < 0 || index > memory[varName].length) {
-            console.error(`Index '${index}' tidak valid untuk daftar '${varName}'.`);
+        const panjang = memory[varName].length;
+        if (isNaN(index) || index < 0 || index > panjang) {
+            console.error(`Indeks '${index}' underflow atau overflow untuk daftar '${varName}'.`);
             return;
         }
 
         val = resolveValue(val);
         memory[varName].splice(index, 0, val);
-        console.log(`Nilai disisipkan ke index ${index} dalam daftar '${varName}'.`);
+        console.log(`Nilai disisipkan ke indeks ${index} dalam daftar '${varName}'.`);
         return;
     }
 
@@ -122,12 +128,12 @@ async function daftar(tokens, modules, context) {
             return;
         }
 
-        if (isNaN(index) || index < 0 || index >= memory[varName].length) {
-            console.error(`Index '${index}' tidak valid untuk daftar '${varName}'.`);
+        if (!validasiIndeks(memory[varName], index)) {
+            console.error(`Indeks '${index}' underflow atau overflow untuk daftar '${varName}'.`);
             return;
         }
         const removed = memory[varName].splice(index, 1);
-        console.log(`Elemen '${removed[0]}' di index ${index} telah dihapus dari '${varName}'.`);
+        console.log(`Elemen '${removed[0]}' di indeks ${index} telah dihapus dari '${varName}'.`);
         return;
     }
 
