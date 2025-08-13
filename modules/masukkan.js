@@ -3,6 +3,7 @@
 const { memory } = require('../memory.js');
 const readline = require('readline');
 const { resolveToken } = require('./tampilkan');
+const { validasiNumerik } = require('../utili');
 
 function masukkan(tokens) {
     return new Promise((resolve) => {
@@ -66,6 +67,13 @@ function masukkan(tokens) {
 
                 if (!isNaN(nilai)) {
                     nilai = Number(nilai);
+
+                    if (!validasiNumerik(nilai)) {
+                        console.error('Nilai numerik berada di luar batas yang diizinkan.');
+                        rl.close();
+                        return resolve();
+                    }
+
                     memory[varName] = nilai;
                     console.log(`${varName} disimpan sebagai angka.`);
                 } else if (typeof nilai === 'string') {
@@ -76,7 +84,7 @@ function masukkan(tokens) {
                         memory[varName] = nilai;
                         console.log(`${varName} disimpan sebagai teks valid.`);
                     } else {
-                        console.error(`Input untuk ${varName} tidak valid.`);
+                        console.error(`Masukkan untuk ${varName} tidak valid.`);
                     }
                 } else {
                     memory[varName] = nilai;
