@@ -3,6 +3,7 @@
 const fs = require('fs');
 const chalk = require('chalk');
 const { menguraikanJalur } = require('../utili');
+const { validasiNumerik } = require('../utili');
 
 function evalMathExpression(expr) {
     try {
@@ -65,16 +66,25 @@ function resolveToken(token, context = {}, modules = {}) {
         const attrName = objAttrMatch[2];
 
         if (objName === 'ini' && ini) {
-            if (attrName in ini) return ini[attrName];
-            return `Error: Atribut '${attrName}' tidak ditemukan di 'ini'.`;
+            if (attrName in ini) {
+                const val = ini[attrName];
+                if (typeof val === 'number' && !validasiNumerik(val)) {
+                    return `Kesalahan: Atribut 'ini.${attrName}' mengandung angka tidak valid: ${val}`;
+                }
+                return val;
+            }
+            return `Kesalahan: Atribut '${attrName}' tidak ditemukan di 'ini'.`;
         }
 
         const obj = memory[objName] ?? cariDiLingkup(objName);
         if (obj && typeof obj === 'object') {
-            if (attrName in obj) return obj[attrName];
-            return `Error: Atribut '${attrName}' tidak ditemukan di objek '${objName}'.`;
-        }
-        return `Error: '${objName}' bukan objek yang valid atau tidak ditemukan.`;
+            if (attrName in obj) {
+                const val = obj[attrName];
+                if (typeof val === 'number' && !validasiNumerik(val)) {
+                    return `Kesalahan: Atribut '${objName}.${attrName}' mengandung angka tidak valid: ${val}`;
+                }
+                return val;
+            }
     }
 
     const daftarBersarangMatch = token.match(/^:([^:\[\]]+)((\[\d+\])+):$/);
@@ -93,6 +103,9 @@ function resolveToken(token, context = {}, modules = {}) {
             if (idx < 0 || idx >= current.length || isNaN(idx)) return undefined;
             current = current[idx];
         }
+        if (typeof current === 'number' && !validasiNumerik(current)) {
+            return `Kesalahan: Nilai array bersarang '${varName}' mengandung angka tidak valid: ${current}`;
+        }
         return current;
     }
 
@@ -106,7 +119,12 @@ function resolveToken(token, context = {}, modules = {}) {
             return `Error: '${varName}' bukan array atau indeks tidak valid.`;
         }
 
-        return arr[index];
+        const val = arr[index];
+        if (typeof val === 'number' && !validasiNumerik(val)) {
+            return `Kesalahan: Nilai ${varName}[${index}] mengandung angka tidak valid: ${val}`;
+        }
+        return val;
+
     }
 
     const diktaMatch = token.match(/^:([^:\[\]]+):([^:\[\]]+)$/);
@@ -169,6 +187,10 @@ function resolveToken(token, context = {}, modules = {}) {
             nilai = nilai[bagian];
         }
     }
+    if (typeof nilai === 'number' && !validasiNumerik(nilai)) {
+        return `Kesalahan: Nilai '${token}' mengandung angka tidak valid ${nilai}`;
+    }
+
     return nilai;
 
     if (!isNaN(token)) return Number(token);
