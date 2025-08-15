@@ -85,6 +85,9 @@ function resolveToken(token, context = {}, modules = {}) {
                 }
                 return val;
             }
+            return `Kesalahan: Atribut '${attrName}' tidak ditemukan di objek '${objName}'.`;
+        }
+        return `Kesalahan: '${objName}' bukan objek yang valid atau tidak ditemukan.`;
     }
 
     const daftarBersarangMatch = token.match(/^:([^:\[\]]+)((\[\d+\])+):$/);
