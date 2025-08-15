@@ -2,6 +2,7 @@
 
 const { memory } = require('../memory');
 const { runEarl } = require('../pemroses');
+const { validasiIndeks, validasiNumerik } = require('../utili');
 
 async function panggilMetode(tokens, modules, context) {
     const namaInstance = tokens[1].replace(/:/g, '');
@@ -17,20 +18,33 @@ async function panggilMetode(tokens, modules, context) {
     const metodeBody = kelas.metode[namaMethod];
 
     if (!metodeBody) {
-        console.error(`Metode '${namaMethod}' tidak ditemukan di kelas '${instance.__tipe}'.`)
+        console.error(`Metode '${namaMethod}' tidak ditemukan di kelas '${instance.__tipe}'.`);
         return;
     }
 
-    const kode = metodeBody;
+    for (const [key, val] of Object.entries(instance)) {
+        if (typeof val === 'number' && !validasiNumerik(val)) {
+            console.warn(`Nilai atribut '${key}' = ${val} tidak valid, metode '${namaMethod}' tidak akan dijalankan.`);
+            return;
+        }
+        if (Array.isArray(val)) {
+            val.forEach((v, idx) => {
+                if (typeof v === 'number' && !validasiNumerik(v)) {
+                    console.warn(`Indeks ${idx} dari atribut array '${key}' bernilai ${v} tidak valid, metode '${namaMethod}' tidak akan dijalankan.`);
+                    return;
+                }
+            });
+        }
+    }
 
     const subContext = {
         index: 0,
-        lines: [kode],
+        lines: [ metodeBody ],
         lingkup: [{ ini: instance }],
         dariMetode: true
     };
 
-    await runEarl(kode, modules, subContext);
+    await runEarl(metodeBody, modules, subContext);
 }
 
 module.exports = { panggilMetode };
