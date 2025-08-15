@@ -1,6 +1,32 @@
 // modules/kelas.js
 
 const { memory } = require('../memory.js');
+const { setTokenNilai, validasiIndeks, validasiNumerik } = require('../utili');
+
+async function setAtributContoh(namaKelas, jalurToken, nilaiBaru) {
+    const kelas = memory[namaKelas];
+    if (!kelas) {
+        console.warn(`Kelas '${namaKelas}' tidak ditemukan.`);
+        return false;
+    }
+
+    if (jalurToken.length > 1) {
+        const indeks = Number(jalurToken[1]);
+        if (!validasiIndeks(kelas.instance[jalurToken[0]], indeks)) {
+            console.warn(`Indeks ${indeks} di luar batas atribut '${jalurToken[0]}' pada kelas '${namaKelas}'.`);
+            return false;
+        }
+    }
+
+    if (typeof nilaiBaru === 'number') {
+        if (!validasiNumerik(nilaiBaru, 0, 100)) {
+            console.warn(`Nilai ${nilaiBaru} di luar batas yang diizinkan.`);
+            return false;
+        }
+    }
+
+    return setTokenNilai(jalurToken, kelas.instance, nilaiBaru);
+}
 
 async function ambilAtributMetodeRekursif(namaKelas) {
     if (!memory[namaKelas]) return { atribut: [], instance: {}, metode: {} };
@@ -70,9 +96,22 @@ async function kelas(tokens, modules, context) {
         const { type, tokens: subTokens, body: subBody } = body[i];
 
         if (type === 'atribut') {
-            // Menambahkan atribut ke kelas
             const atributNames = subTokens.slice(1);
-            atribut.push(...atributNames);
+
+            for (const attr of atributNames) {
+                if (/^\d+$/.test(attr)) {
+                    const idks = Number (attr);
+                    if (!validasiIndeks(atribut, idks)) {
+                        console.warn(`Indeks atribut '${idks}' diluar batas.`);
+                        continue;
+                    }
+                }
+                atribut.push(attr);
+
+                if (!(attr in instance)) {
+                    instance[attr] = null;
+                }
+            }
         }
 
         else if (type === 'metode') {
@@ -100,4 +139,4 @@ async function kelas(tokens, modules, context) {
 }
 
 kelas.isBlock = true;
-module.exports = { kelas };
+module.exports = { kelas, setAtributContoh };
