@@ -2,6 +2,7 @@
 
 const { resolveToken, evalMathExpression } = require('./tampilkan');
 const { validasiIndeks, validasiNumerik } = require('../utili');
+const { setAtributContoh } = require('./kelas');
 
 function parseArrayString(arrStr, context, modules) {
   arrStr = arrStr.trim();
@@ -36,16 +37,14 @@ function parseArrayString(arrStr, context, modules) {
     if (token.startsWith('"') && token.endsWith('"')) {
       return token.slice(1, -1);
     }
-
     if (!isNaN(token)) {
       return Number(token);
     }
-
     return resolveToken(token, context, modules);
   });
 }
 
-function atur(tokens, modules, context) {
+async function atur(tokens, modules, context) {
   if (!context.memory) context.memory = {};
 
   if (tokens.length < 3) {
@@ -54,8 +53,22 @@ function atur(tokens, modules, context) {
   }
 
   const namaVariabel = tokens[1];
+
   if (!namaVariabel.startsWith(':') || !namaVariabel.endsWith(':')) {
     console.error("Variabel harus dalam format :nama:");
+    return;
+  }
+
+  const objekAttrMatch = namaVariabel.match(/^:([a-zA-Z0-9_]+)\.([a-zA-Z0-9_]+):$/);
+  if (objekAttrMatch && tokens[2] === '=') {
+    const [, namaKelas, namaAttr] = objekAttrMatch;
+    const ekspresi = tokens.slice(3).join(' ').trim();
+    const nilai = evalMathExpression(ekspresi);
+
+    const berhasil = await setAtributContoh(namaKelas, [namaAttr], nilai);
+    if (berhasil) {
+      console.log(`Atribut '${namaAttr}' pada '${namaKelas}' diatur ke`, nilai);
+    }
     return;
   }
 
