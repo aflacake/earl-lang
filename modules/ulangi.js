@@ -54,7 +54,7 @@ async function ulangi(tokens, modules, context) {
         const bodySalinan = JSON.parse(JSON.stringify(context.currentNode?.body));
 
         for (let i = 0; i < jumlah; i++) {
-            context.lingkup.push({ index: i });
+            context.lingkup.push({ indeks: i });
 
             context.berhenti = false;
             context.lanjutkan = false;
