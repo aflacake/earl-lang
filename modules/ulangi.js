@@ -58,7 +58,7 @@ async function ulangi(tokens, modules, context) {
 
         try {
             if (!validasiNumerik(count)) {
-                console.error(`Nilai perulangan berada di luar batas yang diizinkan (underflow/overflow): ${count}`);
+                console.error(`Nilai perulangan berada di luar batas yang diizinkan (underflow atau overflow): ${count}`);
                 return;
             }
         } catch (err) {
