@@ -30,7 +30,7 @@ function aksesBersarang(arr, indexes) {
 function resolveToken(token, context = {}, modules = {}) {
     const { memory = {}, lingkup = [{}], ini = null } = context;
 
-    if (isNaN(token)) {
+    if (!isNaN(token)) {
         return Number(token);
     }
 
@@ -195,8 +195,6 @@ function resolveToken(token, context = {}, modules = {}) {
     }
 
     return nilai;
-
-    if (!isNaN(token)) return Number(token);
 
     try {
         const disanitasi = token.replace(/[^0-9+\-*/%.() ]/g, '');
