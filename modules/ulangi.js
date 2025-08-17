@@ -2,6 +2,7 @@
 
 const { resolveToken } = require('./tampilkan');
 const { laksanakanAST } = require('../pelaksana-ast');
+const { validasiNumerik } = require('../utili');
 
 async function ulangi(tokens, modules, context) {
     if (tokens[1] === 'setiap' && tokens[2] === 'dari') {
@@ -11,24 +12,25 @@ async function ulangi(tokens, modules, context) {
         }
         const list = resolveToken(sumber, context, modules);
 
-        if (sumber.includes('.')) {
-            const [instanceName, attr] = sumber.split('.');
-            const instance = context.lingkup[0][instanceName];
-
-            if (instance && instance.__tipe) {
-                const kelas = context.lingkup[0][instance.__tipe];
-                if (!kelas || kelas.__tipe !== 'kelas') {
-                    console.error(`Tipe '${instance.__tipe}' bukan kelas yang valid.`);
-                    return;
-                }
-            }
-        }
-            
         if (!Array.isArray(list)) {
             console.error(`Sumber '${sumber}' bukan daftar atau array.`);
             return;
         }
-       
+
+        for (const item of list) {
+            if (typeof item === 'number') {
+                try {
+                    if (!validasiNumerik(item)) {
+                        console.error(`Item perulangan mengandung angka tidak valid (underflow/overflow): ${item}`);
+                        return;
+                    }
+                } catch (err) {
+                    console.error(`Item perulangan bukan angka yang valid: ${item}`);
+                    return;
+                }
+            }
+        }
+
         for (const item of list) {
             context.lingkup.push({ item });
             context.berhenti = false;
@@ -45,10 +47,22 @@ async function ulangi(tokens, modules, context) {
         }
 
     } else {
-        const count = parseInt(resolveToken(tokens[1], context, modules));
-
-        if (isNaN(count)) {
+        let count;
+        try {
+            count = parseInt(resolveToken(tokens[1], context, modules));
+            if (isNaN(count)) throw new Error();
+        } catch {
             console.error(`Nilai perulangan tidak valid: ${tokens[1]}`);
+            return;
+        }
+
+        try {
+            if (!validasiNumerik(count)) {
+                console.error(`Nilai perulangan berada di luar batas yang diizinkan (underflow/overflow): ${count}`);
+                return;
+            }
+        } catch (err) {
+            console.error(`Nilai perulangan bukan angka yang valid: ${count}`);
             return;
         }
 
