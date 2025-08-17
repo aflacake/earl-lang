@@ -35,6 +35,8 @@ async function ulangi(tokens, modules, context) {
             if (context.berhenti) break;
             if (context.lanjutkan) continue;
         }
+        context.berhenti = false;
+        context.lanjutkan = false;
     } else {
         const jumlahRaw = resolveToken(tokens[1], context, modules);
         const jumlah = Number(jumlahRaw);
@@ -66,6 +68,8 @@ async function ulangi(tokens, modules, context) {
             if (context.berhenti) break;
             if (context.lanjutkan) continue;
         }
+        context.berhenti = false;
+        context.lanjutkan = false;
     }
 }
 
