@@ -40,7 +40,7 @@ function resolveToken(token, context = {}, modules = {}) {
 
     function cariDiLingkup(nama) {
         for (let i = lingkup.length - 1; i >= 0; i--) {
-            if (nama in lingkup[i]) return lingkup[i][nama];
+            if (lingkup[i].hasOwnProperty(nama)) return lingkup[i][nama];
         }
         return undefined;
     }
