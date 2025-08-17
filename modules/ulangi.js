@@ -6,30 +6,28 @@ const { laksanakanAST } = require('../pelaksana-ast');
 
 async function ulangi(tokens, modules, context) {
     if (tokens[1] === 'setiap' && tokens[2] === 'dari') {
-        let sumberToken = tokens[3];
-        if (sumberToken.startsWith(':') && sumberToken.endsWith(':')) {
-            sumberToken = sumberToken.slice(1, -1);
-        }
-
-        const list = resolveToken(tokens[3], context, modules);
+        const sumberToken = tokens[3];
+        const list = resolveToken(sumberToken, context, modules);
 
         if (!Array.isArray(list)) {
             console.error(`Sumber '${sumberToken}' bukan daftar atau array.`);
             return;
         }
 
-        for (const item of list) {
-            if (typeof item === 'number' && !validasiNumerik(item)) {
-                console.error(`Item perulangan mengandung angka tidak valid (underflow atau overflow): ${item}`);
+        const bodySalinan = JSON.parse(JSON.stringify(context.currentNode?.body));
+
+        for (const barang of list) {
+            if (typeof barang === 'number' && !validasiNumerik(barang)) {
+                console.error(`Item perulangan mengandung angka tidak valid (underflow atau overflow): ${barang}`);
                 return;
             }
 
-            context.lingkup.push({ item });
+            context.lingkup.push({ barang });
             context.berhenti = false;
             context.lanjutkan = false;
 
-            if (context.currentNode?.body) {
-                await laksanakanAST(context.currentNode.body, modules, context);
+            if (bodySalinan) {
+                await laksanakanAST(bodySalinan, modules, context);
             }
 
             context.lingkup.pop();
@@ -39,25 +37,28 @@ async function ulangi(tokens, modules, context) {
         }
     } else {
         const jumlahRaw = resolveToken(tokens[1], context, modules);
-        const jumlah = parseInt(jumlahRaw);
+        const jumlah = Number(jumlahRaw);
 
-        if (isNaN(jumlah)) {
-            console.error(`Nilai perulangan tidak valid: ${tokens[1]}`);
+        if (!Number.isInteger(jumlah)) {
+            console.error(`Nilai perulangan tidak valid: '${jumlahRaw}'`);
             return;
         }
 
         if (!validasiNumerik(jumlah, 0)) {
-            console.error(`Nilai perulangan berada di luar batas yang diizinkan (underflow atau overflow): ${jumlah}`);
+            console.error(`Nilai perulangan berada di luar batas (underflow atau overflow): ${jumlah}`);
             return;
         }
 
+        const bodySalinan = JSON.parse(JSON.stringify(context.currentNode?.body));
+
         for (let i = 0; i < jumlah; i++) {
             context.lingkup.push({ index: i });
+
             context.berhenti = false;
             context.lanjutkan = false;
 
-            if (context.currentNode?.body) {
-                await laksanakanAST(context.currentNode.body, modules, context);
+            if (bodySalinan) {
+                await laksanakanAST(bodySalinan, modules, context);
             }
 
             context.lingkup.pop();
