@@ -258,7 +258,7 @@ function tampilkan(tokens, modules, context) {
     }
 
     function resolveNestedKey(key, context) {
-        let value = memory[key]; // Cek di memory
+        let value = memory[key];
 
         if (!value) {
             for (let scope of context.lingkup) {
@@ -305,6 +305,17 @@ function tampilkan(tokens, modules, context) {
         console.log(chalk.gray(`Output disimpan ke file: ${fileKeluaran}`));
     } else {
         console.log(keluaran);
+    }
+
+    function formatValue(value) {
+        if (typeof value === 'object') {
+            try {
+                return JSON.stringify(value);
+            } catch {
+                return '[Objek tidak bisa ditampilkan]';
+            }
+        }
+        return String(value);
     }
 }
 
