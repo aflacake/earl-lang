@@ -1,37 +1,29 @@
 // modules/ulangi.js
 
 const { resolveToken } = require('./tampilkan');
-const { laksanakanAST } = require('../pelaksana-ast');
 const { validasiNumerik } = require('../utili');
+const { laksanakanAST } = require('../pelaksana-ast');
 
 async function ulangi(tokens, modules, context) {
     if (tokens[1] === 'setiap' && tokens[2] === 'dari') {
-        let sumber = tokens[3];
-        if (sumber.startsWith(':') && sumber.endsWith(':')) {
-            sumber = sumber.slice(1, -1);
+        let sumberToken = tokens[3];
+        if (sumberToken.startsWith(':') && sumberToken.endsWith(':')) {
+            sumberToken = sumberToken.slice(1, -1);
         }
-        const list = resolveToken(sumber, context, modules);
+
+        const list = resolveToken(tokens[3], context, modules);
 
         if (!Array.isArray(list)) {
-            console.error(`Sumber '${sumber}' bukan daftar atau array.`);
+            console.error(`Sumber '${sumberToken}' bukan daftar atau array.`);
             return;
         }
 
         for (const item of list) {
-            if (typeof item === 'number') {
-                try {
-                    if (!validasiNumerik(item)) {
-                        console.error(`Item perulangan mengandung angka tidak valid (underflow/overflow): ${item}`);
-                        return;
-                    }
-                } catch (err) {
-                    console.error(`Item perulangan bukan angka yang valid: ${item}`);
-                    return;
-                }
+            if (typeof item === 'number' && !validasiNumerik(item)) {
+                console.error(`Item perulangan mengandung angka tidak valid (underflow atau overflow): ${item}`);
+                return;
             }
-        }
 
-        for (const item of list) {
             context.lingkup.push({ item });
             context.berhenti = false;
             context.lanjutkan = false;
@@ -45,30 +37,22 @@ async function ulangi(tokens, modules, context) {
             if (context.berhenti) break;
             if (context.lanjutkan) continue;
         }
-
     } else {
-        let count;
-        try {
-            count = parseInt(resolveToken(tokens[1], context, modules));
-            if (isNaN(count)) throw new Error();
-        } catch {
+        const jumlahRaw = resolveToken(tokens[1], context, modules);
+        const jumlah = parseInt(jumlahRaw);
+
+        if (isNaN(jumlah)) {
             console.error(`Nilai perulangan tidak valid: ${tokens[1]}`);
             return;
         }
 
-        try {
-            if (!validasiNumerik(count)) {
-                console.error(`Nilai perulangan berada di luar batas yang diizinkan (underflow atau overflow): ${count}`);
-                return;
-            }
-        } catch (err) {
-            console.error(`Nilai perulangan bukan angka yang valid: ${count}`);
+        if (!validasiNumerik(jumlah, 0)) {
+            console.error(`Nilai perulangan berada di luar batas yang diizinkan (underflow atau overflow): ${jumlah}`);
             return;
         }
 
-        for (let i = 0; i < count; i++) {
+        for (let i = 0; i < jumlah; i++) {
             context.lingkup.push({ index: i });
-
             context.berhenti = false;
             context.lanjutkan = false;
 
