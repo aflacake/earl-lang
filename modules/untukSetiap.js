@@ -1,10 +1,11 @@
 // modules/untukSetiap.js
 
 const { resolveToken } = require('./tampilkan');
+const { validasiNumerik } = require('../utili');
 
 async function untukSetiap(tokens, modules, context) {
   if (tokens.length < 4 || tokens[2] !== 'setiap') {
-    console.error("Format salah. Gunakan: untukSetiap koleksi setiap :item:");
+    console.error("Format salah. Gunakan: untukSetiap koleksi setiap :barang:");
     return;
   }
 
@@ -32,8 +33,13 @@ async function untukSetiap(tokens, modules, context) {
   const lingkupAsli = context.lingkup || [{}];
   context.lingkup = [...lingkupAsli];
 
-  for (const item of koleksi) {
-    context.lingkup.push({ [namaVariabel]: item });
+  for (const barang of koleksi) {
+    if (typeof barang === 'number' && !validasiNumerik(barang)) {
+      console.warn(`Barang '${barang}' di koleksi '${koleksiToken}' tidak valid (underflow atau overflow). Lewati barang ini.`);
+      continue;
+    }
+
+    context.lingkup.push({ [namaVariabel]: barang });
 
     for (const node of context.currentNode.body) {
       const handler = modules[node.type];
@@ -59,4 +65,3 @@ async function untukSetiap(tokens, modules, context) {
 untukSetiap.isBlock = true;
 
 module.exports = { untukSetiap };
-
