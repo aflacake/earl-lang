@@ -21,7 +21,11 @@ function mendeteksiUnderflowOverflow(nilai) {
 }
 
 function tokenizeExpression(expr) {
-    return expr.match(/(?:sqrt|abs|sin|cos|tan)\(|\d+(\.\d+)?|\w+|[()+\-*/^%]/g);
+  return expr
+    .replace(/\(/g, ' ( ')
+    .replace(/\)/g, ' ) ')
+    .trim()
+    .split(/\s+/);
 }
 
 function toPostfix(tokens) {
