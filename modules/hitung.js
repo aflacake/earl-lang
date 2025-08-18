@@ -40,7 +40,7 @@ function toPostfix(tokens) {
                 keluaran.push(operators.pop());
             }
             operators.push(token);
-        } else if (token.endsWith('(')) {
+        } else if (typeof token === 'string' && token.endsWith('(')) {
             operators.push(token);
         } else if (token === '(') {
             operators.push(token);
@@ -48,7 +48,7 @@ function toPostfix(tokens) {
             while (
                 operators.length &&
                 operators[operators.length - 1] !== '(' &&
-                !operators[operators.length - 1].endsWith('(')
+                typeof operators[operators.length - 1] === 'string' && operators[operators.length - 1].endsWith('(')
             ) {
                 keluaran.push(operators.pop());
             }
@@ -87,7 +87,6 @@ function evaluatePostfix(postfix) {
                 case '*': tumpukan.push(a * b); break;
                 case '/': tumpukan.push(b === 0 ? NaN : a / b); break;
                 case '%': {
-                    // Perbaiki pop operand ganda, pakai 'a' dan 'b' yang sudah ada
                     if (Array.isArray(a) && typeof b === 'number') {
                         tumpukan.push(a.map(x => x % b));
                     } else if (typeof a === 'number' && Array.isArray(b)) {
@@ -107,35 +106,35 @@ function evaluatePostfix(postfix) {
                 }
                 case '^': tumpukan.push(Math.pow(a, b)); break;
             }
-        } else if (token.startsWith('sqrt')) {
+        } else if (typeof token === 'string' && token.startsWith('sqrt')) {
             const val = tumpukan.pop();
             if (val === undefined) {
                 console.error("Fungsi 'sqrt' membutuhkan satu operand");
                 return NaN;
             }
             tumpukan.push(Math.sqrt(val));
-        } else if (token.startsWith('abs')) {
+        } else if (typeof token === 'string' && token.startsWith('abs')) {
             const val = tumpukan.pop();
             if (val === undefined) {
                 console.error("Fungsi 'abs' membutuhkan satu operand");
                 return NaN;
             }
             tumpukan.push(Math.abs(val));
-        } else if (token.startsWith('sin')) {
+        } else if (typeof token === 'string' && token.startsWith('sin')) {
             const val = tumpukan.pop();
             if (val === undefined) {
                 console.error("Fungsi 'sin' membutuhkan satu operand");
                 return NaN;
             }
             tumpukan.push(Math.sin(val));
-        } else if (token.startsWith('cos')) {
+        } else if (typeof token === 'string' && token.startsWith('cos')) {
             const val = tumpukan.pop();
             if (val === undefined) {
                 console.error("Fungsi 'cos' membutuhkan satu operand");
                 return NaN;
             }
             tumpukan.push(Math.cos(val));
-        } else if (token.startsWith('tan')) {
+        } else if (typeof token === 'string' && token.startsWith('tan')) {
             const val = tumpukan.pop();
             if (val === undefined) {
                 console.error("Fungsi 'tan' membutuhkan satu operand");
@@ -192,6 +191,10 @@ function hitung(tokens) {
       console.warn("Peringatan: Underflow numerik terdeteksi. Hasil dibulatkan ke 0.");
     } else if (status === 'invalid') {
       return console.error("Kesalahan: Hasil bukan angka valid.");
+    }
+
+    if (!validasiNumerik(hasil)) {
+      return console.error("Nilai tidak lolos validasi numerik.");
     }
 
     memory[targetVar] = hasil;
