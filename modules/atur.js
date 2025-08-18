@@ -78,7 +78,7 @@ async function atur(tokens, modules, context) {
       const ekspresi = tokens.slice(3).join(' ').trim();
       let nilai = ekspresi;
       if (ekspresi.startsWith('"') && ekspresi.endsWith('"')) {
-        nilai = ekspresi.slice(1, -1); // string literal
+        nilai = ekspresi.slice(1, -1);
       } else {
         nilai = evalMathExpression(ekspresi);
         if (!validasiNumerik(nilai)) {
@@ -95,10 +95,10 @@ async function atur(tokens, modules, context) {
   }
 
   const nama = namaVariabel.slice(1, -1);
-  let nilai = null;
 
   if (tokens[2] === '=') {
     const ekspresi = tokens.slice(3).join(' ').trim();
+    let nilai;
 
     if (ekspresi.startsWith('{') && ekspresi.endsWith('}')) {
       try {
@@ -112,7 +112,7 @@ async function atur(tokens, modules, context) {
       try {
         const denganKutip = ekspresi.replace(/([{,])\s*([a-zA-Z0-9_]+)\s*:/g, '$1"$2":');
         nilai = JSON.parse(denganKutip);
-      } catch (e) {
+      } catch {
         nilai = parseArrayString(ekspresi, context, modules);
       }
     } else {
@@ -128,17 +128,29 @@ async function atur(tokens, modules, context) {
         return;
       }
     }
-  } else if (tokens[2].startsWith('[')) {
-    const arrString = tokens.slice(2).join(' ');
-    nilai = parseArrayString(arrString, context, modules);
-    if (nilai === null) return;
-  } else {
-    console.error("Format salah. Gunakan: atur :nama: = nilai atau atur :nama: [nilai1 nilai2 ...]");
+
+    if (context.lingkup && context.lingkup.length > 0) {
+        context.lingkup[context.lingkup.length - 1][nama] = nilai;
+    } else {
+        context.memory[nama] = nilai;
+    }
+
+    context.memory[nama] = nilai;
+    console.log(`Variabel '${nama}' diatur ke`, nilai);
     return;
   }
 
-  context.memory[nama] = nilai;
-  console.log(`Variabel '${nama}' diatur ke`, nilai);
+  if (tokens[2].startsWith('[')) {
+    const arrString = tokens.slice(2).join(' ');
+    const nilai = parseArrayString(arrString, context, modules);
+    if (nilai === null) return;
+    context.memory[nama] = nilai;
+    console.log(`Variabel '${nama}' diatur ke`, nilai);
+    return;
+  }
+
+  console.error("Format salah. Gunakan: atur :nama: = nilai atau atur :nama: [nilai1 nilai2 ...]");
 }
+
 
 module.exports = { atur };
