@@ -21,11 +21,8 @@ function mendeteksiUnderflowOverflow(nilai) {
 }
 
 function tokenizeExpression(expr) {
-    return expr
-        .replace(/([\(\)\+\-\*\/\^\%])/g, ' $1 ')
-        .replace(/\s+/g, ' ')
-        .trim()
-        .split(' ');
+  const regex = /(?:[a-zA-Z_]\w*|[0-9]*\.?[0-9]+(?:e[+-]?[0-9]+)?|[()+\-*/^%])/g;
+  return expr.match(regex);
 }
 
 function toPostfix(tokens) {
@@ -52,13 +49,17 @@ function toPostfix(tokens) {
             while (
                 operators.length &&
                 operators[operators.length - 1] !== '(' &&
-                typeof operators[operators.length - 1] === 'string' && operators[operators.length - 1].endsWith('(')
+                !(typeof operators[operators.length - 1] === 'string' && operators[operators.length - 1].endsWith('('))
             ) {
                 keluaran.push(operators.pop());
             }
             if (operators.length && operators[operators.length - 1] === '(') {
                 operators.pop();
-            } else if (operators.length && operators[operators.length - 1].endsWith('(')) {
+            } else if (
+                operators.length &&
+                typeof operators[operators.length - 1] === 'string' &&
+                operators[operators.length - 1].endsWith('(')
+            ) {
                 keluaran.push(operators.pop());
             }
         }
@@ -178,12 +179,16 @@ function hitung(tokens) {
     });
 
     const tokensExpr = tokenizeExpression(rawExpr);
+
     if (!tokensExpr) {
         console.error("Ekspresi tidak valid.");
         return;
     }
 
-    const resolvedToken = tokensExpr.map(token => resolveToken(token, { memory }));
+    const resolvedToken = tokensExpr.map(token => {
+        const resolved = resolveToken(token, { memory });
+        return (resolved === undefined ? token : resolved);
+    });
 
     const postfix = toPostfix(resolvedToken);
     const hasil = evaluatePostfix(postfix);
