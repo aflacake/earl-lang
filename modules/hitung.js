@@ -21,11 +21,11 @@ function mendeteksiUnderflowOverflow(nilai) {
 }
 
 function tokenizeExpression(expr) {
-  return expr
-    .replace(/\(/g, ' ( ')
-    .replace(/\)/g, ' ) ')
-    .trim()
-    .split(/\s+/);
+    return expr
+        .replace(/([\(\)\+\-\*\/\^\%])/g, ' $1 ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .split(' ');
 }
 
 function toPostfix(tokens) {
