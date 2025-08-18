@@ -184,11 +184,6 @@ function hitung(tokens) {
 
     const postfix = toPostfix(resolvedToken);
     const hasil = evaluatePostfix(postfix);
-
-    memory[targetVar] = hasil;
-    console.log(`Variabel '${targetVar}' diatur ke`, hasil);
-
-    const hasil = evaluatePostfix(postfix);
     const status = mendeteksiUnderflowOverflow(hasil);
 
     if (status === 'overflow') {
