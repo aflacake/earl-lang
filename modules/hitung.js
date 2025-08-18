@@ -2,6 +2,23 @@
 
 const { memory } = require('../memory.js');
 const { resolveToken } = require('./tampilkan.js');
+const { validasiNumerik } = require('../utili');
+
+function mendeteksiUnderflowOverflow(nilai) {
+  if (typeof nilai !== 'number' || Number.isNaN(nilai)) {
+    return 'invalid';
+  }
+  if (!Number.isFinite(nilai)) {
+    return 'overflow';
+  }
+  if (nilai === Infinity) {
+    return 'overflow';
+  }
+  if (nilai !== 0 && Math.abs(nilai) < Number.MIN_VALUE) {
+    return 'underflow';
+  }
+  return 'ok';
+}
 
 function tokenizeExpression(expr) {
     return expr.match(/(?:sqrt|abs|sin|cos|tan)\(|\d+(\.\d+)?|\w+|[()+\-*/^%]/g);
@@ -167,6 +184,20 @@ function hitung(tokens) {
 
     const postfix = toPostfix(resolvedToken);
     const hasil = evaluatePostfix(postfix);
+
+    memory[targetVar] = hasil;
+    console.log(`Variabel '${targetVar}' diatur ke`, hasil);
+
+    const hasil = evaluatePostfix(postfix);
+    const status = mendeteksiUnderflowOverflow(hasil);
+
+    if (status === 'overflow') {
+      console.warn("Peringatan: Overflow numerik terdeteksi. Menyimpan nilai tak hingga (Infinity).");
+    } else if (status === 'underflow') {
+      console.warn("Peringatan: Underflow numerik terdeteksi. Hasil dibulatkan ke 0.");
+    } else if (status === 'invalid') {
+      return console.error("Kesalahan: Hasil bukan angka valid.");
+    }
 
     memory[targetVar] = hasil;
     console.log(`Variabel '${targetVar}' diatur ke`, hasil);
