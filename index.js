@@ -47,9 +47,6 @@ function bantuan() {
 const { parse } = require('./parser');
 
 async function runEarl(code, customModules = modules, parentContext, lewatiManual = false) {
-    ...contextGlobal,
-    currentNode: { type: 'REPL', body: parse(codeBlock) }
-
     const lines = code.trim().split('\n');
     const ast = parse(code);
     const context = parentContext ?? {
@@ -166,7 +163,10 @@ if (args.length > 0) {
                 multilineBuffer = [];
 
                 try {
-                    await runEarl(codeBlock, modules, contextGlobal);
+                    await runEarl(codeBlock, modules, {
+                        ...contextGlobal,
+                        currentNode: { type: 'REPL', body: parse(codeBlock) }
+                        });
                     contextGlobal.berhenti = false;
                 } catch (err) {
                     console.error('Kesalahan:', err.message);
