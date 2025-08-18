@@ -198,6 +198,7 @@ function hitung(tokens) {
       console.warn("Peringatan: Overflow numerik terdeteksi. Menyimpan nilai tak hingga (Infinity).");
     } else if (status === 'underflow') {
       console.warn("Peringatan: Underflow numerik terdeteksi. Hasil dibulatkan ke 0.");
+      hasil = 0;
     } else if (status === 'invalid') {
       return console.error("Kesalahan: Hasil bukan angka valid.");
     }
