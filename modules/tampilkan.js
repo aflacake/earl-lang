@@ -257,19 +257,20 @@ function tampilkan(tokens, modules, context) {
         return;
     }
 
-    function resolveNestedKey(key, context) {
-        let value = memory[key];
+    function resolveNestedKey(nama, context) {
+        const { memory = {}, lingkup = [{}] } = context;
 
-        if (!value) {
-            for (let scope of context.lingkup) {
-                if (key in scope) {
-                    value = scope[key];
-                    break;
-                }
+        for (let i = lingkup.length - 1; i >= 0; i--) {
+            if (Object.prototype.hasOwnProperty.call(lingkup[i], nama)) {
+                return lingkup[i][nama];
             }
         }
 
-        return value;
+        if (Object.prototype.hasOwnProperty.call(memory, nama)) {
+            return memory[nama];
+        }
+
+        return undefined;
     }
 
     while (i < tokens.length) {
@@ -283,7 +284,7 @@ function tampilkan(tokens, modules, context) {
         if (token.startsWith(':') && token.endsWith(':')) {
             const nestedKey = token.slice(1, -1);
             let value = resolveNestedKey(nestedKey, context);
-            if (value) {
+            if (value !== undefined && value !== null) {
                 hasil.push(verbose ? JSON.stringify(value, null, 2) : formatValue(value, verbose));
             } else {
                 console.error(`Variabel '${nestedKey}' tidak ditemukan.`);
