@@ -95,10 +95,9 @@ function validasiIndeks(daft, indeks) {
     return true;
 }
 
-function validasiNumerik(nilai, min = Number.MIN_SAFE_INTEGER, maks = Number.MAX_SAFE_INTEGER) {
-    if (typeof nilai !== 'number') throw new Error('Nilai harus numerik.');
-    if (nilai < min || nilai > maks) return false;
-    return true;
+function validasiNumerik(nilai) {
+  if (typeof nilai !== 'number' || Number.isNaN(nilai) || !Number.isFinite(nilai)) return false;
+  return true;
 }
 
 module.exports = { 
