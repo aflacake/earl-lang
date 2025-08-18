@@ -13,7 +13,7 @@ async function untukSetiap(tokens, modules, context) {
   const itemToken = tokens[3];
 
   if (!itemToken.startsWith(':') || !itemToken.endsWith(':')) {
-    console.error("Variabel item harus dalam format :nama:");
+    console.error("Variabel barang harus dalam format :nama:");
     return;
   }
 
