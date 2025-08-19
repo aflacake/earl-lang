@@ -109,7 +109,8 @@ async function kelas(tokens, modules, context) {
                 atribut.push(attr);
 
                 if (!(attr in instance)) {
-                    instance[attr] = null;
+                    const namaAttr = attr.replace(/:/g, '');
+                    instance[namaAttr] = null;
                 }
             }
         }
