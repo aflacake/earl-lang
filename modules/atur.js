@@ -129,10 +129,18 @@ if (pathMatch) {
         nilai = ekspresi.slice(1, -1);
       } else {
         nilai = evalMathExpression(ekspresi);
-        if (!validasiNumerik(nilai)) {
-          console.error('Nilai numerik tidak valid.');
-          return;
+        if (Array.isArray(nilai)) {
+            for (const v of nilai) {
+                if (!validasiNumerik(v)) {
+                    console.error('Nilai array tidak valid:', v);
+                    return;
+                }
+            }
+        } else if (!validasiNumerik(nilai)) {
+            console.error('Nilai numerik tidak valid.');
+            return;
         }
+
       }
       const berhasil = await setAtributContoh(jalurInfo.kelas, jalurInfo.jalurToken, nilai);
       if (berhasil) {
