@@ -73,7 +73,7 @@ async function atur(tokens, modules, context) {
   }
 
   if (tokens[2] === '=') {
-    const jalurInfo = parseJalurToken(namaVariabel); 
+    const jalurInfo = parseJalurToken(namaVariabel);
     if (jalurInfo) {
       const ekspresi = tokens.slice(3).join(' ').trim();
       let nilai = ekspresi;
@@ -115,6 +115,8 @@ async function atur(tokens, modules, context) {
       } catch {
         nilai = parseArrayString(ekspresi, context, modules);
       }
+    } else if (ekspresi.startsWith('"') && ekspresi.endsWith('"')) {
+      nilai = ekspresi.slice(1, -1);
     } else {
       let expr = ekspresi.replace(/:([a-zA-Z0-9_]+):/g, (_, v) => {
         const val = context.memory[v] ?? (context.lingkup?.[context.lingkup.length - 1] ?? {})[v];
@@ -122,17 +124,22 @@ async function atur(tokens, modules, context) {
         if (typeof val === 'string' && !isNaN(Number(val))) return Number(val);
         return val ?? 0;
       });
-      nilai = evalMathExpression(expr);
-      if (!validasiNumerik(nilai)) {
-        console.error('Nilai numerik berada di luar batas yang diizinkan.');
-        return;
+
+      if (!isNaN(expr) || /^[0-9+\-*/%.() ]+$/.test(expr)) {
+        nilai = evalMathExpression(expr);
+        if (!validasiNumerik(nilai)) {
+          console.error('Nilai numerik berada di luar batas yang diizinkan.');
+          return;
+        }
+      } else {
+        nilai = expr;
       }
     }
 
     if (context.lingkup && context.lingkup.length > 0) {
-        context.lingkup[context.lingkup.length - 1][nama] = nilai;
+      context.lingkup[context.lingkup.length - 1][nama] = nilai;
     } else {
-        context.memory[nama] = nilai;
+      context.memory[nama] = nilai;
     }
 
     context.memory[nama] = nilai;
@@ -151,6 +158,5 @@ async function atur(tokens, modules, context) {
 
   console.error("Format salah. Gunakan: atur :nama: = nilai atau atur :nama: [nilai1 nilai2 ...]");
 }
-
 
 module.exports = { atur };
