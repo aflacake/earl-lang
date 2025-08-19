@@ -96,7 +96,10 @@ function validasiIndeks(daft, indeks) {
 }
 
 function validasiNumerik(nilai) {
+  if (Array.isArray(nilai) && nilai.length === 0) return true;
+
   if (typeof nilai !== 'number' || Number.isNaN(nilai) || !Number.isFinite(nilai)) return false;
+
   return true;
 }
 
