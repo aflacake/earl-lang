@@ -47,6 +47,53 @@ function resolveToken(token, context = {}, modules = {}) {
         return undefined;
     }
 
+    if (token.startsWith(':') && token.endsWith(':')) {
+        let isi = token.slice(1, -1);
+
+        const regex = /([^\.\[\]]+)|\[(\d+)\]/g;
+        const path = [];
+        let match;
+        while ((match = regex.exec(isi)) !== null) {
+            if (match[1]) path.push(match[1]);
+            else if (match[2]) path.push(Number(match[2]));
+        }
+
+        let nilai = memory[path[0]] ?? cariDiLingkup(path[0]);
+
+        if (nilai === undefined) {
+            return `Kesalahan: '${path[0]}' tidak ditemukan.`;
+        }
+
+        for (let i = 1; i < path.length; i++) {
+            const p = path[i];
+            if (nilai === undefined || nilai === null) {
+                return `Kesalahan: '${path.slice(0, i).join('.')}' tidak ditemukan atau null.`;
+            }
+            if (typeof p === 'number') {
+                if (!Array.isArray(nilai)) {
+                    return `Kesalahan: '${path.slice(0, i).join('.')}' bukan array.`;
+                }
+                if (p < 0 || p >= nilai.length) {
+                    return `Kesalahan: Indeks ${p} di luar batas array '${path.slice(0, i).join('.')}'.`;
+                }
+                nilai = nilai[p];
+            } else {
+                if (!(p in nilai)) {
+                    return `Kesalahan: Properti '${p}' tidak ditemukan di '${path.slice(0, i).join('.')}'.`;
+                }
+                nilai = nilai[p];
+            }
+        }
+
+        return nilai;
+    }
+
+    let val = memory[token] ?? cariDiLingkup(token);
+
+    if (val !== undefined) return val;
+
+    return token;
+
     const nestedKeyMatch = token.match(/^:([a-zA-Z0-9_]+(?::[a-zA-Z0-9_]+)+):$/);
     if (nestedKeyMatch) {
         const keys = token.slice(1, -1).split(':');
@@ -282,12 +329,11 @@ function tampilkan(tokens, modules, context) {
         }
 
         if (token.startsWith(':') && token.endsWith(':')) {
-            const nestedKey = token.slice(1, -1);
-            let value = resolveNestedKey(nestedKey, context);
+            let value = resolveToken(token, context, modules);
             if (value !== undefined && value !== null) {
                 hasil.push(verbose ? JSON.stringify(value, null, 2) : formatValue(value, verbose));
             } else {
-                console.error(`Variabel '${nestedKey}' tidak ditemukan.`);
+                console.error(`Token '${token}' tidak ditemukan.`);
             }
         } else if (token.startsWith('"') && token.endsWith('"')) {
             hasil.push(token.slice(1, -1));
