@@ -67,9 +67,57 @@ async function atur(tokens, modules, context) {
   }
 
   const namaVariabel = tokens[1];
-  if (!namaVariabel.startsWith(':') || !namaVariabel.endsWith(':')) {
-    console.error("Variabel harus dalam format :nama:");
+
+  const pathRegex = /^:([a-zA-Z0-9_]+)((?:\.[a-zA-Z_][a-zA-Z0-9_]*|\[\d+\])+):$/;
+  const pathMatch = namaVariabel.match(pathRegex);
+if (pathMatch) {
+    const [, rootName, pathString] = pathMatch;
+
+    const rootObj = context.memory[rootName];
+    if (!rootObj) {
+      console.error(`Objek '${rootName}' tidak ditemukan.`);
+      return;
+    }
+
+    const pathParts = [];
+    const regex = /\.([a-zA-Z_][a-zA-Z0-9_]*)|\[(\d+)\]/g;
+    let match;
+    while ((match = regex.exec(pathString)) !== null) {
+      if (match[1]) pathParts.push(match[1]);
+      else if (match[2]) pathParts.push(Number(match[2]));
+    }
+
+    let target = rootObj;
+    for (let i = 0; i < pathParts.length - 1; i++) {
+      const part = pathParts[i];
+      if (target[part] === undefined) {
+        target[part] = typeof pathParts[i + 1] === 'number' ? [] : {};
+      }
+      target = target[part];
+    }
+
+    const key = pathParts[pathParts.length - 1];
+    const ekspresi = tokens.slice(3).join(' ').trim();
+    let nilai;
+
+    if (ekspresi.startsWith('"') && ekspresi.endsWith('"')) {
+      nilai = ekspresi.slice(1, -1);
+    } else {
+      nilai = evalMathExpression(ekspresi);
+      if (!validasiNumerik(nilai)) {
+        console.error('Nilai numerik tidak valid.');
+        return;
+      }
+    }
+
+    target[key] = nilai;
+    console.log(`Atribut '${pathParts.join('.')}' pada '${rootName}' diatur ke`, nilai);
     return;
+  }
+
+  if (typeof namaVariabel !== 'string' || !namaVariabel.startsWith(':') || !namaVariabel.endsWith(':')) {
+      console.error("Variabel harus dalam format :nama:");
+      return;
   }
 
   if (tokens[2] === '=') {
