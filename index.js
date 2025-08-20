@@ -150,6 +150,12 @@ if (args.length > 0) {
     let multilineBuffer = [];
     let insideBlock = false;
 
+    modules.bacaBaris = (prompt) => {
+        return new Promise((resolve) => {
+            rl.question(prompt, (jawaban) => resolve(jawaban));
+        });
+    };
+
     rl.prompt();
 
     rl.on('line', async (line) => {
