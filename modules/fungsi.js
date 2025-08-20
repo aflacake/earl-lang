@@ -128,7 +128,8 @@ async function fungsi(tokens, modules, context) {
 
   const scopeNow = context.lingkup[context.lingkup.length - 1];
   scopeNow[namaFungsi] = fungsiBaru;
-  if (context.lingkup.length === 1) {
+
+  if (context.repl === true || context.lingkup.length === 1) {
     modules[namaFungsi] = fungsiBaru;
   }
 
