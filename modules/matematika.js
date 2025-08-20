@@ -1,318 +1,220 @@
-// modules/matematika.js
+// index.js
 
-const { memory } = require('../memory.js');
-const { resolveToken } = require('./tampilkan.js');
-const { validasiNumerik } = require('../utili');
+const fs = require('fs');
+const path = require('path');
+const readline = require('readline');
+const { memory } = require('./memory');
+const { laksanakanAST } = require('./pelaksana-ast');
 
-async function matematika(tokens, modules, context = {}) {
-    let targetVar = null;
-    let offset = 1;
+const { tokenize } = require('./tokenize');
+const { tokenizekedua } = require('./utili');
 
-    if (tokens[1]?.startsWith(':') && tokens[1]?.endsWith(':')) {
-        targetVar = tokens[1].slice(1, -1);
-        offset = 2;
+function pilihTokenizer(line) {
+    if (line.includes('"')) return tokenizekedua(line);
+    return tokenize(line);
+}
+
+const modules = { 
+    memory,
+    tokenize: pilihTokenizer,
+    laksanakanAST
+};
+
+const modulesPath = path.join(__dirname, 'modules');
+fs.readdirSync(modulesPath).forEach(file => {
+    if (file.endsWith('.js')) {
+        const mod = require(`./modules/${file}`);
+        for (const [key, value] of Object.entries(mod)) {
+            if (modules[key]) {
+                console.warn(`Peringatan: Modul '${file}' mencoba menimpa '${key}' yang sudah ada di modul lain.`);
+            } else {
+                modules[key] = value;
+            }
+        }
+        console.log(`Modul dimuat: ${file}`);
     }
+});
 
-    const operasi = tokens[offset];
+function bantuan() {
+    console.log('Daftar perintah yang tersedia:');
+    const cmds = Object.keys(modules)
+        .filter(k => k !== 'memory' && k !== 'tokenize')
+        .sort();
+    cmds.forEach(cmd => console.log(`- ${cmd}`));
+    console.log("Ketik 'keluar' untuk keluar dari mode REPL.");
+}
 
-    const ambilNilai = (token) => {
-        const hasil = resolveToken(token, context);
-        const angka = Number(hasil);
-        return isNaN(angka) ? NaN : angka;
+const { parse } = require('./parser');
+
+async function runEarl(code, customModules = modules, parentContext, lewatiManual = false) {
+    const lines = code.trim().split('\n');
+    const ast = parse(code);
+    const context = parentContext ?? {
+        index: 0,
+        lines,
+        lingkup: [{}]
     };
+    await laksanakanAST(ast, customModules, context);
+    context.berhenti = false;
 
-    const simpanAtauTampilkan = (hasil) => {
-        if (targetVar) {
-            memory[targetVar] = hasil;
-            return null;
+    if (lewatiManual) return context;
+
+    while (context.index < context.lines.length) {
+        const line = context.lines[context.index].trim();
+
+        const tokens = customModules.tokenize(line);
+        if (!tokens || tokens.length === 0) {
+            context.index++;
+            continue;
+        }
+
+        const cmd = tokens[0];
+
+        let func = null;
+        for (let i = context.lingkup.length - 1; i >= 0; i--) {
+            if (typeof context.lingkup[i][cmd] === 'function') {
+                func = context.lingkup[i][cmd];
+                break;
+            }
+        }
+
+        if (func) {
+            try {
+                await func(tokens, customModules, context);
+            } catch (err) {
+                console.error(`Kesalahan saat menjalankan fungsi '${cmd}':`, err.message);
+            }
+            context.index++;
+        } else if (customModules[cmd]) {
+            const handler = customModules[cmd];
+
+            if (handler.isBlock) {
+                let blockLines = [];
+                context.index++;
+
+                while (context.index < context.lines.length) {
+                    const nextLine = context.lines[context.index].trim();
+                    if (nextLine === 'selesai') break;
+                    blockLines.push(context.lines[context.index]);
+                    context.index++;
+                }
+                context.index++;
+                await handler(tokens, customModules, { ...context, lines: blockLines, index: 0 });
+            } else {
+                try {
+                    await handler(tokens, customModules, context);
+                } catch (err) {
+                    console.error(`Kesalahan saat menjalankan perintah '${cmd}' di baris ${context.index + 1}:`, err.message);
+                }
+                context.index++;
+            }
         } else {
-            return hasil;
+            console.error(`Modul atau fungsi tidak dikenali: '${cmd}' di baris ${context.index + 1}`);
+            context.index++;
         }
-    };
-
-    function simpanAtauTampilkanDenganValidasi(hasil) {
-        if (!validasiNumerik(hasil)) {
-            console.error("Terjadi underflow atau overflow. Hasil tidak valid");
-            return null;
-        }
-        return simpanAtauTampilkan(hasil);
-    }
-
-    switch (operasi) {
-        case 'mod': {
-            const a = ambilNilai(tokens[offset + 1]);
-            const b = ambilNilai(tokens[offset + 2]);
-            if (isNaN(a) || isNaN(b)) return console.error('Gunakan angka atau variabel angka untuk operasi mod.');
-            const hasil = a % b;
-            const output = simpanAtauTampilkanDenganValidasi(hasil);
-            if (output !== null) console.log(output);
-            break;
-        }
-
-        case 'akar': {
-            const x = ambilNilai(tokens[offset + 1]);
-            if (isNaN(x)) return console.error('Nilai tidak valid untuk akar.');
-            const hasil = Math.sqrt(x);
-            const output = simpanAtauTampilkanDenganValidasi(hasil);
-            if (output !== null) console.log(output);
-            break;
-        }
-
-        case 'bulatkan': {
-            const x = ambilNilai(tokens[offset + 1]);
-            if (isNaN(x)) return console.error('Nilai tidak valid untuk pembulatan.');
-            const hasil = Math.round(x);
-            const output = simpanAtauTampilkanDenganValidasi(hasil);
-            if (output !== null) console.log(output);
-            break;
-        }
-
-        case 'lantai': {
-            const x = ambilNilai(tokens[offset + 1]);
-            if (isNaN(x)) return console.error('Nilai tidak valid.');
-            const hasil = Math.floor(x);
-            const output = simpanAtauTampilkanDenganValidasi(hasil);
-            if (output !== null) console.log(output);
-            break;
-        }
-
-        case 'plafon': {
-            const x = ambilNilai(tokens[offset + 1]);
-            if (isNaN(x)) return console.error('Nilai tidak valid.');
-            const hasil = Math.ceil(x);
-            const output = simpanAtauTampilkanDenganValidasi(hasil);
-            if (output !== null) console.log(output);
-            break;
-        }
-
-        case 'acak': {
-            const minRaw = ambilNilai(tokens[offset + 1]);
-            const maxRaw = ambilNilai(tokens[offset + 2]);
-            const min = isNaN(minRaw) ? 0 : minRaw;
-            const max = isNaN(maxRaw) ? 100 : maxRaw;
-
-            if (isNaN(min) || isNaN(max)) {
-                console.error("Nilai acak harus angka.");
-                return;
-            }
-            const hasil = Math.floor(Math.random() * (max - min + 1)) + min;
-            const output = simpanAtauTampilkanDenganValidasi(hasil);
-            if (output !== null) console.log(output);
-            break;
-        }
-
-        case 'mutlak': {
-            const x = ambilNilai(tokens[offset + 1]);
-            if (isNaN(x)) return console.error("Nilai tidak valid.");
-            const hasil = Math.abs(x);
-            const output = simpanAtauTampilkanDenganValidasi(hasil);
-            if (output !== null) console.log(output);
-            break;
-        }
-
-        // Operasi matematika dasar
-        case 'tambah': {
-            const a = ambilNilai(tokens[offset + 1]);
-            const b = ambilNilai(tokens[offset + 2]);
-            if (isNaN(a) || isNaN(b)) return console.error('Gunakan angka yang valid untuk tambah.');
-            const hasil = a + b;
-            const output = simpanAtauTampilkanDenganValidasi(hasil);
-            if (output !== null) console.log(output);
-            break;
-        }
-
-        case 'kurang': {
-            const a = ambilNilai(tokens[offset + 1]);
-            const b = ambilNilai(tokens[offset + 2]);
-            if (isNaN(a) || isNaN(b)) return console.error('Gunakan angka yang valid untuk kurang.');
-            const hasil = a - b;
-            const output = simpanAtauTampilkanDenganValidasi(hasil);
-            if (output !== null) console.log(output);
-            break;
-        }
-
-        case 'kali': {
-            const a = ambilNilai(tokens[offset + 1]);
-            const b = ambilNilai(tokens[offset + 2]);
-            if (isNaN(a) || isNaN(b)) return console.error('Gunakan angka yang valid untuk kali.');
-            const hasil = a * b;
-            const output = simpanAtauTampilkanDenganValidasi(hasil);
-            if (output !== null) console.log(output);
-            break;
-        }
-
-        case 'bagi': {
-            const a = ambilNilai(tokens[offset + 1]);
-            const b = ambilNilai(tokens[offset + 2]);
-            if (isNaN(a) || isNaN(b) || b === 0) return console.error('Pembagian tidak valid.');
-            const hasil = a / b;
-            const output = simpanAtauTampilkanDenganValidasi(hasil);
-            if (output !== null) console.log(output);
-            break;
-        }
-
-        case 'pangkat': {
-            const base = ambilNilai(tokens[offset + 1]);
-            const exponent = ambilNilai(tokens[offset + 2]);
-            if (isNaN(base) || isNaN(exponent)) return console.error('Gunakan angka yang valid untuk pangkat.');
-            const hasil = Math.pow(base, exponent);
-            const output = simpanAtauTampilkanDenganValidasi(hasil);
-            if (output !== null) console.log(output);
-            break;
-        }
-
-        // Fitur lanjutan
-        case 'log': {
-            const x = ambilNilai(tokens[offset + 1]);
-            if (isNaN(x) || x <= 0) return console.error("Nilai log harus positif.");
-            const hasil = Math.log(x);
-            const output = simpanAtauTampilkanDenganValidasi(hasil);
-            if (output !== null) console.log(output);
-            break;
-        }
-
-        case 'sin': {
-            const x = ambilNilai(tokens[offset + 1]);
-            if (isNaN(x)) return console.error("Nilai tidak valid.");
-            const hasil = Math.sin(x);
-            const output = simpanAtauTampilkanDenganValidasi(hasil);
-            if (output !== null) console.log(output);
-            break;
-        }
-
-        case 'cos': {
-            const x = ambilNilai(tokens[offset + 1]);
-            if (isNaN(x)) return console.error("Nilai tidak valid.");
-            const hasil = Math.cos(x);
-            const output = simpanAtauTampilkanDenganValidasi(hasil);
-            if (output !== null) console.log(output);
-            break;
-        }
-
-        case 'tan': {
-            const x = ambilNilai(tokens[offset + 1]);
-            if (isNaN(x)) return console.error("Nilai tidak valid.");
-            const hasil = Math.tan(x);
-            const output = simpanAtauTampilkanDenganValidasi(hasil);
-            if (output !== null) console.log(output);
-            break;
-        }
-
-        case 'pi': {
-            const hasil = Math.PI;
-            const output = simpanAtauTampilkanDenganValidasi(hasil);
-            if (output !== null) console.log(output);
-            break;
-        }
-
-        case 'akarKubik': {
-            const x = ambilNilai(tokens[offset + 1]);
-            if (isNaN(x)) return console.error('Nilai tidak valid untuk akar kubik.');
-            const hasil = Math.cbrt(x);
-            const output = simpanAtauTampilkanDenganValidasi(hasil);
-            if (output !== null) console.log(output);
-            break;
-        }
-
-        case 'akarKeN': {
-            const x = ambilNilai(tokens[offset + 1]);
-            const n = ambilNilai(tokens[offset + 2]);
-            if (isNaN(x) || isNaN(n) || n === 0) return console.error('Nilai atau pangkat tidak valid.');
-            const hasil = Math.pow(x, 1 / n);
-            const output = simpanAtauTampilkanDenganValidasi(hasil);
-            if (output !== null) console.log(output);
-            break;
-        }
-
-        case 'faktorial': {
-            const n = ambilNilai(tokens[offset + 1]);
-            if (isNaN(n) || n < 0) return console.error('Faktorial hanya dapat dihitung untuk angka positif.');
-            let hasil = 1;
-            for (let i = 1; i <= n; i++) {
-                hasil *= i;
-            }
-            const output = simpanAtauTampilkanDenganValidasi(hasil);
-            if (output !== null) console.log(output);
-            break;
-        }
-
-        case 'modulus': {
-            const a = ambilNilai(tokens[offset + 1]);
-            const b = ambilNilai(tokens[offset + 2]);
-            if (isNaN(a) || isNaN(b)) return console.error('Nilai tidak valid untuk modulus.');
-            const hasil = Math.abs(a - b);
-            const output = simpanAtauTampilkanDenganValidasi(hasil);
-            if (output !== null) console.log(output);
-            break;
-        }
-
-        case 'sec': {
-            const x = ambilNilai(tokens[offset + 1]);
-            if (isNaN(x)) return console.error("Nilai tidak valid.");
-            const hasil = 1 / Math.cos(x);
-            const output = simpanAtauTampilkanDenganValidasi(hasil);
-            if (output !== null) console.log(output);
-            break;
-        }
-
-
-        case 'csc': {
-            const x = ambilNilai(tokens[offset + 1]);
-            if (isNaN(x)) return console.error("Nilai tidak valid.");
-            const hasil = 1 / Math.sin(x);
-            const output = simpanAtauTampilkanDenganValidasi(hasil);
-            if (output !== null) console.log(output);
-            break;
-        }
-
-        case 'cot': {
-            const x = ambilNilai(tokens[offset + 1]);
-            if (isNaN(x)) return console.error("Nilai tidak valid.");
-            const hasil = 1 / Math.tan(x);
-            const output = simpanAtauTampilkanDenganValidasi(hasil);
-            if (output !== null) console.log(output);
-            break;
-        }
-
-        case 'derajatKeRadian': {
-            const deg = ambilNilai(tokens[offset + 1]);
-            if (isNaN(deg)) return console.error("Nilai derajat tidak valid.");
-            const hasil = deg * Math.PI / 180;
-            const output = simpanAtauTampilkanDenganValidasi(hasil);
-            if (output !== null) console.log(output);
-            break;
-        }
-
-        case 'radianKeDerajat': {
-            const rad = ambilNilai(tokens[offset + 1]);
-            if (isNaN(rad)) return console.error("Nilai radian tidak valid.");
-            const hasil = rad * 180 / Math.PI;
-            const output = simpanAtauTampilkanDenganValidasi(hasil);
-            if (output !== null) console.log(output);
-            break;
-        }
-
-        case 'log2': {
-            const x = ambilNilai(tokens[offset + 1]);
-            if (isNaN(x) || x <= 0) return console.error("Nilai log2 harus lebih besar dari 0.");
-            const hasil = Math.log2(x);
-            const output = simpanAtauTampilkanDenganValidasi(hasil);
-            if (output !== null) console.log(output);
-            break;
-        }
-
-        case 'log10': {
-            const x = ambilNilai(tokens[offset + 1]);
-            if (isNaN(x) || x <= 0) return console.error("Nilai log10 harus lebih besar dari 0.");
-            const hasil = Math.log10(x);
-            const output = simpanAtauTampilkanDenganValidasi(hasil);
-            if (output !== null) console.log(output);
-            break;
-        }
-
-        default:
-            console.error(`Perintah matematika '${operasi}' tidak dikenali.`);
     }
 }
 
-module.exports = { matematika };
+const args = process.argv.slice(2);
+
+if (args.length > 0) {
+    const filename = args[0];
+    if (!filename.endsWith('.earl')) {
+        console.error("Hanya file dengan ekstensi .earl yang dapat dijalankan.");
+        process.exit(1);
+    }
+
+    if (fs.existsSync(filename)) {
+        const kode = fs.readFileSync(filename, 'utf8');
+        runEarl(kode, modules);
+    } else {
+        console.error(`File '${filename}' tidak ditemukan.`);
+    }
+} else {
+    const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout,
+        prompt: 'earl>'
+    });
+
+    console.log("Earl REPL Mode - ketik 'keluar' untuk keluar dan ketik 'bantuan' untuk melihat daftar perintah");
+
+    const contextGlobal = {
+        index: 0,
+        lines: [],
+        lingkup: [{}],
+        memory,
+        repl: true
+    };
+
+    let multilineBuffer = [];
+    let insideBlock = false;
+
+    modules.bacaBaris = (prompt) => {
+        return new Promise((resolve) => {
+            rl.question(prompt, (jawaban) => resolve(jawaban));
+        });
+    };
+
+    rl.prompt();
+
+    rl.on('line', async (line) => {
+        const input = line.trim();
+
+        if (line.trim() === 'keluar') {
+            rl.close();
+            return;
+        }
+
+        if (input === 'bantuan') {
+            bantuan();
+            rl.prompt();
+            return;
+        }
+
+        if (!insideBlock && /^(jika|fungsi|ulangi|kelas|untukSetiap)\b/.test(input)) {
+            insideBlock = true;
+        }
+
+        if (insideBlock) {
+            multilineBuffer.push(line);
+
+            if (input === 'selesai') {
+                insideBlock = false;
+                const codeBlock = multilineBuffer.join('\n');
+                multilineBuffer = [];
+
+                try {
+                    await runEarl(codeBlock, modules, {
+                        ...contextGlobal,
+                        currentNode: { type: 'REPL', body: parse(codeBlock) }
+                        });
+                    contextGlobal.berhenti = false;
+                } catch (err) {
+                    console.error('Kesalahan:', err.message);
+                }
+                rl.prompt();
+            } else {
+                rl.prompt();
+            }
+        } else {
+            try {
+                contextGlobal.lines = [input];
+                contextGlobal.index = 0;
+                await runEarl(input, modules, contextGlobal, true);
+                contextGlobal.berhenti = false;
+            } catch (err) {
+                console.error('Kesalahan:', err.message);
+            }
+            rl.prompt();
+        }
+    });
+
+    rl.on('close', () => {
+        console.log('Keluar!');
+        process.exit(0);
+    });
+}
+
+
+module.exports = { runEarl };
