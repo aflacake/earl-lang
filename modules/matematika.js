@@ -2,6 +2,7 @@
 
 const { memory } = require('../memory.js');
 const { resolveToken } = require('./tampilkan.js');
+const { validasiNumerik } = require('../utili');
 
 async function matematika(tokens, modules, context = {}) {
     let targetVar = null;
@@ -29,13 +30,21 @@ async function matematika(tokens, modules, context = {}) {
         }
     };
 
+    function simpanAtauTampilkanDenganValidasi(hasil) {
+        if (!validasiNumerik(hasil)) {
+            console.error("Terjadi underflow atau overflow. Hasil tidak valid");
+            return null;
+        }
+        return simpanAtauTampilkan(hasil);
+    }
+
     switch (operasi) {
         case 'mod': {
             const a = ambilNilai(tokens[offset + 1]);
             const b = ambilNilai(tokens[offset + 2]);
             if (isNaN(a) || isNaN(b)) return console.error('Gunakan angka atau variabel angka untuk operasi mod.');
             const hasil = a % b;
-            const output = simpanAtauTampilkan(hasil);
+            const output = simpanAtauTampilkanDenganValidasi(hasil);
             if (output !== null) console.log(output);
             break;
         }
@@ -44,7 +53,7 @@ async function matematika(tokens, modules, context = {}) {
             const x = ambilNilai(tokens[offset + 1]);
             if (isNaN(x)) return console.error('Nilai tidak valid untuk akar.');
             const hasil = Math.sqrt(x);
-            const output = simpanAtauTampilkan(hasil);
+            const output = simpanAtauTampilkanDenganValidasi(hasil);
             if (output !== null) console.log(output);
             break;
         }
@@ -53,7 +62,7 @@ async function matematika(tokens, modules, context = {}) {
             const x = ambilNilai(tokens[offset + 1]);
             if (isNaN(x)) return console.error('Nilai tidak valid untuk pembulatan.');
             const hasil = Math.round(x);
-            const output = simpanAtauTampilkan(hasil);
+            const output = simpanAtauTampilkanDenganValidasi(hasil);
             if (output !== null) console.log(output);
             break;
         }
@@ -62,7 +71,7 @@ async function matematika(tokens, modules, context = {}) {
             const x = ambilNilai(tokens[offset + 1]);
             if (isNaN(x)) return console.error('Nilai tidak valid.');
             const hasil = Math.floor(x);
-            const output = simpanAtauTampilkan(hasil);
+            const output = simpanAtauTampilkanDenganValidasi(hasil);
             if (output !== null) console.log(output);
             break;
         }
@@ -71,7 +80,7 @@ async function matematika(tokens, modules, context = {}) {
             const x = ambilNilai(tokens[offset + 1]);
             if (isNaN(x)) return console.error('Nilai tidak valid.');
             const hasil = Math.ceil(x);
-            const output = simpanAtauTampilkan(hasil);
+            const output = simpanAtauTampilkanDenganValidasi(hasil);
             if (output !== null) console.log(output);
             break;
         }
@@ -87,7 +96,7 @@ async function matematika(tokens, modules, context = {}) {
                 return;
             }
             const hasil = Math.floor(Math.random() * (max - min + 1)) + min;
-            const output = simpanAtauTampilkan(hasil);
+            const output = simpanAtauTampilkanDenganValidasi(hasil);
             if (output !== null) console.log(output);
             break;
         }
@@ -96,7 +105,7 @@ async function matematika(tokens, modules, context = {}) {
             const x = ambilNilai(tokens[offset + 1]);
             if (isNaN(x)) return console.error("Nilai tidak valid.");
             const hasil = Math.abs(x);
-            const output = simpanAtauTampilkan(hasil);
+            const output = simpanAtauTampilkanDenganValidasi(hasil);
             if (output !== null) console.log(output);
             break;
         }
@@ -107,7 +116,7 @@ async function matematika(tokens, modules, context = {}) {
             const b = ambilNilai(tokens[offset + 2]);
             if (isNaN(a) || isNaN(b)) return console.error('Gunakan angka yang valid untuk tambah.');
             const hasil = a + b;
-            const output = simpanAtauTampilkan(hasil);
+            const output = simpanAtauTampilkanDenganValidasi(hasil);
             if (output !== null) console.log(output);
             break;
         }
@@ -117,7 +126,7 @@ async function matematika(tokens, modules, context = {}) {
             const b = ambilNilai(tokens[offset + 2]);
             if (isNaN(a) || isNaN(b)) return console.error('Gunakan angka yang valid untuk kurang.');
             const hasil = a - b;
-            const output = simpanAtauTampilkan(hasil);
+            const output = simpanAtauTampilkanDenganValidasi(hasil);
             if (output !== null) console.log(output);
             break;
         }
@@ -127,7 +136,7 @@ async function matematika(tokens, modules, context = {}) {
             const b = ambilNilai(tokens[offset + 2]);
             if (isNaN(a) || isNaN(b)) return console.error('Gunakan angka yang valid untuk kali.');
             const hasil = a * b;
-            const output = simpanAtauTampilkan(hasil);
+            const output = simpanAtauTampilkanDenganValidasi(hasil);
             if (output !== null) console.log(output);
             break;
         }
@@ -137,7 +146,7 @@ async function matematika(tokens, modules, context = {}) {
             const b = ambilNilai(tokens[offset + 2]);
             if (isNaN(a) || isNaN(b) || b === 0) return console.error('Pembagian tidak valid.');
             const hasil = a / b;
-            const output = simpanAtauTampilkan(hasil);
+            const output = simpanAtauTampilkanDenganValidasi(hasil);
             if (output !== null) console.log(output);
             break;
         }
@@ -147,7 +156,7 @@ async function matematika(tokens, modules, context = {}) {
             const exponent = ambilNilai(tokens[offset + 2]);
             if (isNaN(base) || isNaN(exponent)) return console.error('Gunakan angka yang valid untuk pangkat.');
             const hasil = Math.pow(base, exponent);
-            const output = simpanAtauTampilkan(hasil);
+            const output = simpanAtauTampilkanDenganValidasi(hasil);
             if (output !== null) console.log(output);
             break;
         }
@@ -157,7 +166,7 @@ async function matematika(tokens, modules, context = {}) {
             const x = ambilNilai(tokens[offset + 1]);
             if (isNaN(x) || x <= 0) return console.error("Nilai log harus positif.");
             const hasil = Math.log(x);
-            const output = simpanAtauTampilkan(hasil);
+            const output = simpanAtauTampilkanDenganValidasi(hasil);
             if (output !== null) console.log(output);
             break;
         }
@@ -166,7 +175,7 @@ async function matematika(tokens, modules, context = {}) {
             const x = ambilNilai(tokens[offset + 1]);
             if (isNaN(x)) return console.error("Nilai tidak valid.");
             const hasil = Math.sin(x);
-            const output = simpanAtauTampilkan(hasil);
+            const output = simpanAtauTampilkanDenganValidasi(hasil);
             if (output !== null) console.log(output);
             break;
         }
@@ -175,7 +184,7 @@ async function matematika(tokens, modules, context = {}) {
             const x = ambilNilai(tokens[offset + 1]);
             if (isNaN(x)) return console.error("Nilai tidak valid.");
             const hasil = Math.cos(x);
-            const output = simpanAtauTampilkan(hasil);
+            const output = simpanAtauTampilkanDenganValidasi(hasil);
             if (output !== null) console.log(output);
             break;
         }
@@ -184,14 +193,14 @@ async function matematika(tokens, modules, context = {}) {
             const x = ambilNilai(tokens[offset + 1]);
             if (isNaN(x)) return console.error("Nilai tidak valid.");
             const hasil = Math.tan(x);
-            const output = simpanAtauTampilkan(hasil);
+            const output = simpanAtauTampilkanDenganValidasi(hasil);
             if (output !== null) console.log(output);
             break;
         }
 
         case 'pi': {
             const hasil = Math.PI;
-            const output = simpanAtauTampilkan(hasil);
+            const output = simpanAtauTampilkanDenganValidasi(hasil);
             if (output !== null) console.log(output);
             break;
         }
@@ -200,7 +209,7 @@ async function matematika(tokens, modules, context = {}) {
             const x = ambilNilai(tokens[offset + 1]);
             if (isNaN(x)) return console.error('Nilai tidak valid untuk akar kubik.');
             const hasil = Math.cbrt(x);
-            const output = simpanAtauTampilkan(hasil);
+            const output = simpanAtauTampilkanDenganValidasi(hasil);
             if (output !== null) console.log(output);
             break;
         }
@@ -210,7 +219,7 @@ async function matematika(tokens, modules, context = {}) {
             const n = ambilNilai(tokens[offset + 2]);
             if (isNaN(x) || isNaN(n) || n === 0) return console.error('Nilai atau pangkat tidak valid.');
             const hasil = Math.pow(x, 1 / n);
-            const output = simpanAtauTampilkan(hasil);
+            const output = simpanAtauTampilkanDenganValidasi(hasil);
             if (output !== null) console.log(output);
             break;
         }
@@ -222,7 +231,7 @@ async function matematika(tokens, modules, context = {}) {
             for (let i = 1; i <= n; i++) {
                 hasil *= i;
             }
-            const output = simpanAtauTampilkan(hasil);
+            const output = simpanAtauTampilkanDenganValidasi(hasil);
             if (output !== null) console.log(output);
             break;
         }
@@ -232,7 +241,7 @@ async function matematika(tokens, modules, context = {}) {
             const b = ambilNilai(tokens[offset + 2]);
             if (isNaN(a) || isNaN(b)) return console.error('Nilai tidak valid untuk modulus.');
             const hasil = Math.abs(a - b);
-            const output = simpanAtauTampilkan(hasil);
+            const output = simpanAtauTampilkanDenganValidasi(hasil);
             if (output !== null) console.log(output);
             break;
         }
@@ -241,7 +250,7 @@ async function matematika(tokens, modules, context = {}) {
             const x = ambilNilai(tokens[offset + 1]);
             if (isNaN(x)) return console.error("Nilai tidak valid.");
             const hasil = 1 / Math.cos(x);
-            const output = simpanAtauTampilkan(hasil);
+            const output = simpanAtauTampilkanDenganValidasi(hasil);
             if (output !== null) console.log(output);
             break;
         }
@@ -251,7 +260,7 @@ async function matematika(tokens, modules, context = {}) {
             const x = ambilNilai(tokens[offset + 1]);
             if (isNaN(x)) return console.error("Nilai tidak valid.");
             const hasil = 1 / Math.sin(x);
-            const output = simpanAtauTampilkan(hasil);
+            const output = simpanAtauTampilkanDenganValidasi(hasil);
             if (output !== null) console.log(output);
             break;
         }
@@ -260,7 +269,7 @@ async function matematika(tokens, modules, context = {}) {
             const x = ambilNilai(tokens[offset + 1]);
             if (isNaN(x)) return console.error("Nilai tidak valid.");
             const hasil = 1 / Math.tan(x);
-            const output = simpanAtauTampilkan(hasil);
+            const output = simpanAtauTampilkanDenganValidasi(hasil);
             if (output !== null) console.log(output);
             break;
         }
@@ -269,7 +278,7 @@ async function matematika(tokens, modules, context = {}) {
             const deg = ambilNilai(tokens[offset + 1]);
             if (isNaN(deg)) return console.error("Nilai derajat tidak valid.");
             const hasil = deg * Math.PI / 180;
-            const output = simpanAtauTampilkan(hasil);
+            const output = simpanAtauTampilkanDenganValidasi(hasil);
             if (output !== null) console.log(output);
             break;
         }
@@ -278,7 +287,7 @@ async function matematika(tokens, modules, context = {}) {
             const rad = ambilNilai(tokens[offset + 1]);
             if (isNaN(rad)) return console.error("Nilai radian tidak valid.");
             const hasil = rad * 180 / Math.PI;
-            const output = simpanAtauTampilkan(hasil);
+            const output = simpanAtauTampilkanDenganValidasi(hasil);
             if (output !== null) console.log(output);
             break;
         }
@@ -287,7 +296,7 @@ async function matematika(tokens, modules, context = {}) {
             const x = ambilNilai(tokens[offset + 1]);
             if (isNaN(x) || x <= 0) return console.error("Nilai log2 harus lebih besar dari 0.");
             const hasil = Math.log2(x);
-            const output = simpanAtauTampilkan(hasil);
+            const output = simpanAtauTampilkanDenganValidasi(hasil);
             if (output !== null) console.log(output);
             break;
         }
@@ -296,7 +305,7 @@ async function matematika(tokens, modules, context = {}) {
             const x = ambilNilai(tokens[offset + 1]);
             if (isNaN(x) || x <= 0) return console.error("Nilai log10 harus lebih besar dari 0.");
             const hasil = Math.log10(x);
-            const output = simpanAtauTampilkan(hasil);
+            const output = simpanAtauTampilkanDenganValidasi(hasil);
             if (output !== null) console.log(output);
             break;
         }
