@@ -70,7 +70,22 @@ async function runEarl(code, customModules = modules, parentContext, lewatiManua
 
         const cmd = tokens[0];
 
-        if (customModules[cmd]) {
+        let func = null;
+        for (let i = context.lingkup.length - 1; i >= 0; i--) {
+            if (typeof context.lingkup[i][cmd] === 'function') {
+                func = context.lingkup[i][cmd];
+                break;
+            }
+        }
+
+        if (func) {
+            try {
+                await func(tokens, customModules, context);
+            } catch (err) {
+                console.error(`Kesalahan saat menjalankan fungsi '${cmd}':`, err.message);
+            }
+            context.index++;
+        } else if (customModules[cmd]) {
             const handler = customModules[cmd];
 
             if (handler.isBlock) {
@@ -87,14 +102,14 @@ async function runEarl(code, customModules = modules, parentContext, lewatiManua
                 await handler(tokens, customModules, { ...context, lines: blockLines, index: 0 });
             } else {
                 try {
-                    await handler(tokens, modules, context);
+                    await handler(tokens, customModules, context);
                 } catch (err) {
                     console.error(`Kesalahan saat menjalankan perintah '${cmd}' di baris ${context.index + 1}:`, err.message);
                 }
                 context.index++;
             }
         } else {
-            console.error(`Modul tidak dikenali: '${cmd}' di baris ${context.index + 1}`);
+            console.error(`Modul atau fungsi tidak dikenali: '${cmd}' di baris ${context.index + 1}`);
             context.index++;
         }
     }
