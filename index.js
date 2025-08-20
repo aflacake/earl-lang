@@ -143,7 +143,8 @@ if (args.length > 0) {
         index: 0,
         lines: [],
         lingkup: [{}],
-        memory
+        memory,
+        repl: true
     };
 
     let multilineBuffer = [];
