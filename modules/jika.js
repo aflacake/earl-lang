@@ -35,8 +35,13 @@ async function jika(tokens, modules, context) {
             console.error(`Operator tidak dikenali: ${operator}`);
             return;
     }
+    console.log(`Mengevaluasi: ${value1} ${operator} ${value2} = ${hasil}`);
 
     if (hasil) {
+        context.kondisiTerpenuhi = true;
+
+        console.log("Blok 'maka' dieksekusi dan kondisiTerpenuhi diset true");
+
         context.kondisiTerpenuhi = true;
 
         if (context.currentNode.body && context.currentNode.body.length > 0) {
