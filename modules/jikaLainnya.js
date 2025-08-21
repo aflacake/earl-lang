@@ -5,7 +5,6 @@ const { memory } = require('../memory.js');
 async function jikaLainnya(tokens, modules, context) {
     const lines = context.lines;
     let i = context.index;
-    let kondisiTerpenuhi = false;
 
     while (i < lines.length) {
         const baris = lines[i].trim();
@@ -18,8 +17,16 @@ async function jikaLainnya(tokens, modules, context) {
 
         const kataKunci = tokenBaris[0];
 
-        if (kataKunci === 'jika' && !kondisiTerpenuhi) {
-            kondisiTerpenuhi = true;
+        if ((kataKunci === 'jika' || kataKunci === 'jika-lainnya' || kataKunci === 'lain') && context.kondisiTerpenuhi) {
+            while (i < lines.length && lines[i].trim() !== 'selesai-jika') {
+                i++;
+            }
+            if (i < lines.length && lines[i].trim() === 'selesai-jika') i++;
+            break;
+        }
+
+        if (kataKunci === 'jika') {
+            context.kondisiTerpenuhi = false;
             i++;
             while (i < lines.length) {
                 const ln = lines[i].trim();
@@ -36,8 +43,7 @@ async function jikaLainnya(tokens, modules, context) {
                 }
                 i++;
             }
-        } else if (kataKunci === 'jika-lainnya' && !kondisiTerpenuhi) {
-            kondisiTerpenuhi = true;
+        } else if (kataKunci === 'jika-lainnya') {
             i++;
             while (i < lines.length) {
                 const ln = lines[i].trim();
@@ -54,8 +60,7 @@ async function jikaLainnya(tokens, modules, context) {
                 }
                 i++;
             }
-        } else if (kataKunci === 'lain' && !kondisiTerpenuhi) {
-            kondisiTerpenuhi = true;
+        } else if (kataKunci === 'lain') {
             i++;
             while (i < lines.length) {
                 const ln = lines[i].trim();
