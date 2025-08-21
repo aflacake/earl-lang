@@ -21,7 +21,7 @@ async function jikaLainnya(tokens, modules, context) {
             while (i < lines.length && lines[i].trim() !== 'selesai-jika') {
                 i++;
             }
-            if (i < lines.length && lines[i].trim() === 'selesai-jika') i++;
+            if (i < lines.length) i++;
             break;
         }
 
