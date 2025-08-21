@@ -54,6 +54,8 @@ async function runEarl(code, customModules = modules, parentContext, lewatiManua
         lines,
         lingkup: [{}]
     };
+    context.kondisiTerpenuhi = false;
+
     await laksanakanAST(ast, customModules, context);
     context.berhenti = false;
 
