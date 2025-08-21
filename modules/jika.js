@@ -8,6 +8,10 @@ async function jika(tokens, modules, context) {
         return;
     }
 
+    if (context.kondisiTerpenuhi) {
+        return;
+    }
+
     const [ , leftToken, operator, rightToken, keyword] = tokens;
 
     if (keyword !== 'maka') {
@@ -33,6 +37,8 @@ async function jika(tokens, modules, context) {
     }
 
     if (hasil) {
+        context.kondisiTerpenuhi = true;
+
         if (context.currentNode.body && context.currentNode.body.length > 0) {
             await modules.laksanakanAST(context.currentNode.body, modules, context);
         } else {
@@ -44,4 +50,5 @@ async function jika(tokens, modules, context) {
 jika.isBlock = true;
 
 module.exports = { jika };
+
 
