@@ -124,12 +124,22 @@ const args = process.argv.slice(2);
 if (args.length > 0) {
     const input = args[0];
 
-    if (input.endsWith('.earl') && fs.existsSync(input)) {
+    if (fs.existsSync(input) && input.endsWith('.earl')) {
         const kode = fs.readFileSync(input, 'utf8');
-        runEarl(kode, modules);
+        runEarl(kode, modules)
+            .then(() => process.exit(0))
+            .catch(err => {
+                console.error(err);
+                process.exit(1);
+            });
     } else {
-        const kode = input.replace(/\\n/g, '\n');
-        runEarl(kode, modules);
+        const kode = input.replace(/\\\\n/g, '\n');
+        runEarl(kode, modules)
+            .then(() => process.exit(0))
+            .catch(err => {
+                console.error(err);
+                process.exit(1);
+            });
     }
 } else {
     const rl = readline.createInterface({
