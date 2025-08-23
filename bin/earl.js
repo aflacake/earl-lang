@@ -6,9 +6,9 @@ const fs = require('fs');
 const path = require('path');
 const { jalankanEarlDalamSandbox } = require('../vm/vm-penjalankan');
 
-const args = process.argv.slice(2);
-
 async function main() {
+  const args = process.argv.slice(2);
+
   if (args.length === 0) {
     console.log("Gunakan: earl file.earl  atau  earl \"kode langsung\"");
     process.exit(1);
