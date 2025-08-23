@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+
+// bin/earl.js
 const fs = require('fs');
 const path = require('path');
 const { runEarl } = require('../index');
@@ -14,8 +16,10 @@ const input = args[0];
 
 if (input.endsWith('.earl') && fs.existsSync(input)) {
     const code = fs.readFileSync(input, 'utf8');
-    runEarl(code);
+    console.log('Kode yang akan dijalankan:', JSON.stringify(code));
+    runEarl(code).then(() => process.exit(0));
 } else {
     const code = input.replace(/\\n/g, '\n');
-    runEarl(code);
+    console.log('Kode yang akan dijalankan:', JSON.stringify(code));
+    runEarl(code).then(() => process.exit(0));
 }
