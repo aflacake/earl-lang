@@ -6,7 +6,7 @@ const { jalankanEarlDalamSandbox } = require('../vm/vm-penjalankan');
 const args = process.argv.slice(2);
 
 if (args.length === 0) {
-  console.log("Gunakan: earl file.earl  atau  earl \"atur :angka: = 42\\ntampilkan :angka:\"");
+  console.log("Gunakan: earl file.earl  atau  earl \"kode\"");
   process.exit(1);
 }
 
