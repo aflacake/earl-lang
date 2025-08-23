@@ -1,29 +1,21 @@
 #!/usr/bin/env node
-const fs = require('fs');
-const path = require('path');
+
 const { jalankanEarlDalamSandbox } = require('../vm/vm-penjalankan');
 
 const args = process.argv.slice(2);
 
 if (args.length === 0) {
-  console.log("Gunakan: earl file.earl  atau  earl \"kode\"");
+  console.log("Gunakan: earl \"kode\"");
   process.exit(1);
 }
 
-let kode = '';
-const masukkan = args[0];
+const rawInput = args.join(' ');
+const kodeEarl = rawInput.replace(/\\n/g, '\n');
 
-if (masukkan.endsWith('.earl') && fs.existsSync(masukkan)) {
-  kode = fs.readFileSync(masukkan, 'utf8');
-} else {
-  kode = masukkan.replace(/\\n/g, '\n');
-}
-
-jalankanEarlDalamSandbox(kode)
+jalankanEarlDalamSandbox(kodeEarl)
   .then(() => {
-    console.log('Eksekusi selesai.');
   })
   .catch(err => {
-    console.error('Eksekusi gagal:', err.message);
+    console.error('Kesalahan:', err.message);
     process.exit(1);
   });
