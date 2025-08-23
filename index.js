@@ -47,7 +47,6 @@ function bantuan() {
 const { parse } = require('./parser');
 
 async function runEarl(code, customModules = modules, parentContext, lewatiManual = false) {
-    console.trace('runEarl dipanggil');
     const lines = code.trim().split('\n');
     const ast = parse(code);
     const context = parentContext ?? {
