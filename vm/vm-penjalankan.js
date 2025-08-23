@@ -26,6 +26,7 @@ async function jalankanEarlDalamSandbox(kode, timeout = 1000) {
 
   try {
     await skripsi.runInContext(konteks, { timeout });
+    await new Promise(resolve => setTimeout(resolve, 50));
     return sandbox.hasil;
   } catch (err) {
     console.error('Kesalahan saat menjalankan dalam kotakpasir:', err);
