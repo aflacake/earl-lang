@@ -122,17 +122,14 @@ async function runEarl(code, customModules = modules, parentContext, lewatiManua
 const args = process.argv.slice(2);
 
 if (args.length > 0) {
-    const filename = args[0];
-    if (!filename.endsWith('.earl')) {
-        console.error("Hanya file dengan ekstensi .earl yang dapat dijalankan.");
-        process.exit(1);
-    }
+    const input = args[0];
 
-    if (fs.existsSync(filename)) {
-        const kode = fs.readFileSync(filename, 'utf8');
+    if (input.endsWith('.earl') && fs.existsSync(input)) {
+        const kode = fs.readFileSync(input, 'utf8');
         runEarl(kode, modules);
     } else {
-        console.error(`File '${filename}' tidak ditemukan.`);
+        const kode = input.replace(/\\n/g, '\n');
+        runEarl(kode, modules);
     }
 } else {
     const rl = readline.createInterface({
