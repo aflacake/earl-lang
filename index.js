@@ -115,6 +115,8 @@ async function runEarl(code, customModules = modules, parentContext, lewatiManua
             context.index++;
         }
     }
+
+    return context;
 }
 
 const args = process.argv.slice(2);
