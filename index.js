@@ -120,90 +120,90 @@ async function runEarl(code, customModules = modules, parentContext, lewatiManua
     return context;
 }
 
-    const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout,
-        prompt: 'earl>'
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+    prompt: 'earl>'
+});
+
+console.log("Earl REPL Mode - ketik 'keluar' untuk keluar dan ketik 'bantuan' untuk melihat daftar perintah");
+
+const contextGlobal = {
+    index: 0,
+    lines: [],
+    lingkup: [{}],
+    memory,
+    repl: true
+};
+
+let multilineBuffer = [];
+let insideBlock = false;
+
+modules.bacaBaris = (prompt) => {
+    return new Promise((resolve) => {
+        rl.question(prompt, (jawaban) => resolve(jawaban));
     });
+};
 
-    console.log("Earl REPL Mode - ketik 'keluar' untuk keluar dan ketik 'bantuan' untuk melihat daftar perintah");
+rl.prompt();
 
-    const contextGlobal = {
-        index: 0,
-        lines: [],
-        lingkup: [{}],
-        memory,
-        repl: true
-    };
+rl.on('line', async (line) => {
+    const input = line.trim();
 
-    let multilineBuffer = [];
-    let insideBlock = false;
+    if (line.trim() === 'keluar') {
+        rl.close();
+        return;
+    }
 
-    modules.bacaBaris = (prompt) => {
-        return new Promise((resolve) => {
-            rl.question(prompt, (jawaban) => resolve(jawaban));
-        });
-    };
+    if (input === 'bantuan') {
+        bantuan();
+        rl.prompt();
+        return;
+    }
 
-    rl.prompt();
+    if (!insideBlock && /^(jika|fungsi|ulangi|kelas|untukSetiap)\b/.test(input)) {
+        insideBlock = true;
+    }
 
-    rl.on('line', async (line) => {
-        const input = line.trim();
+    if (insideBlock) {
+        multilineBuffer.push(line);
 
-        if (line.trim() === 'keluar') {
-            rl.close();
-            return;
-        }
+        if (input === 'selesai') {
+            insideBlock = false;
+            const codeBlock = multilineBuffer.join('\n');
+            multilineBuffer = [];
 
-        if (input === 'bantuan') {
-            bantuan();
-            rl.prompt();
-            return;
-        }
-
-        if (!insideBlock && /^(jika|fungsi|ulangi|kelas|untukSetiap)\b/.test(input)) {
-            insideBlock = true;
-        }
-
-        if (insideBlock) {
-            multilineBuffer.push(line);
-
-            if (input === 'selesai') {
-                insideBlock = false;
-                const codeBlock = multilineBuffer.join('\n');
-                multilineBuffer = [];
-
-                try {
-                    await runEarl(codeBlock, modules, {
-                        ...contextGlobal,
-                        currentNode: { type: 'REPL', body: parse(codeBlock) }
-                        });
-                    contextGlobal.berhenti = false;
-                } catch (err) {
-                    console.error('Kesalahan:', err.message);
-                }
-                rl.prompt();
-            } else {
-                rl.prompt();
-            }
-        } else {
             try {
-                contextGlobal.lines = [input];
-                contextGlobal.index = 0;
-                await runEarl(input, modules, contextGlobal, true);
+                await runEarl(codeBlock, modules, {
+                    ...contextGlobal,
+                    currentNode: { type: 'REPL', body: parse(codeBlock) }
+                    });
                 contextGlobal.berhenti = false;
             } catch (err) {
                 console.error('Kesalahan:', err.message);
             }
             rl.prompt();
+        } else {
+            rl.prompt();
         }
-    });
+    } else {
+        try {
+            contextGlobal.lines = [input];
+            contextGlobal.index = 0;
+            await runEarl(input, modules, contextGlobal, true);
+            contextGlobal.berhenti = false;
+        } catch (err) {
+            console.error('Kesalahan:', err.message);
+        }
+        rl.prompt();
+    }
+});
 
-    rl.on('close', () => {
-        console.log('Keluar!');
-        process.exit(0);
-    });
-}
+rl.on('close', () => {
+    console.log('Keluar!');
+    process.exit(0);
+});
+
 
 
 module.exports = { runEarl };
