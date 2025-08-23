@@ -120,11 +120,6 @@ async function runEarl(code, customModules = modules, parentContext, lewatiManua
     return context;
 }
 
-const args = process.argv.slice(2);
-
-if (args.length > 0) {
-
-} else {
     const rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout,
