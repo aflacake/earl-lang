@@ -57,10 +57,11 @@ async function runEarl(code, customModules = modules, parentContext, lewatiManua
     };
     context.kondisiTerpenuhi = false;
 
-    await laksanakanAST(ast, customModules, context);
-    context.berhenti = false;
-
-    if (lewatiManual) return context;
+    if (lewatiManual) {
+        await laksanakanAST(ast, customModules, context);
+        context.berhenti = false;
+        return context;
+    }
 
     while (context.index < context.lines.length) {
         const line = context.lines[context.index].trim();
