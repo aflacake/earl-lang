@@ -47,6 +47,7 @@ function bantuan() {
 const { parse } = require('./parser');
 
 async function runEarl(code, customModules = modules, parentContext, lewatiManual = false) {
+    console.trace('runEarl dipanggil');
     const lines = code.trim().split('\n');
     const ast = parse(code);
     const context = parentContext ?? {
@@ -122,26 +123,7 @@ async function runEarl(code, customModules = modules, parentContext, lewatiManua
 const args = process.argv.slice(2);
 
 if (args.length > 0) {
-    const input = args[0];
 
-    if (fs.existsSync(input) && input.endsWith('.earl')) {
-        const kode = fs.readFileSync(input, 'utf8');
-        runEarl(kode, modules)
-            .then(() => process.exit(0))
-            .catch(err => {
-                console.error(err);
-                process.exit(1);
-            });
-    } else {
-        const kodeLangsung = input.replace(/\\n/g, '\n');
-
-        runEarl(kodeLangsung, modules)
-            .then(() => process.exit(0))
-            .catch(err => {
-                console.error(err);
-                process.exit(1);
-            });
-    }
 } else {
     const rl = readline.createInterface({
         input: process.stdin,
