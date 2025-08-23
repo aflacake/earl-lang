@@ -24,9 +24,6 @@ async function jalankanEarlDalamSandbox(kode, timeout = 1000) {
     })();
   `);
 
-  await skripsi.runInContext(konteks);
-  return sandbox.hasil;
-
   try {
     await skripsi.runInContext(konteks, { timeout });
     await new Promise(resolve => setTimeout(resolve, 50));
