@@ -133,8 +133,9 @@ if (args.length > 0) {
                 process.exit(1);
             });
     } else {
-        const kode = input.replace(/\\\\n/g, '\n');
-        runEarl(kode, modules)
+        const kodeLangsung = input.replace(/\\n/g, '\n');
+
+        runEarl(kodeLangsung, modules)
             .then(() => process.exit(0))
             .catch(err => {
                 console.error(err);
