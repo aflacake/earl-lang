@@ -57,6 +57,16 @@ node index.js
   ```
 
 ## Dengan CLI
+### Global
+```bash
+npm link
+```
+Lalu uji:
+```bash
+earl "atur :angka: = 42\\ntampilkan :angka:"
+earl tes.earl
+```
+
 ### Pengguna Windows
 File CLI bernama: `earl.cmd`.
 File `package.json` dan `earl.cmd` sudah disiapkan maka langsung arahkan ke folder, lalu jalankan:
