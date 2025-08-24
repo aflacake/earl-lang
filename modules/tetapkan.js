@@ -1,22 +1,25 @@
 // modules/tetapkan.js
 
-function tetapkan(tokens, context) {
-  if (!context.tipeVariabel) context.tipeVariabel = {};
-
-  if (tokens.length !== 4 || tokens[2] !== 'sebagai') {
-    console.error("Format salah. Gunakan: tetapkan NAMA sebagai pilihan");
+function tetapkan(tokens, modules, context) {
+  if (tokens.length < 4 || tokens[2] !== 'sebagai') {
+    console.error("Format salah. Gunakan: tetapkan :NAMA: sebagai TIPE");
     return;
   }
 
-  const nama = tokens[1];
+  const rawNama = tokens[1];
+  if (!rawNama.startsWith(':') || !rawNama.endsWith(':')) {
+    console.error("Nama variabel harus dalam format :nama:");
+    return;
+  }
+
+  const nama = rawNama.slice(1, -1).toUpperCase();
+
   const tipe = tokens[3];
 
-  if (tipe === 'pilihan') {
-    context.tipeVariabel[nama] = 'pilihan';
-    console.log(`Variabel '${nama}' ditetapkan sebagai pilihan.`);
-  } else {
-    console.error(`Tipe '${tipe}' tidak dikenali.`);
-  }
+  if (!context.tipeVariabel) context.tipeVariabel = {};
+  context.tipeVariabel[nama] = tipe;
+
+  console.log(`Variabel '${nama}' ditetapkan sebagai ${tipe}.`);
 }
 
 module.exports = { tetapkan };
