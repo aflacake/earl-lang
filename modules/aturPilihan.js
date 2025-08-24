@@ -3,10 +3,23 @@
 function aturPilihan(tokens, context) {
   const nama = tokens[0];
   const operator = tokens[1];
-  const nilai = tokens[2];
+  const nilaiTokens = tokens.slice(2);
 
-  if (operator !== '=' || !['benar', 'salah'].includes(nilai)) {
-    console.error(`Gunakan format: NAMA = benar atau salah`);
+  if (operator !== '=') {
+    console.error(`Gunakan format: NAMA = benar atau salah atau tidak benar`);
+    return;
+  }
+
+  const nilaiStr = nilaiTokens.join(' ');
+
+  let booleanValue;
+
+  if (nilaiStr === 'benar') {
+    booleanValue = true;
+  } else if (nilaiStr === 'salah' || nilaiStr === 'tidak benar') {
+    booleanValue = false;
+  } else {
+    console.error(`Nilai '${nilaiStr}' tidak dikenali. Gunakan: benar atau salah atau tidak benar`);
     return;
   }
 
@@ -15,7 +28,6 @@ function aturPilihan(tokens, context) {
     return;
   }
 
-  const booleanValue = nilai === 'benar';
   context.lingkup[context.lingkup.length - 1][nama] = booleanValue;
   console.log(`Variabel '${nama}' diatur ke ${booleanValue}`);
 }
