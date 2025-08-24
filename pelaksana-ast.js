@@ -3,6 +3,16 @@
 async function laksanakanAST(ast, modules, context) {
   for (const node of ast) {
     const { type, tokens } = node;
+
+    if (
+      context.tipeVariabel?.[tokens[0]] === 'pilihan' &&
+      tokens[1] === '=' &&
+      ['benar', 'salah'].includes(tokens[2])
+    ) {
+      await modules.aturPilihan(tokens, context);
+      continue;
+    }
+
     const handler = modules[type];
     if (!handler) {
       console.error(`Modul tidak dikenali: '${type}'`);
@@ -26,9 +36,7 @@ async function laksanakanAST(ast, modules, context) {
       context.lanjutkan = false;
       continue;
     }
-
   }
 }
-
 
 module.exports = { laksanakanAST };
