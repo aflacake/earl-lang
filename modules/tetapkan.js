@@ -2,7 +2,7 @@
 
 function tetapkan(tokens, modules, context) {
   if (tokens.length < 4 || tokens[2] !== 'sebagai') {
-    console.error("Format salah. Gunakan: tetapkan :NAMA: sebagai TIPE");
+    console.error("Format salah. Gunakan: tetapkan :nama: sebagai tipe");
     return;
   }
 
@@ -12,7 +12,7 @@ function tetapkan(tokens, modules, context) {
     return;
   }
 
-  const nama = rawNama.slice(1, -1).toUpperCase();
+  const nama = rawNama.slice(1, -1).toLowerCase();
 
   const tipe = tokens[3];
 
