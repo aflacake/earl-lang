@@ -1,5 +1,7 @@
 // parser.js
 
+const { isAssignmentLine } = require('../modules/penugasan');
+
 function parse(code) {
     const lines = code.trim().split('\n');
     const ast = [];
@@ -10,6 +12,16 @@ function parse(code) {
         if (!raw || raw.startsWith('--')) continue;
 
         const tokens = raw.match(/"[^"]*"|:[^:\s]+:|[()[\],]|>=|<=|==|!=|>|<|\S+/g);
+        if (!tokens || tokens.length === 0) continue;
+
+        if (isAssignmentLine(tokens)) {
+            stack[stack.length - 1].push({
+                type: ':penugasan:',
+                tokens
+            });
+            continue;
+        }
+
         const command = tokens[0];
 
         if (['jika', 'ulangi', 'fungsi', 'kelas', 'untukSetiap'].includes(command)) {
