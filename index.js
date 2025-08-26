@@ -62,7 +62,7 @@ async function runEarl(code, customModules = modules, parentContext, lewatiManua
         return context;
     }
 
-    while (context.index < context.lines.length) {
+    while (context.index < context.lines.length && !context.berhenti) {
         const line = context.lines[context.index].trim();
 
         const tokens = customModules.tokenize(line);
