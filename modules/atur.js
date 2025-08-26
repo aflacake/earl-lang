@@ -224,7 +224,6 @@ async function hapus(tokens, modules, context) {
   }
 
   const namaVariabel = tokens[1];
-
   const pathRegex = /^:([a-zA-Z0-9_]+)((?:\.[a-zA-Z_][a-zA-Z0-9_]*|\[\d+\])+):$/;
   const pathMatch = namaVariabel.match(pathRegex);
 
@@ -249,7 +248,7 @@ async function hapus(tokens, modules, context) {
     for (let i = 0; i < pathParts.length - 1; i++) {
       target = target[pathParts[i]];
       if (target === undefined) {
-        console.error(`Path tidak lengkap: bagian '${pathParts[i]}' tidak ditemukan.`);
+        console.error(`Jalur tidak lengkap: bagian '${pathParts[i]}' tidak ditemukan.`);
         return;
       }
     }
@@ -288,4 +287,3 @@ async function hapus(tokens, modules, context) {
 }
 
 module.exports = { atur, hapus };
-
