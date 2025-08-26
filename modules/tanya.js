@@ -9,7 +9,7 @@ async function tanya(tokens, modules, context) {
     const pertanyaan = tokens[1];
     const varName = tokens[3].slice(1, -1);
 
-    const jawaban = await modules.bacaBaris(`${pertanyaan} (lanjutkan/kembali): `);
+    const jawaban = await modules.bacaBaris(`${pertanyaan} (lanjutkan atau kembali): `);
 
     context.memory[varName] = jawaban.trim().toLowerCase();
     console.log(`Jawaban disimpan di variabel '${varName}':`, context.memory[varName]);
