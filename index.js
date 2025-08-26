@@ -102,7 +102,17 @@ async function runEarl(code, customModules = modules, parentContext, lewatiManua
                     context.index++;
                 }
                 context.index++;
-                await handler(tokens, customModules, { ...context, lines: blockLines, index: 0 });
+
+                await handler(tokens, customModules, { 
+                    ...context, 
+                    lines: blockLines, 
+                    index: 0, 
+                    kondisiTerpenuhi: false,
+                            currentNode: {
+                                type: 'Block',
+                                body: parse(blockLines.join('\n'))
+                            }
+                });
             } else {
                 try {
                     await handler(tokens, customModules, context);
