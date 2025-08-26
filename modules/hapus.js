@@ -1,5 +1,3 @@
-// modules/hapus.js
-
 async function hapus(tokens, modules, context) {
   if (!context.memory) context.memory = {};
 
@@ -62,19 +60,23 @@ async function hapus(tokens, modules, context) {
     const nama = namaVariabel.slice(1, -1);
 
     if (nama in context.memory) {
-        delete context.memory[nama];
-        console.log(`Variabel '${nama}' berhasil dihapus.`);
+      delete context.memory[nama];
+      console.log(`Variabel '${nama}' berhasil dihapus.`);
 
-        for (const scope of context.lingkup) {
-            if (nama in scope) {
-                delete scope[nama];
-                console.log(`Variabel '${nama}' juga dihapus dari lingkup.`);
-            }
+      for (const scope of context.lingkup) {
+        if (nama in scope) {
+          delete scope[nama];
+          console.log(`Variabel '${nama}' juga dihapus dari lingkup.`);
         }
-        return;
+      }
+      return;
+    } else {
+      console.error(`Variabel '${nama}' tidak ditemukan.`);
+      return;
     }
+  }
 
-    console.error("Format salah. Gunakan: hapus :nama: atau hapus :objek.atribut:");
+  console.error("Format salah. Gunakan: hapus :nama: atau hapus :objek.atribut:");
 }
 
 module.exports = { hapus };
