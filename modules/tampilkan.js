@@ -88,11 +88,11 @@ function resolveToken(token, context = {}, modules = {}) {
         return nilai;
     }
 
-    let val = memory[token] ?? cariDiLingkup(token);
-
-    if (val !== undefined) return val;
-
-    return token;
+    if (Object.prototype.hasOwnProperty.call(memory, token)) {
+        return memory[token];
+    } else {
+        return `Kesalahan: Variabel '${token}' tidak ditemukan.`;
+    }
 
     const nestedKeyMatch = token.match(/^:([a-zA-Z0-9_]+(?::[a-zA-Z0-9_]+)+):$/);
     if (nestedKeyMatch) {
