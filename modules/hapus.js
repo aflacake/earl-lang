@@ -62,16 +62,19 @@ async function hapus(tokens, modules, context) {
     const nama = namaVariabel.slice(1, -1);
 
     if (nama in context.memory) {
-      delete context.memory[nama];
-      console.log(`Variabel '${nama}' berhasil dihapus.`);
-      return;
-    } else {
-      console.error(`Variabel '${nama}' tidak ditemukan.`);
-      return;
-    }
-  }
+        delete context.memory[nama];
+        console.log(`Variabel '${nama}' berhasil dihapus.`);
 
-  console.error("Format salah. Gunakan: hapus :nama: atau hapus :objek.atribut:");
+        for (const scope of context.lingkup) {
+            if (nama in scope) {
+                delete scope[nama];
+                console.log(`Variabel '${nama}' juga dihapus dari lingkup.`);
+            }
+        }
+        return;
+    }
+
+    console.error("Format salah. Gunakan: hapus :nama: atau hapus :objek.atribut:");
 }
 
 module.exports = { hapus };
