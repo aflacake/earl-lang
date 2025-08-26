@@ -47,13 +47,15 @@ async function hapus(tokens, modules, context) {
       }
       target.splice(key, 1);
       console.log(`Elemen indeks ${key} pada '${rootName}' berhasil dihapus.`);
+      return;
     } else if (key in target) {
       delete target[key];
       console.log(`Atribut '${key}' pada '${rootName}' berhasil dihapus.`);
+      return;
     } else {
       console.error(`Kunci '${key}' tidak ditemukan.`);
+      return;
     }
-    return;
   }
 
   if (typeof namaVariabel === 'string' && namaVariabel.startsWith(':') && namaVariabel.endsWith(':')) {
@@ -62,13 +64,14 @@ async function hapus(tokens, modules, context) {
     if (nama in context.memory) {
       delete context.memory[nama];
       console.log(`Variabel '${nama}' berhasil dihapus.`);
+      return;
     } else {
       console.error(`Variabel '${nama}' tidak ditemukan.`);
+      return;
     }
-    return;
   }
 
   console.error("Format salah. Gunakan: hapus :nama: atau hapus :objek.atribut:");
 }
 
-modules.exports = { hapus };
+module.exports = { hapus };
