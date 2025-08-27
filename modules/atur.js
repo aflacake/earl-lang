@@ -60,13 +60,21 @@ function parseJalurToken(str) {
 
 async function atur(tokens, modules, context) {
   if (!context.memory) context.memory = {};
+  if (!context.lingkup) context.lingkup = [];
+  if (!context.safetyTypes) context.safetyTypes = {};
 
   if (tokens.length < 3) {
     console.error("Format salah. Gunakan: atur :nama: = nilai atau atur :nama: [nilai1 nilai2 ...]");
     return;
   }
 
-  const namaVariabel = tokens[1];
+  let isTyped = false;
+  let namaVariabel = tokens[1];
+
+  if (namaVariabel.startsWith('::') && namaVariabel.endsWith('::')) {
+    isTyped = true;
+    namaVariabel = ':' + namaVariabel.slice(2, -2) + ':';
+  }
 
   const pathRegex = /^:([a-zA-Z0-9_]+)((?:\.[a-zA-Z_][a-zA-Z0-9_]*|\[\d+\])+):$/;
   const pathMatch = namaVariabel.match(pathRegex);
@@ -241,6 +249,23 @@ async function atur(tokens, modules, context) {
         }
       } else {
         nilai = expr;
+      }
+    }
+
+    const tipeNilai = typeof nilai;
+
+    if (isTyped) {
+      if (!context.safetyTypes) context.safetyTypes = {};
+      const nama = namaVariabel.slice(1, -1);
+      context.safetyTypes[nama] = tipeNilai;
+    } else {
+      const nama = namaVariabel.slice(1, -1);
+      if (context.safetyTypes && context.safetyTypes[nama]) {
+        const tipeTerdaftar = context.safetyTypes[nama];
+        if (tipeNilai !== tipeTerdaftar) {
+          console.error(`Kesalahan: Variabel '${nama}' harus bertipe '${tipeTerdaftar}', bukan '${tipeNilai}'.`);
+          return;
+        }
       }
     }
 
