@@ -70,14 +70,14 @@ async function atur(tokens, modules, context) {
 
   const pathRegex = /^:([a-zA-Z0-9_]+)((?:\.[a-zA-Z_][a-zA-Z0-9_]*|\[\d+\])+):$/;
   const pathMatch = namaVariabel.match(pathRegex);
-if (pathMatch) {
+  if (pathMatch) {
     const [, rootName, pathString] = pathMatch;
 
     const rootObj = context.memory[rootName];
     if (!rootObj) {
       console.error(`Objek '${rootName}' tidak ditemukan.`);
       return;
-    }
+  }
 
     const pathParts = [];
     const regex = /\.([a-zA-Z_][a-zA-Z0-9_]*)|\[(\d+)\]/g;
@@ -120,7 +120,9 @@ if (pathMatch) {
       return;
   }
 
-  if (tokens[2] === '=') {
+  const operator = tokens[2];
+
+  if (operator === '=') {
     const jalurInfo = parseJalurToken(namaVariabel);
     if (jalurInfo) {
       const ekspresi = tokens.slice(3).join(' ').trim();
@@ -148,6 +150,56 @@ if (pathMatch) {
       }
       return;
     }
+  } else if (operator === ':=') {
+    const nama = namaVariabel.slice(1, -1);
+    const ekspresi = tokens.slice(3).join(' ').trim();
+
+    let nilai;
+
+    if (ekspresi.startsWith('"') && ekspresi.endsWith('"')) {
+      nilai = ekspresi.slice(1, -1);
+    } else if (ekspresi.startsWith('{') && ekspresi.endsWith('}')) {
+      try {
+        const denganKutip = ekspresi.replace(/([{,])\s*([a-zA-Z0-9_]+)\s*:/g, '$1"$2":');
+        nilai = JSON.parse(denganKutip);
+      } catch (e) {
+        console.error("Objek tidak valid pada penugasan ulang:", e.message);
+        return;
+      }
+    } else if (ekspresi.startsWith('[') && ekspresi.endsWith(']')) {
+      try {
+        const denganKutip = ekspresi.replace(/([{,])\s*([a-zA-Z0-9_]+)\s*:/g, '$1"$2":');
+        nilai = JSON.parse(denganKutip);
+      } catch {
+        nilai = parseArrayString(ekspresi, context, modules);
+        if (nilai === null) return;
+      }
+    } else {
+      let expr = ekspresi.replace(/:([a-zA-Z0-9_]+):/g, (_, v) => {
+        const val = context.memory[v] ?? (context.lingkup?.[context.lingkup.length - 1] ?? {})[v];
+        if (typeof val === 'number') return val;
+        if (typeof val === 'string' && !isNaN(Number(val))) return Number(val);
+        return val ?? 0;
+      });
+
+      if (!isNaN(expr) || /^[0-9+\-*/%.() ]+$/.test(expr)) {
+        nilai = evalMathExpression(expr);
+        if (!validasiNumerik(nilai)) {
+          console.error('Nilai numerik tidak valid pada penugasan ulang.');
+          return;
+        }
+      } else {
+        nilai = expr;
+      }
+    }
+
+    if (context.lingkup && context.lingkup.length > 0) {
+      context.lingkup[context.lingkup.length - 1][nama] = nilai;
+    } else {
+      context.memory[nama] = nilai;
+    }
+    console.log(`Penugasan variabel variabel '${nama}' ke nilai`, nilai);
+    return;
   }
 
   const nama = namaVariabel.slice(1, -1);
