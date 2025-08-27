@@ -18,9 +18,17 @@ async function teks(tokens, modules, context) {
     }
 
     const namaVariabel = namaVariabelToken.slice(1, -1);
-    let isi = memory[namaVariabel];
+    let isi = context.memory[namaVariabel];
 
-    if (aksi !== 'isi' && aksi !== 'pecah' && typeof isi !== 'string') {
+    console.log('DEBUG namaVariabel:', namaVariabel);
+    console.log('DEBUG isi sebelum operasi:', isi, typeof isi);
+
+    if (
+        aksi !== 'isi' &&
+        aksi !== 'pecah' &&
+        aksi !== 'gabung' &&
+        typeof isi !== 'string'
+    ) {
         console.error(`Variabel '${namaVariabel}' tidak berisi teks.`);
         return;
     }
@@ -34,24 +42,29 @@ async function teks(tokens, modules, context) {
             const tambahan = [];
             for (const token of tokens.slice(3)) {
                 const nilai = resolveToken(token, context);
+                console.log(`DEBUG resolveToken('${token}') =>`, nilai);
                 if (nilai === undefined) {
                     console.error(`Token '${token}' tidak dapat diselesaikan.`);
                     return;
                 }
                 tambahan.push(String(nilai));
             }
-            memory[namaVariabel] += tambahan.join('');
-            console.log(`Teks ditambahkan ke '${namaVariabel}'.`);
+            if (context.memory[namaVariabel] === undefined) {
+                context.memory[namaVariabel] = '';
+            }
+
+            context.memory[namaVariabel] += tambahan.join('');
+            console.log(`DEBUG isi setelah gabung:`, context.memory[namaVariabel]);
             break;
         }
 
         case 'besarkan':
-            memory[namaVariabel] = isi.toUpperCase();
+            context.memory[namaVariabel] = isi.toUpperCase();
             console.log(memory[namaVariabel]);
             break;
 
         case 'kecilkan':
-            memory[namaVariabel] = isi.toLowerCase();
+            context.memory[namaVariabel] = isi.toLowerCase();
             console.log(memory[namaVariabel]);
             break;
 
@@ -74,7 +87,7 @@ async function teks(tokens, modules, context) {
                 console.error("Argumen 'yang dicari' tidak valid atau kosong.");
                 return;
             }
-            memory[namaVariabel] = isi.split(dari).join(String(menjadi));
+            context.memory[namaVariabel] = isi.split(dari).join(String(menjadi));
             console.log(`Semua '${dari}' telah diganti dengan '${menjadi}' dalam variabel '${namaVariabel}'.`);
             break;
         }
@@ -106,13 +119,13 @@ async function teks(tokens, modules, context) {
                 console.error("Indeks atau panjang tidak valid.");
                 return;
             }
-            memory[namaVariabel] = isi.slice(0, mulai) + isi.slice(mulai + panjang);
+            context.memory[namaVariabel] = isi.slice(0, mulai) + isi.slice(mulai + panjang);
             console.log(`Bagian dari '${namaVariabel}' dihapus`);
             break;
         }
 
         case 'pangkas':
-            memory[namaVariabel] = isi.trim();
+            context.memory[namaVariabel] = isi.trim();
             console.log(`Hasil pangkas: '${memory[namaVariabel]}'`);
             break;
 
@@ -130,14 +143,14 @@ async function teks(tokens, modules, context) {
                 }
                 teksBaru.push(String(nilai));
             }
-            memory[namaVariabel] = teksBaru.join('');
+            context.memory[namaVariabel] = teksBaru.join('');
             console.log(`Isi variabel '${namaVariabel}' diubah.`);
             break;
         }
 
         case 'pecah': {
             const pembatas = resolveToken(tokens[3] ?? '""', context);
-            memory[namaVariabel] = isi.split(pembatas);
+            context.memory[namaVariabel] = isi.split(pembatas);
             console.log(`Variabel '${namaVariabel}' dipecah menjadi daftar.`);
             break;
         }
