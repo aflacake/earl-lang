@@ -1,5 +1,9 @@
 async function hapus(tokens, modules, context) {
   if (!context.memory) context.memory = {};
+  if (!context.lingkup) context.lingkup = [];
+
+  console.log('DEBUG context.memory:', context.memory);
+  console.log('DEBUG context.lingkup:', context.lingkup);
 
   if (tokens.length < 2) {
     console.error("Format salah. Gunakan: hapus :nama: atau hapus :objek.atribut:");
@@ -59,21 +63,26 @@ async function hapus(tokens, modules, context) {
   if (typeof namaVariabel === 'string' && namaVariabel.startsWith(':') && namaVariabel.endsWith(':')) {
     const nama = namaVariabel.slice(1, -1);
 
+    let ditemukan = false;
+
     if (nama in context.memory) {
       delete context.memory[nama];
-      console.log(`Variabel '${nama}' berhasil dihapus.`);
-
-      for (const scope of context.lingkup) {
-        if (nama in scope) {
-          delete scope[nama];
-          console.log(`Variabel '${nama}' juga dihapus dari lingkup.`);
-        }
-      }
-      return;
-    } else {
-      console.error(`Variabel '${nama}' tidak ditemukan.`);
-      return;
+      console.log(`Variabel '${nama}' berhasil dihapus dari memori.`);
+      ditemukan = true;
     }
+
+    for (const scope of context.lingkup) {
+      if (nama in scope) {
+        delete scope[nama];
+        console.log(`Variabel '${nama}' juga dihapus dari lingkup.`);
+        ditemukan = true;
+      }
+    }
+
+    if (!ditemukan) {
+      console.error(`Variabel '${nama}' tidak ditemukan.`);
+    }
+    return;
   }
 
   console.error("Format salah. Gunakan: hapus :nama: atau hapus :objek.atribut:");
