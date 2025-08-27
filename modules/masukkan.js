@@ -5,7 +5,8 @@ const readline = require('readline');
 const { resolveToken } = require('./tampilkan');
 const { validasiNumerik } = require('../utili');
 
-async function masukkan(tokens, modules) {
+async function masukkan(tokens, modules, context) {
+    const memory = context.memory || {};
     const varName = tokens[1].replace(/:/g, '');
 
     if (
@@ -57,7 +58,7 @@ async function masukkan(tokens, modules) {
         let nilai = penggunaMasukkan;
 
         if (/^:[a-zA-Z0-9_]+:$/.test(penggunaMasukkan)) {
-            nilai = resolveToken(penggunaMasukkan, {}, {});
+            nilai = resolveToken(penggunaMasukkan, context, modules);
         }
 
         if (!isNaN(nilai)) {
