@@ -2,9 +2,6 @@ async function hapus(tokens, modules, context) {
   if (!context.memory) context.memory = {};
   if (!context.lingkup) context.lingkup = [];
 
-  console.log('DEBUG context.memory:', context.memory);
-  console.log('DEBUG context.lingkup:', context.lingkup);
-
   if (tokens.length < 2) {
     console.error("Format salah. Gunakan: hapus :nama: atau hapus :objek.atribut:");
     return;
