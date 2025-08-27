@@ -64,7 +64,7 @@ async function atur(tokens, modules, context) {
   if (!context.safetyTypes) context.safetyTypes = {};
 
   if (tokens.length < 3) {
-    console.error("Format salah. Gunakan: atur :nama: = nilai atau atur :nama: [nilai1 nilai2 ...]");
+    console.error("Format salah. Gunakan: atur :nama: = nilai atau atur :nama: := nilai");
     return;
   }
 
@@ -76,220 +76,75 @@ async function atur(tokens, modules, context) {
     namaVariabel = ':' + namaVariabel.slice(2, -2) + ':';
   }
 
-  const pathRegex = /^:([a-zA-Z0-9_]+)((?:\.[a-zA-Z_][a-zA-Z0-9_]*|\[\d+\])+):$/;
-  const pathMatch = namaVariabel.match(pathRegex);
-  if (pathMatch) {
-    const [, rootName, pathString] = pathMatch;
-
-    const rootObj = context.memory[rootName];
-    if (!rootObj) {
-      console.error(`Objek '${rootName}' tidak ditemukan.`);
-      return;
-  }
-
-    const pathParts = [];
-    const regex = /\.([a-zA-Z_][a-zA-Z0-9_]*)|\[(\d+)\]/g;
-    let match;
-    while ((match = regex.exec(pathString)) !== null) {
-      if (match[1]) pathParts.push(match[1]);
-      else if (match[2]) pathParts.push(Number(match[2]));
-    }
-
-    let target = rootObj;
-    for (let i = 0; i < pathParts.length - 1; i++) {
-      const part = pathParts[i];
-      if (target[part] === undefined) {
-        target[part] = typeof pathParts[i + 1] === 'number' ? [] : {};
-      }
-      target = target[part];
-    }
-
-    const key = pathParts[pathParts.length - 1];
-    const ekspresi = tokens.slice(3).join(' ').trim();
-    let nilai;
-
-    if (ekspresi.startsWith('"') && ekspresi.endsWith('"')) {
-      nilai = ekspresi.slice(1, -1);
-    } else {
-      nilai = evalMathExpression(ekspresi);
-      if (!validasiNumerik(nilai)) {
-        console.error('Nilai numerik tidak valid.');
-        return;
-      }
-    }
-
-    target[key] = nilai;
-    console.log(`Atribut '${pathParts.join('.')}' pada '${rootName}' diatur ke`, nilai);
-    return;
-  }
-
   if (typeof namaVariabel !== 'string' || !namaVariabel.startsWith(':') || !namaVariabel.endsWith(':')) {
-      console.error("Variabel harus dalam format :nama:");
-      return;
+    console.error("Variabel harus dalam format :nama:");
+    return;
   }
 
   const operator = tokens[2];
+  const nama = namaVariabel.slice(1, -1);
+  const ekspresi = tokens.slice(3).join(' ').trim();
+
+  function evalNilai(ekspresi) {
+    if (ekspresi.startsWith('"') && ekspresi.endsWith('"')) {
+      return ekspresi.slice(1, -1);
+    }
+    let hasil = evalMathExpression(ekspresi);
+    if (!validasiNumerik(hasil)) {
+      return ekspresi;
+    }
+    return hasil;
+  }
+
+  const nilai = evalNilai(ekspresi);
+  const tipeNilai = typeof nilai;
 
   if (operator === '=') {
-    const jalurInfo = parseJalurToken(namaVariabel);
-    if (jalurInfo) {
-      const ekspresi = tokens.slice(3).join(' ').trim();
-      let nilai = ekspresi;
-      if (ekspresi.startsWith('"') && ekspresi.endsWith('"')) {
-        nilai = ekspresi.slice(1, -1);
-      } else {
-        nilai = evalMathExpression(ekspresi);
-        if (Array.isArray(nilai)) {
-            for (const v of nilai) {
-                if (!validasiNumerik(v)) {
-                    console.error('Nilai array tidak valid:', v);
-                    return;
-                }
-            }
-        } else if (!validasiNumerik(nilai)) {
-            console.error('Nilai numerik tidak valid.');
-            return;
-        }
-
-      }
-      const berhasil = await setAtributContoh(jalurInfo.kelas, jalurInfo.jalurToken, nilai);
-      if (berhasil) {
-        console.log(`Atribut '${jalurInfo.jalurToken.join('.')}' pada '${jalurInfo.kelas}' diatur ke`, nilai);
-      }
-      return;
-    }
-  } else if (operator === ':=') {
-    const nama = namaVariabel.slice(1, -1);
-    const ekspresi = tokens.slice(3).join(' ').trim();
-
-    let nilai;
-
-    if (ekspresi.startsWith('"') && ekspresi.endsWith('"')) {
-      nilai = ekspresi.slice(1, -1);
-    } else if (ekspresi.startsWith('{') && ekspresi.endsWith('}')) {
-      try {
-        const denganKutip = ekspresi.replace(/([{,])\s*([a-zA-Z0-9_]+)\s*:/g, '$1"$2":');
-        nilai = JSON.parse(denganKutip);
-      } catch (e) {
-        console.error("Objek tidak valid pada penugasan ulang:", e.message);
-        return;
-      }
-    } else if (ekspresi.startsWith('[') && ekspresi.endsWith(']')) {
-      try {
-        const denganKutip = ekspresi.replace(/([{,])\s*([a-zA-Z0-9_]+)\s*:/g, '$1"$2":');
-        nilai = JSON.parse(denganKutip);
-      } catch {
-        nilai = parseArrayString(ekspresi, context, modules);
-        if (nilai === null) return;
-      }
-    } else {
-      let expr = ekspresi.replace(/:([a-zA-Z0-9_]+):/g, (_, v) => {
-        const val = context.memory[v] ?? (context.lingkup?.[context.lingkup.length - 1] ?? {})[v];
-        if (typeof val === 'number') return val;
-        if (typeof val === 'string' && !isNaN(Number(val))) return Number(val);
-        return val ?? 0;
-      });
-
-      if (!isNaN(expr) || /^[0-9+\-*/%.() ]+$/.test(expr)) {
-        nilai = evalMathExpression(expr);
-        if (!validasiNumerik(nilai)) {
-          console.error('Nilai numerik tidak valid pada penugasan ulang.');
-          return;
-        }
-      } else {
-        nilai = expr;
-      }
-    }
-
-    if (context.lingkup && context.lingkup.length > 0) {
-      context.lingkup[context.lingkup.length - 1][nama] = nilai;
-    } else {
-      context.memory[nama] = nilai;
-    }
-    console.log(`Penugasan variabel variabel '${nama}' ke nilai`, nilai);
-    return;
-  }
-
-  const nama = namaVariabel.slice(1, -1);
-
-  if (tokens[2] === '=') {
-    const ekspresi = tokens.slice(3).join(' ').trim();
-    let nilai;
-
-    if (ekspresi.startsWith('{') && ekspresi.endsWith('}')) {
-      try {
-        const denganKutip = ekspresi.replace(/([{,])\s*([a-zA-Z0-9_]+)\s*:/g, '$1"$2":');
-        nilai = JSON.parse(denganKutip);
-      } catch (e) {
-        console.error("Objek tidak valid:", e.message);
-        return;
-      }
-    } else if (ekspresi.startsWith('[') && ekspresi.endsWith(']')) {
-      try {
-        const denganKutip = ekspresi.replace(/([{,])\s*([a-zA-Z0-9_]+)\s*:/g, '$1"$2":');
-        nilai = JSON.parse(denganKutip);
-      } catch {
-        nilai = parseArrayString(ekspresi, context, modules);
-      }
-    } else if (ekspresi.startsWith('"') && ekspresi.endsWith('"')) {
-      nilai = ekspresi.slice(1, -1);
-    } else {
-      let expr = ekspresi.replace(/:([a-zA-Z0-9_]+):/g, (_, v) => {
-        const val = context.memory[v] ?? (context.lingkup?.[context.lingkup.length - 1] ?? {})[v];
-        if (typeof val === 'number') return val;
-        if (typeof val === 'string' && !isNaN(Number(val))) return Number(val);
-        return val ?? 0;
-      });
-
-      if (!isNaN(expr) || /^[0-9+\-*/%.() ]+$/.test(expr)) {
-        nilai = evalMathExpression(expr);
-        if (!validasiNumerik(nilai)) {
-          console.error('Nilai numerik berada di luar batas yang diizinkan.');
-          return;
-        }
-      } else {
-        nilai = expr;
-      }
-    }
-
-    const tipeNilai = typeof nilai;
-
     if (isTyped) {
-      if (!context.safetyTypes) context.safetyTypes = {};
-      const nama = namaVariabel.slice(1, -1);
+      if (context.safetyTypes[nama] && context.safetyTypes[nama] !== tipeNilai) {
+        console.error(`Kesalahan: Variabel '${nama}' sudah dideklarasi bertipe '${context.safetyTypes[nama]}'. Tidak bisa diubah ke '${tipeNilai}'.`);
+        return;
+      }
       context.safetyTypes[nama] = tipeNilai;
     } else {
-      const nama = namaVariabel.slice(1, -1);
-      if (context.safetyTypes && context.safetyTypes[nama]) {
-        const tipeTerdaftar = context.safetyTypes[nama];
-        if (tipeNilai !== tipeTerdaftar) {
-          console.error(`Kesalahan: Variabel '${nama}' harus bertipe '${tipeTerdaftar}', bukan '${tipeNilai}'.`);
-          return;
-        }
+      if (context.safetyTypes[nama] && context.safetyTypes[nama] !== tipeNilai) {
+        console.error(`Kesalahan: Variabel '${nama}' harus bertipe '${context.safetyTypes[nama]}', bukan '${tipeNilai}'.`);
+        return;
       }
     }
 
-    if (context.lingkup && context.lingkup.length > 0) {
+    if (context.lingkup.length > 0) {
       context.lingkup[context.lingkup.length - 1][nama] = nilai;
     } else {
       context.memory[nama] = nilai;
     }
 
-    context.memory[nama] = nilai;
     console.log(`Variabel '${nama}' diatur ke`, nilai);
+    return;
+
+  } else if (operator === ':=') {
+    if (!context.safetyTypes[nama]) {
+      console.error(`Kesalahan: Variabel '${nama}' belum dideklarasikan dengan tipe safety.`);
+      return;
+    }
+
+    if (context.safetyTypes[nama] !== tipeNilai) {
+      console.error(`Kesalahan: Penugasan ulang tipe tidak cocok untuk '${nama}'. Sebelumnya '${context.safetyTypes[nama]}', sekarang '${tipeNilai}'.`);
+      return;
+    }
+
+    if (context.lingkup.length > 0) {
+      context.lingkup[context.lingkup.length - 1][nama] = nilai;
+    } else {
+      context.memory[nama] = nilai;
+    }
+
+    console.log(`Penugasan ulang variabel '${nama}' ke nilai`, nilai);
     return;
   }
 
-  if (tokens[2].startsWith('[')) {
-    const arrString = tokens.slice(2).join(' ');
-    const nilai = parseArrayString(arrString, context, modules);
-    if (nilai === null) return;
-    context.memory[nama] = nilai;
-    console.log(`Variabel '${nama}' diatur ke`, nilai);
-    return;
-  }
-
-  console.error("Format salah. Gunakan: atur :nama: = nilai atau atur :nama: [nilai1 nilai2 ...]");
+  console.error("Operator salah. Gunakan '=' untuk deklarasi atau ':=' untuk penugasan ulang dengan safety type.");
 }
+
 
 module.exports = { atur };
