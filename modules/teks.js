@@ -39,7 +39,8 @@ async function teks(tokens, modules, context) {
             break;
 
         case 'gabung': {
-            const tambahan = [];
+            const bagianGabungan = [];
+
             for (const token of tokens.slice(3)) {
                 const nilai = resolveToken(token, context);
                 console.log(`DEBUG resolveToken('${token}') =>`, nilai);
@@ -47,16 +48,17 @@ async function teks(tokens, modules, context) {
                     console.error(`Token '${token}' tidak dapat diselesaikan.`);
                     return;
                 }
-                tambahan.push(String(nilai));
-            }
-            if (context.memory[namaVariabel] === undefined) {
-                context.memory[namaVariabel] = '';
+                bagianGabungan.push(String(nilai));
             }
 
-            context.memory[namaVariabel] += tambahan.join('');
+            const nilaiLama = context.memory[namaVariabel] ?? '';
+            const hasilGabung = String(nilaiLama) + bagianGabungan.join('');
+
+            context.memory[namaVariabel] = hasilGabung;
             console.log(`DEBUG isi setelah gabung:`, context.memory[namaVariabel]);
             break;
         }
+
 
         case 'besarkan':
             context.memory[namaVariabel] = isi.toUpperCase();
