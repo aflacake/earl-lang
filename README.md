@@ -63,7 +63,7 @@ npm link
 ```
 Lalu uji:
 ```bash
-earl "atur :angka: = 42\\ntampilkan :angka:"
+earl "atur :angka: = 42\ntampilkan :angka:"
 earl tes.earl
 ```
 
