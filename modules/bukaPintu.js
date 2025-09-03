@@ -1,6 +1,10 @@
+// modules/bukaPintu.js
+
 const { memory } = require('../memory');
 
 async function bukaPintu(tokens, modules, context) {
+    console.log('Isi memory:', memory);
+
     const pintuToken = tokens[1];
     if (!pintuToken || !pintuToken.startsWith(':') || !pintuToken.endsWith(':')) {
         console.error("Format bukaPintu salah: harus ada :namaPintu:");
@@ -15,15 +19,9 @@ async function bukaPintu(tokens, modules, context) {
     if (denganIndex !== -1 && tokens[denganIndex + 1]) {
         kunciToken = tokens[denganIndex + 1];
         if (kunciToken.startsWith(':') && kunciToken.endsWith(':')) {
-            const namaKunci = kunciToken.slice(1, -1);
-            console.log('Isi memory:', modules.memory);
-            console.log('Cari kunci:', namaKunci, '=>', modules.memory[namaKunci]);
-
-            kunciToken = modules.memory[namaKunci];
-            if (!kunciToken) {
-                console.error(`Kunci '${namaKunci}' tidak ditemukan di memori.`);
-                return;
-            }
+            const kunciVarName = kunciToken.slice(1, -1);
+            kunciToken = memory[kunciVarName];
+            console.log(`Cari kunci: ${kunciVarName} =>`, kunciToken);
         } else {
             kunciToken = null;
         }
