@@ -1,50 +1,60 @@
-// modules/bukaPintu.js
-
 const { memory } = require('../memory');
 
 async function bukaPintu(tokens, modules, context) {
-    // Format sintaks:
-    // bukaPintu :namaPintu: [dengan :namaKunci:] [pesanBerhasil "text"] [pesanGagal "text"]
-
     const pintuToken = tokens[1];
     if (!pintuToken || !pintuToken.startsWith(':') || !pintuToken.endsWith(':')) {
         console.error("Format bukaPintu salah: harus ada :namaPintu:");
         return;
     }
-    const namaPintu = pintuToken.slice(1, -1);
 
-    let namaKunci = null;
-    let pesanBerhasil = "Pintu terbuka.";
-    let pesanGagal = "Pintu terkunci! Anda butuh kunci.";
+    let namaPintu = pintuToken.slice(1, -1);
 
-    for (let i = 2; i < tokens.length; i++) {
-        if (tokens[i] === 'dengan' && tokens[i+1] && tokens[i+1].startsWith(':') && tokens[i+1].endsWith(':')) {
-            namaKunci = tokens[i+1].slice(1, -1);
-            i++;
-        } else if (tokens[i] === 'pesanBerhasil' && tokens[i+1] && tokens[i+1].startsWith('"') && tokens[i+1].endsWith('"')) {
-            pesanBerhasil = tokens[i+1].slice(1, -1);
-            i++;
-        } else if (tokens[i] === 'pesanGagal' && tokens[i+1] && tokens[i+1].startsWith('"') && tokens[i+1].endsWith('"')) {
-            pesanGagal = tokens[i+1].slice(1, -1);
-            i++;
+    const denganIndex = tokens.indexOf('dengan');
+
+    let kunciToken = null;
+    if (denganIndex !== -1 && tokens[denganIndex + 1]) {
+        kunciToken = tokens[denganIndex + 1];
+        if (kunciToken.startsWith(':') && kunciToken.endsWith(':')) {
+            kunciToken = kunciToken.slice(1, -1);
+        } else {
+            kunciToken = null;
         }
     }
 
-    memory[namaPintu] = memory[namaPintu] || {};
-    if (memory[namaPintu].status === 'terbuka') {
-        console.log(`Pintu ${namaPintu} sudah terbuka.`);
+    let pesanBerhasil = "Pintu terbuka.";
+    let pesanGagal = "Pintu terkunci! Anda butuh kunci.";
+
+    const pesanBerhasilIndex = tokens.indexOf('pesanBerhasil');
+    if (pesanBerhasilIndex !== -1 && tokens[pesanBerhasilIndex + 1]) {
+        const pb = tokens[pesanBerhasilIndex + 1];
+        if (pb.startsWith('"') && pb.endsWith('"')) {
+            pesanBerhasil = pb.slice(1, -1);
+        }
+    }
+
+    const pesanGagalIndex = tokens.indexOf('pesanGagal');
+    if (pesanGagalIndex !== -1 && tokens[pesanGagalIndex + 1]) {
+        const pg = tokens[pesanGagalIndex + 1];
+        if (pg.startsWith('"') && pg.endsWith('"')) {
+            pesanGagal = pg.slice(1, -1);
+        }
+    }
+
+    modules.memory[namaPintu] = modules.memory[namaPintu] || {};
+    if (modules.memory[namaPintu].status === 'terbuka') {
+        console.log(`Pintu '${namaPintu}' sudah terbuka.`);
         return;
     }
 
-    if (namaKunci) {
-        const inventori = memory.inventori || [];
-        if (!inventori.includes(namaKunci)) {
+    if (kunciToken) {
+        const inventori = modules.memory['inventori'] || [];
+        if (!inventori.includes(kunciToken)) {
             console.log(pesanGagal);
             return;
         }
     }
 
-    memory[namaPintu].status = 'terbuka';
+    modules.memory[namaPintu].status = 'terbuka';
     console.log(pesanBerhasil);
 }
 
