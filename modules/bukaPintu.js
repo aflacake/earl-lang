@@ -16,6 +16,9 @@ async function bukaPintu(tokens, modules, context) {
         kunciToken = tokens[denganIndex + 1];
         if (kunciToken.startsWith(':') && kunciToken.endsWith(':')) {
             const namaKunci = kunciToken.slice(1, -1);
+            console.log('Isi memory:', modules.memory);
+            console.log('Cari kunci:', namaKunci, '=>', modules.memory[namaKunci]);
+
             kunciToken = modules.memory[namaKunci];
             if (!kunciToken) {
                 console.error(`Kunci '${namaKunci}' tidak ditemukan di memori.`);
@@ -45,21 +48,21 @@ async function bukaPintu(tokens, modules, context) {
         }
     }
 
-    modules.memory[namaPintu] = modules.memory[namaPintu] || {};
-    if (modules.memory[namaPintu].status === 'terbuka') {
+    memory[namaPintu] = memory[namaPintu] || {};
+    if (memory[namaPintu].status === 'terbuka') {
         console.log(`Pintu '${namaPintu}' sudah terbuka.`);
         return;
     }
 
     if (kunciToken) {
-        const inventori = modules.memory['inventori'] || [];
+        const inventori = memory['inventori'] || [];
         if (!inventori.includes(kunciToken)) {
             console.log(pesanGagal);
             return;
         }
     }
 
-    modules.memory[namaPintu].status = 'terbuka';
+    memory[namaPintu].status = 'terbuka';
     console.log(pesanBerhasil);
 }
 
