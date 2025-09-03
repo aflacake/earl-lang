@@ -18,14 +18,15 @@ async function daftar(tokens, modules, context) {
             return Number(val);
         } else if (val.startsWith(':') && val.endsWith(':')) {
             const resolved = resolveToken(val);
-            if (resolved === undefined) {
-                console.error(`Kesalahan: '${val.slice(1, -1)}' tidak ditemukan.`);
-                return null;  // Jangan tambahkan error ke daftar
+            if (typeof resolved === 'string' && resolved.startsWith('Kesalahan:')) {
+                console.error(resolved);
+                return null;
             }
             return resolved;
         }
         return val;
     };
+
 
     if (cmd === 'buat') {
         const varName = tokens[2].slice(1, -1);
@@ -57,7 +58,6 @@ async function daftar(tokens, modules, context) {
         memory[varName].push(val);
         return;
     }
-
 
     if (cmd === 'hapuspop') {
        const varName = tokens[2].slice(1, -1);
