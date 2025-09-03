@@ -15,7 +15,12 @@ async function bukaPintu(tokens, modules, context) {
     if (denganIndex !== -1 && tokens[denganIndex + 1]) {
         kunciToken = tokens[denganIndex + 1];
         if (kunciToken.startsWith(':') && kunciToken.endsWith(':')) {
-            kunciToken = kunciToken.slice(1, -1);
+            const namaKunci = kunciToken.slice(1, -1);
+            kunciToken = modules.memory[namaKunci];
+            if (!kunciToken) {
+                console.error(`Kunci '${namaKunci}' tidak ditemukan di memori.`);
+                return;
+            }
         } else {
             kunciToken = null;
         }
