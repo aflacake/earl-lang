@@ -3,7 +3,11 @@
 const { memory } = require('../memory');
 
 async function bukaPintu(tokens, modules, context) {
+    const { memory } = modules;
+    const scope = context?.scope || {};
+
     console.log('Isi memory:', memory);
+    console.log('Isi scope:', scope);
 
     const pintuToken = tokens[1];
     if (!pintuToken || !pintuToken.startsWith(':') || !pintuToken.endsWith(':')) {
@@ -11,21 +15,28 @@ async function bukaPintu(tokens, modules, context) {
         return;
     }
 
-    let namaPintu = pintuToken.slice(1, -1);
+    const namaPintu = pintuToken.slice(1, -1);
 
     const denganIndex = tokens.indexOf('dengan');
 
     let kunciToken = null;
     if (denganIndex !== -1 && tokens[denganIndex + 1]) {
-        kunciToken = tokens[denganIndex + 1];
-        if (kunciToken.startsWith(':') && kunciToken.endsWith(':')) {
-            const kunciVarName = kunciToken.slice(1, -1);
-            kunciToken = memory[kunciVarName];
-            console.log(`Cari kunci: ${kunciVarName} =>`, kunciToken);
+        const kunciRawToken = tokens[denganIndex + 1];
+        if (kunciRawToken.startsWith(':') && kunciRawToken.endsWith(':')) {
+            const namaVar = kunciRawToken.slice(1, -1);
+            if (context.lingkup && context.lingkup.length > 0) {
+                const lingkupTeratas = context.lingkup[context.lingkup.length - 1];
+                kunciToken = lingkupTeratas[namaVar];
+            }
+            if (kunciToken === undefined) {
+                kunciToken = modules.memory[namaVar];
+            }
+            console.log(`Cari kunci: ${namaVar} =>`, kunciToken);
         } else {
             kunciToken = null;
         }
     }
+
 
     let pesanBerhasil = "Pintu terbuka.";
     let pesanGagal = "Pintu terkunci! Anda butuh kunci.";
@@ -47,12 +58,13 @@ async function bukaPintu(tokens, modules, context) {
     }
 
     memory[namaPintu] = memory[namaPintu] || {};
+
     if (memory[namaPintu].status === 'terbuka') {
         console.log(`Pintu '${namaPintu}' sudah terbuka.`);
         return;
     }
 
-    if (kunciToken) {
+    if (kunciToken !== null) {
         const inventori = memory['inventori'] || [];
         if (!inventori.includes(kunciToken)) {
             console.log(pesanGagal);
@@ -65,5 +77,4 @@ async function bukaPintu(tokens, modules, context) {
 }
 
 bukaPintu.isBlock = false;
-
 module.exports = { bukaPintu };
