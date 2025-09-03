@@ -4,6 +4,10 @@ const { memory } = require('../memory.js');
 const { resolveToken } = require('./tampilkan');
 const { validasiIndeks, validasiNumerik } = require('../utili')
 
+function adaItem(daftar, item) {
+    return daftar.includes(item);
+}
+
 async function daftar(tokens, modules, context) {
     const cmd = tokens[1];
 
@@ -134,6 +138,20 @@ async function daftar(tokens, modules, context) {
         }
         const removed = memory[varName].splice(index, 1);
         console.log(`Elemen '${removed[0]}' di indeks ${index} telah dihapus dari '${varName}'.`);
+        return;
+    }
+
+    if (cmd === 'ada') {
+        const varName = tokens[2].slice(1, -1);
+        let val = tokens[3];
+        val = resolveValue(val);
+
+        if (!Array.isArray(memory[varName])) {
+            console.error(`'${varName}' bukan daftar.`);
+            return;
+        }
+
+        console.log(adaItem(memory[varName], val) ? 'benar' : 'salah');
         return;
     }
 
