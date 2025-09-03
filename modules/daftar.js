@@ -17,7 +17,7 @@ async function daftar(tokens, modules, context) {
         } else if (!isNaN(val)) {
             return Number(val);
         } else if (val.startsWith(':') && val.endsWith(':')) {
-            const resolved = resolveToken(val);
+            const resolved = resolveToken(val, context, modules);
             if (typeof resolved === 'string' && resolved.startsWith('Kesalahan:')) {
                 console.error(resolved);
                 return null;
