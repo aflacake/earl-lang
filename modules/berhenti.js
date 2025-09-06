@@ -20,6 +20,3 @@ function berhenti(tokens, modules, context) {
 }
 
 module.exports = { berhenti };
-
-
-module.exports = { berhenti };
