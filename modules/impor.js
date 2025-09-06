@@ -10,13 +10,13 @@ async function impor(tokens, modules, context) {
 
     let namafile = tokens[1];
 
-    if (!namafile.endsWith('.pearl')) {
-        namafile += '.pearl';
+    if (!namafile.endsWith('.earl')) {
+        namafile += '.earl';
     }
 
     try {
         const kode = await fs.readFile(namafile, 'utf8');
-        await modules.runPearl(kode, modules, context);
+        await modules.runEarl(kode, modules, context);
     } catch (err) {
         console.error(`Gagal; mengimpor file '${namafile}':`, err.message);
     }
