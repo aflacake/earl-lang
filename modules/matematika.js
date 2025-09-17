@@ -210,6 +210,13 @@ async function matematika(tokens, modules, context = {}) {
             break;
         }
 
+        case 'sigmaspiral': {
+            const hasil = 18.53493733204947;
+            const output = simpanAtauTampilkanDenganValidasi(hasil);
+            if (output !== null) console.log(output);
+            break;
+        }
+
         case 'akarKubik': {
             const x = ambilNilai(tokens[offset + 1]);
             if (isNaN(x)) return console.error('Nilai tidak valid untuk akar kubik.');
