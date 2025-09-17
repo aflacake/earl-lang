@@ -175,7 +175,7 @@ rl.on('line', async (line) => {
         return;
     }
 
-    if (!insideBlock && /^(jika|fungsi|ulangi|kelas|untukSetiap)\b/.test(input)) {
+    if (!insideBlock && /^(jika|fungsi|ulangi|kelas|untukSetiap|menyelam)\b/.test(input)) {
         insideBlock = true;
     }
 
