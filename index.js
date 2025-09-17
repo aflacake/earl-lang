@@ -68,6 +68,7 @@ const { tulis } = require('./modules/tulis');
 const { tutup } = require('./modules/tutup');
 const { ulangi } = require('./modules/ulangi');
 const { ulangi_sebelumnya } = require('./modules/ulangi_sebelumnya');
+const { ulangiKontrol } = require('./modules/ulangiKontrol');
 const { untukSetiap } = require('./modules/untukSetiap');
 const { versi } = require('./modules/versi');
 const { waktu } = require('./modules/waktu');
@@ -80,7 +81,7 @@ function pilihTokenizer(line) {
 const modules = { 
     memory,
     tokenize: pilihTokenizer,
-    laksanakanAST
+    laksanakanAST,
 
     // daftar modul-modul
     ambil,
