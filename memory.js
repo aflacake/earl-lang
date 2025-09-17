@@ -1,5 +1,7 @@
 // memory.js
 
-const memory = {};
+const memory = {
+    sourceLines: []
+};
 
 module.exports = { memory };
