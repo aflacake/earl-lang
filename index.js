@@ -8,6 +8,69 @@ const { laksanakanAST } = require('./pelaksana-ast');
 
 const { tokenize } = require('./tokenize');
 const { tokenizekedua } = require('./utili');
+const { parse } = require('./parser');
+
+// Impor modul-modul secara manual
+const { ambil } = require('./modules/ambil');
+const { apg } = require('./modules/apg');
+const { atur } = require('./modules/atur');
+const { aturheader } = require('./modules/aturheader');
+const { aturPilihan } = require('./modules/aturPilihan');
+const { baca } = require('./modules/baca');
+const { berhenti } = require('./modules/berhenti');
+const { buka } = require('./modules/buka');
+const { bukaPintu } = require('./modules/bukaPintu');
+const { cobaTangkap } = require('./modules/cobaTangkap');
+const { daftar } = require('./modules/daftar');
+const { dikta } = require('./modules/dikta');
+const { evaluasi } = require('./modules/evaluasi');
+const { folder } = require('./modules/folder');
+const { fungsi } = require('./modules/fungsi');
+const { gambar } = require('./modules/gambar');
+const { github } = require('./modules/github');
+const { hapus } = require('./modules/hapus');
+const { hitung } = require('./modules/hitung');
+const { http } = require('./modules/http');
+const { impor } = require('./modules/impor');
+const { ingatan } = require('./modules/ingatan');
+const { isi } = require('./modules/isi');
+const { jeda } = require('./modules/jeda');
+const { jejak } = require('./modules/jejak');
+const { jika } = require('./modules/jika');
+const { jikaLainnya } = require('./modules/jikaLainnya');
+const { kelas } = require('./modules/kelas');
+const { kembalikan } = require('./modules/kembalikan');
+const { lakukan } = require('./modules/lakukan');
+const { langkah } = require('./modules/langkah');
+const { lingkup } = require('./modules/lingkup');
+const { masukkan } = require('./modules/masukkan');
+const { matematika } = require('./modules/matematika');
+const { melahirkan } = require('./modules/melahirkan');
+const { memanjat } = require('./modules/memanjat');
+const { membangun } = require('./modules/membangun');
+const { mencairkan } = require('./modules/mencairkan');
+const { mengandung } = require('./modules/mengandung');
+const { mengangkat } = require('./modules/mengangkat');
+const { menyelam } = require('./modules/menyelam');
+const { panggilMetode } = require('./modules/panggilMetode');
+const { penugasan } = require('./modules/penugasan');
+const { peranti } = require('./modules/peranti');
+const { periksa } = require('./modules/periksa');
+const { peringatan } = require('./modules/peringatan');
+const { perpindahan } = require('./modules/perpindahan');
+const { prosesor } = require('./modules/prosesor');
+const { simpan } = require('./modules/simpan');
+const { tampilkan } = require('./modules/tampilkan');
+const { tanya } = require('./modules/tanya');
+const { teks } = require('./modules/teks');
+const { tetapkan } = require('./modules/tetapkan');
+const { tulis } = require('./modules/tulis');
+const { tutup } = require('./modules/tutup');
+const { ulangi } = require('./modules/ulangi');
+const { ulangi_sebelumnya } = require('./modules/ulangi_sebelumnya');
+const { untukSetiap } = require('./modules/untukSetiap');
+const { versi } = require('./modules/versi');
+const { waktu } = require('./modules/waktu');
 
 function pilihTokenizer(line) {
     if (line.includes('"')) return tokenizekedua(line);
@@ -18,22 +81,70 @@ const modules = {
     memory,
     tokenize: pilihTokenizer,
     laksanakanAST
-};
 
-const modulesPath = path.join(__dirname, 'modules');
-fs.readdirSync(modulesPath).forEach(file => {
-    if (file.endsWith('.js')) {
-        const mod = require(`./modules/${file}`);
-        for (const [key, value] of Object.entries(mod)) {
-            if (modules[key]) {
-                console.warn(`Peringatan: Modul '${file}' mencoba menimpa '${key}' yang sudah ada di modul lain.`);
-            } else {
-                modules[key] = value;
-            }
-        }
-        console.log(`Modul dimuat: ${file}`);
-    }
-});
+    // daftar modul-modul
+    ambil,
+    apg,
+    atur,
+    aturheader,
+    aturPilihan,
+    baca,
+    berhenti,
+    buka,
+    bukaPintu,
+    cobaTangkap,
+    daftar,
+    dikta,
+    evaluasi,
+    folder,
+    fungsi,
+    gambar,
+    github,
+    hapus,
+    hitung,
+    http,
+    impor,
+    ingatan,
+    isi,
+    jeda,
+    jejak,
+    jika,
+    jikaLainnya,
+    kelas,
+    kembalikan,
+    lakukan,
+    langkah,
+    lingkup,
+    masukkan,
+    matematika,
+    melahirkan,
+    memanjat,
+    membangun,
+    mencairkan,
+    mengandung,
+    mengangkat,
+    menyelam,
+    panggilMetode,
+    penugasan,
+    peranti,
+    periksa,
+    peringatan,
+    perpindahan,
+    prosesor,
+    simpan,
+    tampilkan,
+    tanya,
+    teks,
+    tetapkan,
+    tulis,
+    tutup,
+    ulangi,
+    ulangi_sebelumnya,
+    ulangiKontrol,
+    untukSetiap,
+    versi,
+    waktu
+};
 
 function bantuan() {
     console.log('Daftar perintah yang tersedia:');
@@ -43,8 +154,6 @@ function bantuan() {
     cmds.forEach(cmd => console.log(`- ${cmd}`));
     console.log("Ketik 'keluar' untuk keluar dari mode REPL.");
 }
-
-const { parse } = require('./parser');
 
 async function runEarl(code, customModules = modules, parentContext, lewatiManual = false) {
     const lines = code.trim().split('\n');
