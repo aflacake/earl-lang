@@ -1,3 +1,5 @@
+// modules/perpindahan.js
+
 async function perpindahan(tokens, modules, context) {
     if (tokens.length < 3) {
         console.error("Format salah. Gunakan: perpindahan <asal> <tujuan>");
