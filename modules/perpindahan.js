@@ -1,34 +1,30 @@
 // modules/perpindahan.js
 
-async function perpindahan(tokens, modules, context) {
-    if (tokens.length < 3) {
-        console.error("Format salah. Gunakan: perpindahan <asal> <tujuan>");
+function perpindahan(tokens, modules, context) {
+    const from = parseInt(tokens[1], 10) - 1;
+    const to = parseInt(tokens[2], 10) - 1;
+
+    const source = context.memory.sourceLines;
+
+    if (isNaN(from) || isNaN(to)) {
+        console.error("Gunakan format: perpindahan <barisAsal> <barisTujuan>");
+        return;
+    }
+    if (from < 0 || from >= source.length) {
+        console.error(`Baris asal ${from + 1} tidak valid.`);
+        return;
+    }
+    if (to < 0 || to > source.length) {
+        console.error(`Baris tujuan ${to + 1} tidak valid.`);
         return;
     }
 
-    const asal = Number(tokens[1]) - 1;
-    const tujuan = Number(tokens[2]) - 1;
+    const [line] = source.splice(from, 1);
 
-    if (isNaN(asal) || isNaN(tujuan)) {
-        console.error("Indeks harus berupa angka.");
-        return;
-    }
 
-    if (asal < 0 || asal >= context.lines.length) {
-        console.error(`Baris asal ${asal + 1} tidak valid.`);
-        return;
-    }
+    source.splice(to, 0, line);
 
-    if (tujuan < 0 || tujuan >= context.lines.length) {
-        console.error(`Baris tujuan ${tujuan + 1} tidak valid.`);
-        return;
-    }
-
-    const [baris] = context.lines.splice(asal, 1);
-
-    context.lines.splice(tujuan, 0, baris);
-
-    console.log(`Baris ${asal + 1} dipindahkan ke posisi ${tujuan + 1}`);
+    console.log(`Baris ${from + 1} dipindahkan ke posisi ${to + 1}.`);
 }
 
 module.exports = { perpindahan };
