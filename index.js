@@ -160,6 +160,10 @@ rl.prompt();
 rl.on('line', async (line) => {
     const input = line.trim();
 
+    if (input) {
+        memory.sourceLines.push(input);
+    }
+
     if (line.trim() === 'keluar') {
         rl.close();
         return;
@@ -213,7 +217,5 @@ rl.on('close', () => {
     console.log('Keluar!');
     process.exit(0);
 });
-
-
 
 module.exports = { runEarl };
